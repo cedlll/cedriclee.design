@@ -168,10 +168,12 @@ function App() {
                   </h1>
                   <span className="profile-photo-preview" aria-hidden>
                     <img
-                      src="/cedric-photo.png"
+                      src="/cedric-photo-400.png"
                       alt=""
                       width={200}
                       height={200}
+                      fetchPriority="high"
+                      decoding="async"
                     />
                   </span>
                 </div>
@@ -208,6 +210,28 @@ function App() {
                 items={features}
               />
             </section>
+
+            <a
+              href="/galaga/"
+              className="galaga-button"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Play Galaga"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden
+              >
+                <path
+                  d="M12 0 L20 8 L16 12 L20 16 L12 24 L4 16 L8 12 L4 8 Z"
+                  fill="currentColor"
+                />
+              </svg>
+            </a>
           </section>
         </main>
       </div>

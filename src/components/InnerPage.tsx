@@ -61,7 +61,7 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
     case 'image':
       return (
         <figure className="inner-page-block inner-page-image">
-          <img src={block.src} alt={block.alt} />
+          <img src={block.src} alt={block.alt} loading="lazy" decoding="async" />
           {block.caption && (
             <figcaption className="inner-page-image-caption">
               {block.caption}

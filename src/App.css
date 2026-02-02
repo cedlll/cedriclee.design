@@ -127,6 +127,7 @@
   background-color: var(--color-cursor);
   animation: cursor-blink 1s step-end infinite;
   vertical-align: text-bottom;
+  will-change: opacity;
 }
 
 @keyframes cursor-blink {
@@ -155,6 +156,13 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
+}
+
+.profile-links a {
+  padding: 4px 0;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
 }
 
 .profile-links a:hover,
@@ -198,9 +206,12 @@
 }
 
 .section-list a {
-  display: block;
+  display: flex;
+  align-items: center;
   text-decoration: underline;
   margin-bottom: 2px;
+  padding: 4px 0;
+  min-height: 24px;
 }
 
 .section-list a:hover,
@@ -223,7 +234,7 @@
   padding: 10px 0;
   margin: 0;
   margin-top: 2px;
-  min-height: 44px;
+  min-height: 24px;
   cursor: pointer;
   text-decoration: underline;
   text-align: left;
@@ -233,6 +244,32 @@
 }
 
 .section-more:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.galaga-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  align-self: flex-start;
+  padding: 8px;
+  margin-top: 16px;
+  border: 1px solid var(--color-text-muted);
+  border-radius: 4px;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.galaga-button:hover,
+.galaga-button:focus-visible {
+  color: var(--color-text);
+  border-color: var(--color-text);
+  background-color: var(--color-hover-bg);
+}
+
+.galaga-button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
