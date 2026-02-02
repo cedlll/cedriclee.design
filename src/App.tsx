@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { ProjectPage } from './pages/ProjectPage'
+import { WritingPage } from './pages/WritingPage'
 import './App.css'
 
 const THEME_KEY = 'cclee-theme'
@@ -48,7 +50,7 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
-  { title: 'The intertextuality of Manila slums', href: '#' },
+  { title: 'The intertextuality of Manila slums', href: '/writing/the-intertextuality-of-manila-slums' },
   { title: 'Urban mapping in Southeast Asia', href: '#' },
   { title: 'Design systems at scale', href: '#' },
   { title: 'AI-assisted prototyping tools', href: '#' },
@@ -57,7 +59,8 @@ const projects = [
 ]
 
 const writings = [
-  { title: 'The intertextuality of Manila slums', href: '#' },
+  { title: 'The intertextuality of Manila slums', href: '/writing/the-intertextuality-of-manila-slums' },
+  { title: 'Hello world', href: '/writing/hello-world' },
   { title: 'On design and engineering', href: '#' },
   { title: 'Building for uncertainty', href: '#' },
   { title: 'Notes on AI and creativity', href: '#' },
@@ -107,6 +110,35 @@ function Section({ label, items, expandable = true }: SectionProps) {
 
 function App() {
   const { theme, toggle } = useTheme()
+  const pathname =
+    typeof globalThis.window !== 'undefined' ? globalThis.window.location.pathname : '/'
+  const isProjectPage = pathname.startsWith('/project/')
+  const isWritingPage = pathname.startsWith('/writing/')
+  const isInnerPage = isProjectPage || isWritingPage
+
+  if (isInnerPage) {
+    const InnerContent = isWritingPage ? WritingPage : ProjectPage
+    return (
+      <div className="page">
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={toggle}
+          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+        >
+          {theme === 'dark' ? (
+            <span aria-hidden>☀</span>
+          ) : (
+            <span aria-hidden>☽</span>
+          )}
+        </button>
+        <div className="page-inner">
+          <InnerContent />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="page">
@@ -137,7 +169,7 @@ function App() {
                   <span className="profile-photo-preview" aria-hidden>
                     <img
                       src="/cedric-photo.png"
-                      alt="Photo of Clarence Cedric Lee"
+                      alt=""
                       width={200}
                       height={200}
                     />
@@ -149,13 +181,13 @@ function App() {
               </div>
 
               <nav className="profile-links" aria-label="Profile links">
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer">
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
                   LinkedIn
                 </a>
-                <a href="https://github.com" target="_blank" rel="noreferrer">
+                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
                   GitHub
                 </a>
-                <a href="https://v0.dev" target="_blank" rel="noreferrer">
+                <a href="https://v0.dev" target="_blank" rel="noopener noreferrer">
                   v0
                 </a>
               </nav>
