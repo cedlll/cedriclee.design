@@ -1,0 +1,51 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'DM Sans', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+a {
+  color: inherit;
+}
+
+/* Dark theme (default) */
+:root,
+[data-theme='dark'] {
+  --color-bg: #1a1a1a;
+  --color-text: #f0f0f0;
+  --color-text-primary: #ffffff;
+  --color-text-muted: #a4a4a4;
+  --color-focus: #f0f0f0;
+  --color-cursor: #ffffff;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-hover-bg: rgba(255, 255, 255, 0.08);
+}
+
+/* Light theme */
+[data-theme='light'] {
+  --color-bg: #f7f7f7;
+  --color-text: #333333;
+  --color-text-primary: #1a1a1a;
+  --color-text-muted: #666666;
+  --color-focus: #1a1a1a;
+  --color-cursor: #1a1a1a;
+  --color-shadow: rgba(0, 0, 0, 0.15);
+  --color-hover-bg: rgba(0, 0, 0, 0.06);
+}

@@ -1,0 +1,164 @@
+---
+description: Design system rules for Figma MCP integration
+globs: "**/*.{tsx,ts,css}"
+alwaysApply: false
+---
+
+# Design System Rules — Figma MCP Integration
+
+Rules for integrating Figma designs into this codebase using the Model Context Protocol.
+
+---
+
+## 1. Token Definitions
+
+**Current state:** No formal design tokens. Values are hardcoded in CSS.
+
+**Colors (extract to tokens when scaling):**
+```css
+/* src/index.css, src/App.css */
+--bg: #1a1a1a;
+--text-primary: #ffffff;
+--text-secondary: #f0f0f0;
+--text-muted: #a4a4a4;
+```
+
+**Typography:**
+- **DM Mono** (monospace): titles, section labels — `font-family: 'DM Mono', ui-monospace, ...`
+- **DM Sans** (sans): body, links, subtitles — `font-family: 'DM Sans', system-ui, ...`
+- Title: 24px, body: 16px
+
+**Spacing (8pt grid):**
+- Gaps: 2px, 8px, 16px, 24px, 32px
+- Page padding: 200px vertical, 24px horizontal
+- Section gaps: 16px, 24px, 32px
+
+**Recommendation:** Add `src/styles/tokens.css` with CSS custom properties when introducing more screens.
+
+---
+
+## 2. Component Library
+
+**Location:** Components live in `src/App.tsx` (no separate component folder yet).
+
+**Patterns:**
+- Functional components with TypeScript
+- Props typed via `type` or `interface`
+- Reusable pieces: `TypingText`, `Section`
+
+```tsx
+// Example: Section component pattern
+type SectionProps = {
+  label: string
+  items: { title: string; href: string }[]
+  expandable?: boolean
+}
+
+function Section({ label, items, expandable = true }: SectionProps) { ... }
+```
+
+**No Storybook.** Consider adding when component count grows.
+
+---
+
+## 3. Frameworks & Libraries
+
+| Layer | Technology |
+|-------|------------|
+| UI | React 19 |
+| Language | TypeScript 5.9 |
+| Build | Vite 7 |
+| Styling | Plain CSS (Tailwind installed but not configured) |
+| Fonts | Google Fonts (DM Sans, DM Mono) |
+
+**Vite config:** `vite.config.ts` — minimal, React plugin only.
+
+---
+
+## 4. Asset Management
+
+**Storage:**
+- `public/` — static assets served at root (e.g. `/cedric-photo.png`)
+- `src/assets/` — imported assets (e.g. `react.svg`)
+
+**Usage:**
+```tsx
+// Public assets — absolute path
+<img src="/cedric-photo.png" alt="" />
+
+// Imported assets
+import logo from './assets/react.svg'
+<img src={logo} alt="React" />
+```
+
+**No CDN.** No explicit optimization (Vite handles bundling).
+
+---
+
+## 5. Icon System
+
+**Current:** No icon library. Inline SVGs or img tags only.
+
+**Recommendation:** Add an icon component when needed; consider `lucide-react` or similar if adopting shadcn.
+
+---
+
+## 6. Styling Approach
+
+**Methodology:** Plain CSS with BEM-like class names.
+
+**Structure:**
+- `src/index.css` — global reset, body, base styles
+- `src/App.css` — component-specific styles (imported in `App.tsx`)
+
+**Class naming:**
+```
+.page, .page-inner
+.profile-layout, .profile-panel, .profile-header
+.profile-title, .profile-subtitle, .profile-links
+.section, .section-label, .section-list, .section-more
+```
+
+**Responsive:**
+```css
+@media (max-width: 960px) {
+  .profile-panel { margin-left: 0; max-width: none; }
+}
+```
+
+**No CSS Modules, no styled-components.** Single global stylesheet per concern.
+
+---
+
+## 7. Project Structure
+
+```
+cclee.design/
+├── index.html          # Entry HTML, font preconnect, Google Fonts
+├── src/
+│   ├── main.tsx         # React mount, imports index.css
+│   ├── index.css        # Global styles
+│   ├── App.tsx          # Main app + inline components
+│   ├── App.css          # App-specific styles
+│   └── assets/          # Imported assets
+├── public/              # Static assets (served at /)
+├── vite.config.ts
+├── tsconfig.json
+└── package.json
+```
+
+**Figma node tracking:** Root frames use `data-name` and `data-node-id` for MCP alignment:
+```tsx
+<main className="profile-layout" data-name="main" data-node-id="51:2">
+```
+
+---
+
+## Figma MCP Integration Checklist
+
+1. **get_design_context** — Use `nodeId` and `fileKey` from Figma URL to fetch code.
+2. **get_screenshot** — Call after `get_design_context` for visual reference.
+3. **Token mapping** — Map Figma variables to existing colors/typography above.
+4. **Layout** — Use `max-width: 1200px`, `margin: 0 auto` for page-inner; 8pt grid for gaps.
+5. **Fonts** — Ensure DM Sans / DM Mono are loaded in `index.html` before use.
+6. **Assets** — Place in `public/` and reference with `/filename.ext`.
