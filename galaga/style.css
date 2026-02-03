@@ -164,6 +164,11 @@ body {
     box-shadow: 0 0 20px var(--color-text-muted);
 }
 
+.start-screen button:focus-visible, .game-over-screen button:focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 4px;
+}
+
 .instructions {
     margin-top: 15px;
     font-size: 14px;

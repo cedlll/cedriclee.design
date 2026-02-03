@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { FeaturePage } from './pages/FeaturePage'
 import { ProjectPage } from './pages/ProjectPage'
 import { WritingPage } from './pages/WritingPage'
 import './App.css'
@@ -50,35 +51,30 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
-  { title: 'The intertextuality of Manila slums', href: '/writing/the-intertextuality-of-manila-slums' },
-  { title: 'Urban mapping in Southeast Asia', href: '#' },
-  { title: 'Design systems at scale', href: '#' },
-  { title: 'AI-assisted prototyping tools', href: '#' },
-  { title: 'Accessibility in civic tech', href: '#' },
-  { title: 'Participatory design workshops', href: '#' },
+  { title: '/designr is your design-engineering partner', href: 'https://cedlll.github.io/designr/' },
+  { title: 'Tsek Space is your go-to facilitation tool', href: 'https://www.tsek.space/' },
+  { title: 'Labor Complaint PH - for labor complaints', href: 'https://www.laborcomplaintph.app/' },
 ]
 
 const writings = [
-  { title: 'The intertextuality of Manila slums', href: '/writing/the-intertextuality-of-manila-slums' },
-  { title: 'Hello world', href: '/writing/hello-world' },
-  { title: 'On design and engineering', href: '#' },
-  { title: 'Building for uncertainty', href: '#' },
-  { title: 'Notes on AI and creativity', href: '#' },
-  { title: 'Reflections on v0', href: '#' },
+  { title: 'Tracing the roots of graffiti in the Philippines', href: '/writing/tracing-the-roots-of-graffiti-in-the-Philippines' },
+  { title: 'On designing for multicultural users', href: 'https://uxdesign.cc/on-designing-for-multicultural-users-1feb76668c8d' },
+  { title: 'Disability representation in K-drama Start-up', href: 'https://cedric-lee.medium.com/disability-representation-in-k-drama-start-up-3db1846b825d' },
 ]
 
 const features = [
-  { title: 'UX+ 2025', href: '#' },
-  { title: 'TEDxDigitalServicesCambridgeLtd', href: '#' },
+  { title: 'UX+ 2025', href: '/feature/ux-plus-2025' },
+  { title: 'TEDxDigitalServicesCambridgeLtd', href: '/feature/tedx-digital-services-cambridge-ltd' },
 ]
 
 type SectionProps = {
   label: string
   items: { title: string; href: string }[]
   expandable?: boolean
+  openInNewTab?: boolean
 }
 
-function Section({ label, items, expandable = true }: SectionProps) {
+function Section({ label, items, expandable = true, openInNewTab = false }: SectionProps) {
   const [expanded, setExpanded] = useState(false)
   const hasMore = expandable && items.length > VISIBLE_COUNT
   const visibleItems =
@@ -89,7 +85,11 @@ function Section({ label, items, expandable = true }: SectionProps) {
       <h2 className="section-label">{label}</h2>
       <div className="section-list">
         {visibleItems.map((item, i) => (
-          <a key={i} href={item.href}>
+          <a
+            key={i}
+            href={item.href}
+            {...(openInNewTab && { target: '_blank', rel: 'noopener noreferrer' })}
+          >
             {item.title}
           </a>
         ))}
@@ -114,10 +114,15 @@ function App() {
     typeof globalThis.window !== 'undefined' ? globalThis.window.location.pathname : '/'
   const isProjectPage = pathname.startsWith('/project/')
   const isWritingPage = pathname.startsWith('/writing/')
-  const isInnerPage = isProjectPage || isWritingPage
+  const isFeaturePage = pathname.startsWith('/feature/')
+  const isInnerPage = isProjectPage || isWritingPage || isFeaturePage
 
   if (isInnerPage) {
-    const InnerContent = isWritingPage ? WritingPage : ProjectPage
+    const InnerContent = isFeaturePage
+      ? FeaturePage
+      : isWritingPage
+        ? WritingPage
+        : ProjectPage
     return (
       <div className="page">
         <button
@@ -200,6 +205,7 @@ function App() {
                 label={`${projects.length} side projects`}
                 items={projects}
                 expandable={false}
+                openInNewTab
               />
               <Section
                 label={`${writings.length} writings`}
