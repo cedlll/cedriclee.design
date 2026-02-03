@@ -1,3 +1,14 @@
+/* cclee.design theme colors (from index.html / src/index.css dark theme) */
+:root {
+    --color-bg: #1a1a1a;
+    --color-text: #f0f0f0;
+    --color-text-primary: #ffffff;
+    --color-text-muted: #a4a4a4;
+    --color-focus: #f0f0f0;
+    --color-shadow: rgba(0, 0, 0, 0.4);
+    --color-hover-bg: rgba(255, 255, 255, 0.08);
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -16,37 +27,38 @@
     height: 44px;
     font-size: 32px;
     line-height: 1;
-    color: #00ff00;
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #00ff00;
+    font-family: 'Silkscreen', sans-serif;
+    color: var(--color-focus);
+    background: var(--color-bg);
+    border: 2px solid var(--color-focus);
     border-radius: 8px;
     text-decoration: none;
-    box-shadow: 0 0 20px rgba(0, 255, 0, 0.4);
+    box-shadow: 0 0 20px var(--color-shadow);
     transition: all 0.2s ease;
 }
 
 .close-button:hover,
 .close-button:focus {
-    background: #00ff00;
-    color: #000;
-    box-shadow: 0 0 30px #00ff00;
+    background: var(--color-focus);
+    color: var(--color-bg);
+    box-shadow: 0 0 30px var(--color-text-muted);
     transform: scale(1.05);
 }
 
 .close-button:focus {
-    outline: 2px solid #00ff00;
+    outline: 2px solid var(--color-focus);
     outline-offset: 4px;
 }
 
 body {
-    background: #000;
-    color: #fff;
+    background: var(--color-bg);
+    color: var(--color-text);
     font-family: 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: radial-gradient(circle, #001122 0%, #000000 100%);
+    background: radial-gradient(circle, #252525 0%, var(--color-bg) 100%);
 }
 
 .game-container {
@@ -64,31 +76,31 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #ff0000;
+    color: var(--color-text);
     font-family: 'Courier New', monospace;
     font-weight: bold;
     font-size: 16px;
 }
 
-.player-score, .high-score {
+.player-score, .high-score, .lives {
     text-align: center;
 }
 
 .score-label {
-    color: #ff0000;
+    color: var(--color-text-muted);
     margin-bottom: 5px;
     letter-spacing: 1px;
 }
 
 .score-value {
-    color: #ffffff;
+    color: var(--color-text-primary);
     font-size: 18px;
     letter-spacing: 2px;
 }
 
 #gameCanvas {
-    border: 2px solid #333333;
-    background: #000000;
+    border: 2px solid var(--color-text-muted);
+    background: var(--color-bg);
     display: block;
     margin: 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
@@ -105,22 +117,24 @@ body {
 }
 
 .start-screen, .game-over-screen {
-    position: absolute;
-    top: -300px;
+    position: fixed;
     left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #00ff00;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 50;
+    background: var(--color-bg);
+    border: 2px solid var(--color-focus);
     padding: 40px;
     border-radius: 10px;
     text-align: center;
-    box-shadow: 0 0 30px rgba(0, 255, 0, 0.5);
+    box-shadow: 0 0 30px var(--color-shadow);
 }
 
 .start-screen h1, .game-over-screen h1 {
+    font-family: 'Silkscreen', sans-serif;
     font-size: 48px;
-    color: #ffff00;
-    text-shadow: 0 0 20px #ffff00;
+    color: var(--color-text-primary);
+    text-shadow: 0 0 20px var(--color-text-muted);
     margin-bottom: 20px;
     letter-spacing: 4px;
 }
@@ -128,13 +142,13 @@ body {
 .start-screen p, .game-over-screen p {
     font-size: 16px;
     margin-bottom: 10px;
-    color: #00ff00;
+    color: var(--color-text);
 }
 
 .start-screen button, .game-over-screen button {
-    background: #001122;
-    color: #00ff00;
-    border: 2px solid #00ff00;
+    background: var(--color-bg);
+    color: var(--color-focus);
+    border: 2px solid var(--color-focus);
     padding: 15px 30px;
     font-size: 18px;
     font-family: 'Courier New', monospace;
@@ -145,37 +159,37 @@ body {
 }
 
 .start-screen button:hover, .game-over-screen button:hover {
-    background: #00ff00;
-    color: #001122;
-    box-shadow: 0 0 20px #00ff00;
+    background: var(--color-hover-bg);
+    color: var(--color-text-primary);
+    box-shadow: 0 0 20px var(--color-text-muted);
 }
 
 .instructions {
     margin-top: 15px;
     font-size: 14px;
-    color: #888;
+    color: var(--color-text-muted);
     text-align: center;
 }
 
-/* Sprite styles for game entities */
+/* Sprite styles for game entities (theme-aligned) */
 .player-ship {
-    fill: #00ff00;
-    filter: drop-shadow(0 0 5px #00ff00);
+    fill: var(--color-focus);
+    filter: drop-shadow(0 0 5px var(--color-text-muted));
 }
 
 .enemy-ship {
-    fill: #ff0000;
-    filter: drop-shadow(0 0 5px #ff0000);
+    fill: #e74c3c;
+    filter: drop-shadow(0 0 5px rgba(231, 76, 60, 0.6));
 }
 
 .bullet {
-    fill: #ffff00;
-    filter: drop-shadow(0 0 3px #ffff00);
+    fill: var(--color-text-primary);
+    filter: drop-shadow(0 0 3px var(--color-text-muted));
 }
 
 .enemy-bullet {
-    fill: #ff4444;
-    filter: drop-shadow(0 0 3px #ff4444);
+    fill: #c0392b;
+    filter: drop-shadow(0 0 3px rgba(192, 57, 43, 0.6));
 }
 
 /* Responsive design */

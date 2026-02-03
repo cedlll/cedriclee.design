@@ -1,3 +1,18 @@
+// cclee.design theme (from src/index.css dark theme)
+const THEME = {
+    bg: '#1a1a1a',
+    text: '#f0f0f0',
+    textPrimary: '#ffffff',
+    textMuted: '#a4a4a4',
+    focus: '#f0f0f0',
+    overlay: 'rgba(0, 0, 0, 0.7)',
+    enemyRed: '#e74c3c',
+    enemyRedDark: '#c0392b',
+    enemyBlue: '#3498db',
+    enemyPurple: '#9b59b6',
+    starColors: ['#ffffff', '#f0f0f0', '#e8e8e8', '#a4a4a4', '#c0c0c0']
+};
+
 class GalagaGame {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
@@ -8,7 +23,7 @@ class GalagaGame {
         // Game state
         this.gameState = 'menu'; // menu, playing, paused, gameOver
         this.score = 0;
-        this.highScore = parseInt(localStorage.getItem('galagaHighScore')) || 20000;
+        this.highScore = parseInt(localStorage.getItem('galagaHighScore'), 10) || 0;
         this.lives = 3;
         this.level = 1;
         this.frameCount = 0;
@@ -25,7 +40,7 @@ class GalagaGame {
             width: 22, // 11 pixels * 2 scale
             height: 24, // 12 pixels * 2 scale
             speed: 5,
-            color: '#00ff00'
+            color: THEME.focus
         };
         
         // Game entities
@@ -73,26 +88,26 @@ class GalagaGame {
         }
     }
     
-    // Color mapping for sprite pixels
+    // Color mapping for sprite pixels (theme-aligned)
     getPixelColor(colorCode) {
         const colors = {
-            1: '#FFFFFF', // White
-            2: '#FF0000', // Red
-            3: '#FFFF00', // Yellow
-            4: '#00FF00', // Green
-            5: '#0000FF', // Blue
-            6: '#FF00FF', // Magenta
-            7: '#00FFFF', // Cyan
-            8: '#FFA500', // Orange
-            9: '#800080', // Purple
-            10: '#FFC0CB', // Pink
-            11: '#8B4513', // Brown
-            12: '#808080', // Gray
-            13: '#C0C0C0', // Light Gray
-            14: '#000080', // Navy
-            15: '#008000'  // Dark Green
+            1: THEME.textPrimary,
+            2: THEME.enemyRed,
+            3: THEME.textPrimary,
+            4: THEME.focus,
+            5: THEME.enemyBlue,
+            6: THEME.enemyPurple,
+            7: THEME.textMuted,
+            8: THEME.textMuted,
+            9: THEME.enemyPurple,
+            10: THEME.textMuted,
+            11: THEME.textMuted,
+            12: THEME.textMuted,
+            13: THEME.text,
+            14: THEME.textMuted,
+            15: THEME.focus
         };
-        return colors[colorCode] || '#FFFFFF';
+        return colors[colorCode] || THEME.textPrimary;
     }
     
     // Sprite definitions (based on classic Galaga pixel art)
@@ -241,6 +256,14 @@ class GalagaGame {
             this.resetGame();
             this.startGame();
         });
+
+        // Start game on any key when on start screen
+        document.addEventListener('keydown', (e) => {
+            if (this.gameState === 'menu') {
+                e.preventDefault();
+                this.startGame();
+            }
+        });
     }
     
     startGame() {
@@ -388,7 +411,7 @@ class GalagaGame {
             width: 2, // 1 pixel * 2 scale
             height: 8, // 4 pixels * 2 scale
             speed: 8,
-            color: '#ffff00'
+            color: THEME.textPrimary
         });
         this.playShootSound();
     }
@@ -485,7 +508,7 @@ class GalagaGame {
             width: 2, // 1 pixel * 2 scale
             height: 6, // 3 pixels * 2 scale
             speed: 3,
-            color: '#ff4444'
+            color: THEME.enemyRedDark
         });
         this.playEnemyShootSound();
     }
@@ -524,7 +547,7 @@ class GalagaGame {
                 
                 if (this.isColliding(bullet, enemy)) {
                     // Create explosion particles (color by enemy type)
-                    const explosionColor = enemy.type === 'flagship' ? '#9b59b6' : enemy.type === 'galaga' ? '#e74c3c' : '#3498db';
+                    const explosionColor = enemy.type === 'flagship' ? THEME.enemyPurple : enemy.type === 'galaga' ? THEME.enemyRed : THEME.enemyBlue;
                     this.createExplosion(enemy.x + enemy.width / 2, enemy.y + enemy.height / 2, explosionColor);
                     
                     enemy.alive = false;
@@ -560,7 +583,7 @@ class GalagaGame {
                 const bullet = this.enemyBullets[i];
                 
                 if (this.isColliding(bullet, this.player)) {
-                    this.createExplosion(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, '#00ff00');
+                    this.createExplosion(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, THEME.focus);
                     this.enemyBullets.splice(i, 1);
                     this.lives--;
                     this.playPlayerHitSound();
@@ -575,7 +598,7 @@ class GalagaGame {
                 if (!enemy.alive) continue;
                 
                 if (this.isColliding(enemy, this.player)) {
-                    this.createExplosion(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, '#00ff00');
+                    this.createExplosion(this.player.x + this.player.width / 2, this.player.y + this.player.height / 2, THEME.focus);
                     this.lives--;
                     this.playPlayerHitSound();
                     this.player.x = this.canvas.width / 2 - 11;
@@ -626,12 +649,13 @@ class GalagaGame {
     updateUI() {
         document.getElementById('score').textContent = this.score.toString().padStart(5, '0');
         document.getElementById('highScore').textContent = this.highScore.toString().padStart(5, '0');
+        document.getElementById('lives').textContent = this.lives;
         document.getElementById('finalScore').textContent = this.score.toString().padStart(5, '0');
     }
     
     render() {
         // Clear canvas
-        this.ctx.fillStyle = '#000000';
+        this.ctx.fillStyle = THEME.bg;
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
         // Draw stars background
@@ -651,19 +675,19 @@ class GalagaGame {
             this.drawParticles();
             
             // Draw pause overlay
-            this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            this.ctx.fillStyle = THEME.overlay;
             this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-            this.ctx.fillStyle = '#00ff00';
-            this.ctx.font = '48px Courier New';
+            this.ctx.fillStyle = THEME.focus;
+            this.ctx.font = '48px Silkscreen, Courier New, monospace';
             this.ctx.textAlign = 'center';
             this.ctx.fillText('PAUSED', this.canvas.width / 2, this.canvas.height / 2);
-            this.ctx.font = '16px Courier New';
+            this.ctx.font = '16px Courier New, monospace';
             this.ctx.fillText('Press ESC to resume', this.canvas.width / 2, this.canvas.height / 2 + 40);
         }
     }
     
     drawStars() {
-        const starColors = ['#ffffff', '#ffffaa', '#aaffff', '#ffaaff', '#aaffaa'];
+        const starColors = THEME.starColors;
         const seed = 12345;
         const seededRandom = (i) => ((Math.sin(seed + i * 12.9898) * 43758.5453) % 1 + 1) % 1;
         

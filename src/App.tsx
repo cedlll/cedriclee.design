@@ -183,13 +183,13 @@ function App() {
               </div>
 
               <nav className="profile-links" aria-label="Profile links">
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://www.linkedin.com/in/cedmanila/" target="_blank" rel="noopener noreferrer">
                   LinkedIn
                 </a>
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/cedlll" target="_blank" rel="noopener noreferrer">
                   GitHub
                 </a>
-                <a href="https://v0.dev" target="_blank" rel="noopener noreferrer">
+                <a href="https://v0.app/@cedricl" target="_blank" rel="noopener noreferrer">
                   v0
                 </a>
               </nav>
@@ -214,8 +214,6 @@ function App() {
             <a
               href="/galaga/"
               className="galaga-button"
-              target="_blank"
-              rel="noopener noreferrer"
               aria-label="Play Galaga"
             >
               <svg
