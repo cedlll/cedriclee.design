@@ -101,15 +101,17 @@
   width: 200px;
   height: 200px;
   opacity: 0;
+  visibility: hidden;
   pointer-events: none;
   transform: translate(-50%, -50%);
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
   z-index: 10;
   box-shadow: 0 8px 32px var(--color-shadow);
 }
 
 .profile-name-with-preview:hover .profile-photo-preview {
   opacity: 1;
+  visibility: visible;
 }
 
 .profile-photo-preview img {

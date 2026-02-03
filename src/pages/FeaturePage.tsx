@@ -11,7 +11,7 @@ const FEATURES: Record<
     blocks: [
       {
         type: 'point',
-        text: 'In 2025, I spoke at the largest UX conference in Asia about learnings from my experience in co-creating with AI, along with my co-speakers are from Google, Canva, and other leading companies in the field.',
+        text: 'I spoke at the largest UX conference in Asia about my experience in co-creating with AI, along with my co-speakers are from Google, Canva, and other leading companies in the field.',
       },
       {
         type: 'carousel',

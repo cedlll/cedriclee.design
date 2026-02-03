@@ -5,6 +5,15 @@ const WRITINGS: Record<
   string,
   { title: string; date: string; blocks: InnerPageBlock[] }
 > = {
+  'field-notes-on-building-with-AI': {
+    title: 'Field notes on building with AI',
+    blocks: [
+      {
+        type: 'point',
+        text: 'WIP',
+      },
+    ],
+  },
   'the-intertextuality-of-manila-slums': {
     title: 'The intertextuality of Manila slums',
     date: 'February 2, 2025',

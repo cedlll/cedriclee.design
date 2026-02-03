@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react'
-import { FeaturePage } from './pages/FeaturePage'
-import { ProjectPage } from './pages/ProjectPage'
-import { WritingPage } from './pages/WritingPage'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import './App.css'
+
+const FeaturePage = lazy(() =>
+  import('./pages/FeaturePage').then((m) => ({ default: m.FeaturePage }))
+)
+const ProjectPage = lazy(() =>
+  import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage }))
+)
+const WritingPage = lazy(() =>
+  import('./pages/WritingPage').then((m) => ({ default: m.WritingPage }))
+)
 
 const THEME_KEY = 'cclee-theme'
 const VISIBLE_COUNT = 3
@@ -57,7 +64,8 @@ const projects = [
 ]
 
 const writings = [
-  { title: 'Tracing the roots of graffiti in the Philippines', href: '/writing/tracing-the-roots-of-graffiti-in-the-Philippines' },
+  { title: 'Field notes on building with AI', href: '/writing/field-notes-on-building-with-AI' },
+  { title: 'Tracing the roots of graffiti in the Philippines', href: 'https://cedric-lee.medium.com/tracing-the-roots-of-graffiti-in-the-philippines-a2417dd0b1a6' },
   { title: 'On designing for multicultural users', href: 'https://uxdesign.cc/on-designing-for-multicultural-users-1feb76668c8d' },
   { title: 'Disability representation in K-drama Start-up', href: 'https://cedric-lee.medium.com/disability-representation-in-k-drama-start-up-3db1846b825d' },
 ]
@@ -71,10 +79,13 @@ type SectionProps = {
   label: string
   items: { title: string; href: string }[]
   expandable?: boolean
-  openInNewTab?: boolean
 }
 
-function Section({ label, items, expandable = true, openInNewTab = false }: SectionProps) {
+function isExternalHref(href: string): boolean {
+  return href.startsWith('http://') || href.startsWith('https://')
+}
+
+function Section({ label, items, expandable = true }: SectionProps) {
   const [expanded, setExpanded] = useState(false)
   const hasMore = expandable && items.length > VISIBLE_COUNT
   const visibleItems =
@@ -84,11 +95,14 @@ function Section({ label, items, expandable = true, openInNewTab = false }: Sect
     <div className="section">
       <h2 className="section-label">{label}</h2>
       <div className="section-list">
-        {visibleItems.map((item, i) => (
+        {visibleItems.map((item) => (
           <a
-            key={i}
+            key={item.href}
             href={item.href}
-            {...(openInNewTab && { target: '_blank', rel: 'noopener noreferrer' })}
+            {...(isExternalHref(item.href) && {
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            })}
           >
             {item.title}
           </a>
@@ -139,7 +153,9 @@ function App() {
           )}
         </button>
         <div className="page-inner">
-          <InnerContent />
+          <Suspense fallback={null}>
+            <InnerContent />
+          </Suspense>
         </div>
       </div>
     )
@@ -183,7 +199,7 @@ function App() {
                   </span>
                 </div>
                 <p className="profile-subtitle">
-                  A product designer who&apos;s into engineering and AI.
+                  Building things worth having.
                 </p>
               </div>
 
@@ -205,7 +221,6 @@ function App() {
                 label={`${projects.length} side projects`}
                 items={projects}
                 expandable={false}
-                openInNewTab
               />
               <Section
                 label={`${writings.length} writings`}
