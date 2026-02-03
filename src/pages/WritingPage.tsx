@@ -7,6 +7,7 @@ const WRITINGS: Record<
 > = {
   'field-notes-on-building-with-AI': {
     title: 'Field notes on building with AI',
+    date: 'TBD',
     blocks: [
       {
         type: 'point',
