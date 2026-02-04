@@ -52,6 +52,8 @@ class GalagaGame {
         // Input handling
         this.keys = {};
         this.setupEventListeners();
+        this.setupTouchControls();
+        this.setupResponsiveCanvas();
         
         // Initialize enemies
         this.createEnemyFormation();
@@ -264,6 +266,83 @@ class GalagaGame {
                 this.startGame();
             }
         });
+    }
+
+    setupTouchControls() {
+        const touchControls = document.getElementById('touchControls');
+        const touchLeft = document.getElementById('touchLeft');
+        const touchRight = document.getElementById('touchRight');
+        const touchShoot = document.getElementById('touchShoot');
+        const touchPause = document.getElementById('touchPause');
+
+        if (!touchControls || !touchLeft || !touchRight || !touchShoot) return;
+
+        const isTouchDevice = () => 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+        if (isTouchDevice()) {
+            touchControls.classList.add('active');
+            touchControls.setAttribute('aria-hidden', 'false');
+        }
+
+        const handleLeftDown = (e) => {
+            e.preventDefault();
+            this.keys['ArrowLeft'] = true;
+        };
+        const handleLeftUp = (e) => {
+            e.preventDefault();
+            this.keys['ArrowLeft'] = false;
+        };
+        const handleRightDown = (e) => {
+            e.preventDefault();
+            this.keys['ArrowRight'] = true;
+        };
+        const handleRightUp = (e) => {
+            e.preventDefault();
+            this.keys['ArrowRight'] = false;
+        };
+        const handleShoot = (e) => {
+            e.preventDefault();
+            if (this.gameState === 'playing') {
+                this.shootBullet();
+            }
+        };
+
+        touchLeft.addEventListener('touchstart', handleLeftDown, { passive: false });
+        touchLeft.addEventListener('touchend', handleLeftUp, { passive: false });
+        touchLeft.addEventListener('mousedown', handleLeftDown);
+        touchLeft.addEventListener('mouseup', handleLeftUp);
+        touchLeft.addEventListener('mouseleave', handleLeftUp);
+
+        touchRight.addEventListener('touchstart', handleRightDown, { passive: false });
+        touchRight.addEventListener('touchend', handleRightUp, { passive: false });
+        touchRight.addEventListener('mousedown', handleRightDown);
+        touchRight.addEventListener('mouseup', handleRightUp);
+        touchRight.addEventListener('mouseleave', handleRightUp);
+
+        touchShoot.addEventListener('touchstart', handleShoot, { passive: false });
+        touchShoot.addEventListener('click', handleShoot);
+
+        if (touchPause) {
+            const handlePause = (e) => {
+                e.preventDefault();
+                this.togglePause();
+            };
+            touchPause.addEventListener('touchstart', handlePause, { passive: false });
+            touchPause.addEventListener('click', handlePause);
+        }
+    }
+
+    setupResponsiveCanvas() {
+        const resize = () => {
+            const maxWidth = Math.min(800, window.innerWidth - 40);
+            const maxHeight = Math.min(600, window.innerHeight - 180);
+            const scale = Math.min(maxWidth / 800, maxHeight / 600, 1);
+
+            this.canvas.style.width = (800 * scale) + 'px';
+            this.canvas.style.height = (600 * scale) + 'px';
+        };
+
+        window.addEventListener('resize', resize);
+        resize();
     }
     
     startGame() {

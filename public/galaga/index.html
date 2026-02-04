@@ -30,13 +30,16 @@
             </div>
         </div>
         
-        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="canvas-wrapper">
+            <canvas id="gameCanvas" width="800" height="600"></canvas>
+        </div>
         
         <div class="game-controls">
             <div class="start-screen" id="startScreen">
                 <h1>GALAGA</h1>
-                <p>Use ARROW KEYS to move</p>
-                <p>Press SPACE to shoot</p>
+                <p class="desktop-instructions">Use ARROW KEYS to move</p>
+                <p class="desktop-instructions">Press SPACE to shoot</p>
+                <p class="mobile-instructions">Use the buttons below to move and shoot</p>
                 <button id="startButton">START GAME</button>
             </div>
             
@@ -48,7 +51,15 @@
         </div>
         
         <div class="instructions">
-            <p>← → Move Left/Right | SPACE Shoot | ESC Pause</p>
+            <p class="desktop-instructions">← → Move Left/Right | SPACE Shoot | ESC Pause</p>
+            <p class="mobile-instructions">Use buttons below to move and shoot</p>
+        </div>
+        
+        <div class="touch-controls" id="touchControls" aria-hidden="true">
+            <button type="button" class="touch-btn touch-left" id="touchLeft" aria-label="Move left">←</button>
+            <button type="button" class="touch-btn touch-shoot" id="touchShoot" aria-label="Shoot">●</button>
+            <button type="button" class="touch-btn touch-right" id="touchRight" aria-label="Move right">→</button>
+            <button type="button" class="touch-btn touch-pause" id="touchPause" aria-label="Pause">⏸</button>
         </div>
     </div>
     

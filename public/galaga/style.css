@@ -50,6 +50,10 @@
     outline-offset: 4px;
 }
 
+html, body {
+    touch-action: manipulation; /* Prevent double-tap zoom on mobile */
+}
+
 body {
     background: var(--color-bg);
     color: var(--color-text);
@@ -96,6 +100,10 @@ body {
     color: var(--color-text-primary);
     font-size: 18px;
     letter-spacing: 2px;
+}
+
+.canvas-wrapper {
+    margin: 0 auto;
 }
 
 #gameCanvas {
@@ -171,6 +179,70 @@ body {
     text-align: center;
 }
 
+/* Touch controls - hidden on desktop, shown on touch devices */
+.touch-controls {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(transparent, var(--color-bg) 30%);
+    z-index: 60;
+    pointer-events: none;
+}
+
+.touch-controls.active {
+    display: flex;
+    pointer-events: auto;
+}
+
+.touch-btn {
+    min-width: 64px;
+    min-height: 64px;
+    font-size: 24px;
+    font-family: 'Silkscreen', 'Courier New', monospace;
+    color: var(--color-focus);
+    background: rgba(26, 26, 26, 0.9);
+    border: 2px solid var(--color-focus);
+    border-radius: 12px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    transition: background 0.15s ease;
+}
+
+.touch-btn:active {
+    background: var(--color-hover-bg);
+}
+
+.touch-shoot {
+    min-width: 80px;
+    font-size: 28px;
+}
+
+.touch-pause {
+    position: fixed;
+    top: 70px;
+    left: 16px;
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 20px;
+}
+
+/* Show/hide instructions by device */
+.desktop-instructions {
+    display: block;
+}
+
+.mobile-instructions {
+    display: none;
+}
+
 /* Sprite styles for game entities (theme-aligned) */
 .player-ship {
     fill: var(--color-focus);
@@ -198,25 +270,95 @@ body {
         padding: 10px;
     }
     
-    #gameCanvas {
-        width: 100%;
-        max-width: 400px;
-        height: auto;
-    }
-    
     .game-header {
         width: 100%;
-        max-width: 400px;
+        max-width: 100%;
         font-size: 14px;
+        padding: 0 10px;
+    }
+    
+    .score-section {
+        font-size: 12px;
+    }
+    
+    .score-value {
+        font-size: 14px;
+    }
+    
+    .canvas-wrapper {
+        width: 100%;
+        max-width: 100vw;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+    
+    #gameCanvas {
+        width: 100% !important;
+        max-width: 100%;
+        height: auto !important;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    .game-controls {
+        width: 100%;
     }
     
     .start-screen, .game-over-screen {
         width: 90%;
         max-width: 350px;
-        padding: 20px;
+        padding: 24px 20px;
     }
     
     .start-screen h1, .game-over-screen h1 {
         font-size: 32px;
     }
+    
+    .start-screen p, .game-over-screen p {
+        font-size: 14px;
+    }
+    
+    .instructions {
+        margin-bottom: 80px; /* Space for touch controls */
+    }
+}
+
+/* Mobile: show touch controls, hide keyboard instructions */
+@media (max-width: 850px) {
+    .desktop-instructions {
+        display: none;
+    }
+    
+    .mobile-instructions {
+        display: block;
+    }
+}
+
+/* Touch device detection - show touch controls */
+@media (hover: none) and (pointer: coarse) {
+    .touch-controls {
+        display: flex;
+        pointer-events: auto;
+    }
+    
+    .touch-controls.active {
+        display: flex;
+    }
+    
+    .desktop-instructions {
+        display: none;
+    }
+    
+    .mobile-instructions {
+        display: block;
+    }
+    
+    .instructions {
+        margin-bottom: 90px;
+    }
+}
+
+/* Prevent zoom on double-tap (game area) */
+.game-container {
+    touch-action: manipulation;
 }
