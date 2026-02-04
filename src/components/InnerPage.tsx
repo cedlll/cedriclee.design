@@ -356,6 +356,7 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
         <div className="inner-page-block inner-page-embed">
           <iframe
             src={block.src}
+            loading="lazy"
             width={block.width ?? 560}
             height={block.height ?? 314}
             style={{ border: 'none', overflow: 'hidden' }}

@@ -32,21 +32,22 @@
         
         <div class="canvas-wrapper">
             <canvas id="gameCanvas" width="800" height="600"></canvas>
-        </div>
-        
-        <div class="game-controls">
-            <div class="start-screen" id="startScreen">
-                <h1>GALAGA</h1>
-                <p class="desktop-instructions">Use ARROW KEYS to move</p>
-                <p class="desktop-instructions">Press SPACE to shoot</p>
-                <p class="mobile-instructions">Use the buttons below to move and shoot</p>
-                <button id="startButton">START GAME</button>
-            </div>
             
-            <div class="game-over-screen" id="gameOverScreen" style="display: none;">
-                <h1>GAME OVER</h1>
-                <p>Final Score: <span id="finalScore">0</span></p>
-                <button id="restartButton">PLAY AGAIN</button>
+            <!-- Overlay screens positioned over the canvas so they stay centered in the playfield on all devices -->
+            <div class="game-controls">
+                <div class="start-screen" id="startScreen">
+                    <h1>GALAGA</h1>
+                    <p class="desktop-instructions">Use ARROW KEYS to move</p>
+                    <p class="desktop-instructions">Press SPACE to shoot</p>
+                    <p class="mobile-instructions">Use the buttons below to move and shoot</p>
+                    <button id="startButton">START GAME</button>
+                </div>
+                
+                <div class="game-over-screen" id="gameOverScreen" style="display: none;">
+                    <h1>GAME OVER</h1>
+                    <p>Final Score: <span id="finalScore">0</span></p>
+                    <button id="restartButton">PLAY AGAIN</button>
+                </div>
             </div>
         </div>
         

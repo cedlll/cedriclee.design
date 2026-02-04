@@ -1,5 +1,4 @@
 import { lazy, Suspense, useEffect, useState, type SVGProps } from 'react'
-import CustomCursor from './components/CustomCursor'
 import './App.css'
 
 const FeaturePage = lazy(() =>
@@ -8,6 +7,7 @@ const FeaturePage = lazy(() =>
 const WritingPage = lazy(() =>
   import('./pages/WritingPage').then((m) => ({ default: m.WritingPage }))
 )
+const CustomCursor = lazy(() => import('./components/CustomCursor'))
 
 const THEME_KEY = 'cclee-theme'
 const VISIBLE_COUNT = 3
@@ -148,14 +148,16 @@ function App() {
   const isInnerPage = isWritingPage || isFeaturePage
 
   const cursor = (
-    <CustomCursor
-      dotSize={6}
-      dotColor="#ffffff"
-      animationDuration={200}
-      blendMode="difference"
-      opacity={1}
-      hideOnMobile
-    />
+    <Suspense fallback={null}>
+      <CustomCursor
+        dotSize={6}
+        dotColor="#ffffff"
+        animationDuration={200}
+        blendMode="difference"
+        opacity={1}
+        hideOnMobile
+      />
+    </Suspense>
   )
 
   if (isInnerPage) {
