@@ -48,7 +48,7 @@ export function InnerPage({
   blocks,
 }: InnerPageProps) {
   return (
-    <article className="inner-page" data-name="inner-page" data-node-id="60:159">
+    <article className="inner-page">
       <a href={backHref} className="inner-page-back">
         ← {backLabel}
       </a>

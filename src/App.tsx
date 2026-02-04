@@ -46,10 +46,9 @@ function useTheme() {
     localStorage.setItem(THEME_KEY, theme)
   }, [theme])
 
-  const setTheme = (next: 'light' | 'dark') => setThemeState(next)
   const toggle = () => setThemeState((t) => (t === 'dark' ? 'light' : 'dark'))
 
-  return { theme, setTheme, toggle }
+  return { theme, toggle }
 }
 
 const TYPING_INTERVAL_MS = 100
@@ -79,9 +78,9 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
-  { title: '/designr is your design-engineering partner', href: 'https://cedlll.github.io/designr/' },
+  { title: '/designr is your UI engineer in IDE', href: 'https://cedlll.github.io/designr/' },
   { title: 'Tsek Space is your go-to facilitation tool', href: 'https://www.tsek.space/' },
-  { title: 'Labor Complaint PH - for labor complaints', href: 'https://www.laborcomplaintph.app/' },
+  { title: 'Labor Complaint Philippines - easily file labor complaints', href: 'https://www.laborcomplaintph.app/' },
 ]
 
 const writings = [
@@ -197,7 +196,7 @@ function App() {
         )}
       </button>
       <div className="page-inner">
-        <main className="profile-layout" data-name="main" data-node-id="51:2">
+        <main className="profile-layout">
           <section className="profile-panel">
             <header className="profile-header">
               <div className="profile-header-text">
