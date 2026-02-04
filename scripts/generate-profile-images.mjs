@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
- * Generates 200px and WebP variants of the profile photo for responsive image delivery.
- * Run once after npm install: npm run generate-images
+ * Generates WebP variant of the profile photo for responsive/optimized delivery.
+ * Run: npm run generate-images
+ *
+ * Output: cedric-photo-400.webp (use with <picture> for WebP support)
  */
 import sharp from 'sharp'
 import { existsSync } from 'fs'
@@ -19,20 +21,10 @@ if (!existsSync(srcPath)) {
 
 async function generate() {
   await sharp(srcPath)
-    .resize(200, 200)
-    .png({ compressionLevel: 6 })
-    .toFile(join(publicDir, 'cedric-photo-200.png'))
-
-  await sharp(srcPath)
-    .resize(200, 200)
-    .webp({ quality: 82 })
-    .toFile(join(publicDir, 'cedric-photo-200.webp'))
-
-  await sharp(srcPath)
     .webp({ quality: 82 })
     .toFile(join(publicDir, 'cedric-photo-400.webp'))
 
-  console.log('Generated: cedric-photo-200.png, cedric-photo-200.webp, cedric-photo-400.webp')
+  console.log('Generated: cedric-photo-400.webp')
 }
 
 generate().catch((err) => {

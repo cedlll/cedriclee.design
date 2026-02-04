@@ -1,11 +1,9 @@
 import { lazy, Suspense, useEffect, useState, type SVGProps } from 'react'
+import CustomCursor from './components/CustomCursor'
 import './App.css'
 
 const FeaturePage = lazy(() =>
   import('./pages/FeaturePage').then((m) => ({ default: m.FeaturePage }))
-)
-const ProjectPage = lazy(() =>
-  import('./pages/ProjectPage').then((m) => ({ default: m.ProjectPage }))
 )
 const WritingPage = lazy(() =>
   import('./pages/WritingPage').then((m) => ({ default: m.WritingPage }))
@@ -145,19 +143,26 @@ function App() {
   const { theme, toggle } = useTheme()
   const pathname =
     typeof globalThis.window !== 'undefined' ? globalThis.window.location.pathname : '/'
-  const isProjectPage = pathname.startsWith('/project/')
   const isWritingPage = pathname.startsWith('/writing/')
   const isFeaturePage = pathname.startsWith('/feature/')
-  const isInnerPage = isProjectPage || isWritingPage || isFeaturePage
+  const isInnerPage = isWritingPage || isFeaturePage
+
+  const cursor = (
+    <CustomCursor
+      dotSize={6}
+      dotColor="#ffffff"
+      animationDuration={200}
+      blendMode="difference"
+      opacity={1}
+      hideOnMobile
+    />
+  )
 
   if (isInnerPage) {
-    const InnerContent = isFeaturePage
-      ? FeaturePage
-      : isWritingPage
-        ? WritingPage
-        : ProjectPage
+    const InnerContent = isFeaturePage ? FeaturePage : WritingPage
     return (
       <div className="page">
+        {cursor}
         <button
           type="button"
           className="theme-toggle"
@@ -182,6 +187,7 @@ function App() {
 
   return (
     <div className="page">
+      {cursor}
       <button
         type="button"
         className="theme-toggle"

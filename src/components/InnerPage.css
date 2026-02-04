@@ -158,6 +158,9 @@
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: var(--color-bg-secondary, rgba(0, 0, 0, 0.05));
+  /* Allow horizontal dragging to control the slider on touch devices
+     without fighting with page scroll. */
+  touch-action: pan-y;
 }
 
 .inner-page-compare-before,
@@ -304,11 +307,39 @@
   width: 100%;
 }
 
+.inner-page-carousel-progress {
+  position: absolute;
+  inset: 8px 12px auto;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+
+.inner-page-carousel-progress-segment {
+  flex: 1;
+  height: 3px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.inner-page-carousel-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.85);
+  transition: width 160ms linear;
+}
+
 .inner-page-carousel-slide {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin: 0;
+  animation: inner-page-carousel-reel-in 900ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .inner-page-carousel-slide img {
@@ -355,36 +386,16 @@
   right: 8px;
 }
 
-.inner-page-carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 12px;
-}
+@keyframes inner-page-carousel-reel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.995);
+  }
 
-.inner-page-carousel-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  border: none;
-  background: var(--color-text-muted);
-  opacity: 0.4;
-  cursor: pointer;
-  padding: 0;
-}
-
-.inner-page-carousel-dot:hover {
-  opacity: 0.7;
-}
-
-.inner-page-carousel-dot:focus-visible {
-  outline: 2px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
-.inner-page-carousel-dot.is-active {
-  opacity: 1;
-  background: var(--color-text-primary);
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* Mobile: inner pages */
@@ -439,11 +450,6 @@
 
   .inner-page-carousel-next {
     right: 6px;
-  }
-
-  .inner-page-carousel-dots {
-    margin-top: 10px;
-    gap: 6px;
   }
 
   .inner-page-compare-knob {

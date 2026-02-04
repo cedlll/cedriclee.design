@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './InnerPage.css'
 
 export type InnerPageCarouselSlide = { src: string; alt: string; caption?: string }
@@ -83,9 +83,41 @@ function InnerPageImageCompare({
   afterAlt?: string
 }) {
   const [position, setPosition] = useState(50)
+
+  const updatePositionFromClientX = (clientX: number, rect: DOMRect) => {
+    const relativeX = clientX - rect.left
+    const ratio = relativeX / rect.width
+    const next = Math.min(100, Math.max(0, ratio * 100))
+    setPosition(next)
+  }
+
+  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    const target = event.currentTarget
+    const rect = target.getBoundingClientRect()
+    updatePositionFromClientX(event.clientX, rect)
+    target.setPointerCapture(event.pointerId)
+  }
+
+  const handlePointerMove: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return
+    const rect = event.currentTarget.getBoundingClientRect()
+    updatePositionFromClientX(event.clientX, rect)
+  }
+
+  const handlePointerUp: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return
+    event.currentTarget.releasePointerCapture(event.pointerId)
+  }
+
   return (
     <div className="inner-page-compare-wrap">
-      <div className="inner-page-compare-images">
+      <div
+        className="inner-page-compare-images"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+      >
         <img
           className="inner-page-compare-before"
           src={beforeSrc}
@@ -130,15 +162,77 @@ function InnerPageImageCompare({
 }
 
 function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
+  const AUTO_PLAY_SPEED_MS = 6000
+
   const [index, setIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [progress, setProgress] = useState(0)
   const len = slides.length
   if (len === 0) return null
   const prev = () => setIndex((i) => (i - 1 + len) % len)
   const next = () => setIndex((i) => (i + 1) % len)
   const slide = slides[index]
+
+  useEffect(() => {
+    if (len <= 1 || isPaused) return
+    let frameId: number | null = null
+    let startTime: number | null = null
+
+    const tick = (timestamp: number) => {
+      if (startTime === null) startTime = timestamp
+      const elapsed = timestamp - startTime
+      const ratio = elapsed / AUTO_PLAY_SPEED_MS
+
+      if (ratio >= 1) {
+        setIndex((i) => (i + 1) % len)
+        startTime = timestamp
+        setProgress(0)
+      } else {
+        setProgress(ratio * 100)
+      }
+
+      frameId = globalThis.requestAnimationFrame(tick)
+    }
+
+    frameId = globalThis.requestAnimationFrame(tick)
+
+    return () => {
+      if (frameId !== null) {
+        globalThis.cancelAnimationFrame(frameId)
+      }
+    }
+  }, [len, isPaused, AUTO_PLAY_SPEED_MS, index])
+
   return (
-    <div className="inner-page-carousel-wrap">
+    <div
+      className="inner-page-carousel-wrap"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocusCapture={() => setIsPaused(true)}
+      onBlurCapture={() => setIsPaused(false)}
+    >
       <div className="inner-page-carousel-track">
+        {len > 1 && (
+          <div className="inner-page-carousel-progress">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className="inner-page-carousel-progress-segment"
+                onClick={() => setIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+              >
+                <span
+                  className="inner-page-carousel-progress-fill"
+                  style={{
+                    width:
+                      i < index ? '100%' : i === index ? `${Math.min(progress, 100)}%` : '0%',
+                  }}
+                />
+              </button>
+            ))}
+          </div>
+        )}
         <figure className="inner-page-carousel-slide">
           <img src={slide.src} alt={slide.alt} loading="lazy" decoding="async" />
           {slide.caption && (
@@ -166,19 +260,6 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
           >
             →
           </button>
-          <div className="inner-page-carousel-dots" role="tablist" aria-label="Slide">
-            {slides.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                role="tab"
-                aria-selected={i === index}
-                aria-label={`Slide ${i + 1}`}
-                className={`inner-page-carousel-dot ${i === index ? 'is-active' : ''}`}
-                onClick={() => setIndex(i)}
-              />
-            ))}
-          </div>
         </>
       )}
     </div>
