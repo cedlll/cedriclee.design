@@ -1,4 +1,4 @@
-// cclee.design theme (from src/index.css dark theme)
+// cedriclee.design theme (from src/index.css dark theme)
 const THEME = {
     bg: '#1a1a1a',
     text: '#f0f0f0',
