@@ -36,12 +36,16 @@ function useTheme() {
 }
 
 const TYPING_INTERVAL_MS = 100
+const TYPING_PAUSE_BEFORE_LOOP_MS = 10000
 
 function TypingText({ text }: { text: string }) {
   const [displayed, setDisplayed] = useState('')
 
   useEffect(() => {
-    if (displayed.length >= text.length) return
+    if (displayed.length >= text.length) {
+      const t = setTimeout(() => setDisplayed(''), TYPING_PAUSE_BEFORE_LOOP_MS)
+      return () => clearTimeout(t)
+    }
     const t = setTimeout(
       () => setDisplayed(text.slice(0, displayed.length + 1)),
       TYPING_INTERVAL_MS
@@ -65,9 +69,8 @@ const projects = [
 
 const writings = [
   { title: 'Field notes on building with AI', href: '/writing/field-notes-on-building-with-AI' },
-  { title: 'Tracing the roots of graffiti in the Philippines', href: 'https://cedric-lee.medium.com/tracing-the-roots-of-graffiti-in-the-philippines-a2417dd0b1a6' },
-  { title: 'On designing for multicultural users', href: 'https://uxdesign.cc/on-designing-for-multicultural-users-1feb76668c8d' },
-  { title: 'Disability representation in K-drama Start-up', href: 'https://cedric-lee.medium.com/disability-representation-in-k-drama-start-up-3db1846b825d' },
+  { title: 'Tracing the roots of graffiti in the Philippines', href: '/writing/tracing-the-roots-of-graffiti-in-the-philippines' },
+  { title: "The intertextuality of Manila slum's Pietà", href: '/writing/the-intertextuality-of-manila-slums-pieta' },
 ]
 
 const features = [

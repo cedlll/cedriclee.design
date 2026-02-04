@@ -4,8 +4,21 @@ import './InnerPage.css'
 export type InnerPageCarouselSlide = { src: string; alt: string; caption?: string }
 
 export type InnerPageBlock =
-  | { type: 'point'; label?: string; text: string; link?: { href: string; label: string } }
-  | { type: 'image'; src: string; alt: string; caption?: string }
+  | {
+      type: 'point'
+      label?: string
+      text: string
+      link?: { href: string; label: string; superscript?: boolean }
+    }
+  | { type: 'image'; src: string; alt: string; caption?: string; link?: { href: string; label: string } }
+  | {
+      type: 'imageCompare'
+      beforeSrc: string
+      afterSrc: string
+      beforeAlt?: string
+      afterAlt?: string
+      caption?: string
+    }
   | { type: 'carousel'; slides: InnerPageCarouselSlide[] }
   | { type: 'quote'; line1: string; line2?: string }
 
@@ -48,6 +61,64 @@ export function InnerPage({
         ))}
       </div>
     </article>
+  )
+}
+
+function InnerPageImageCompare({
+  beforeSrc,
+  afterSrc,
+  beforeAlt = '',
+  afterAlt = '',
+}: {
+  beforeSrc: string
+  afterSrc: string
+  beforeAlt?: string
+  afterAlt?: string
+}) {
+  const [position, setPosition] = useState(50)
+  return (
+    <div className="inner-page-compare-wrap">
+      <div className="inner-page-compare-images">
+        <img
+          className="inner-page-compare-before"
+          src={beforeSrc}
+          alt={beforeAlt}
+          loading="lazy"
+          decoding="async"
+        />
+        <div
+          className="inner-page-compare-after-wrap"
+          style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
+        >
+          <img
+            className="inner-page-compare-after"
+            src={afterSrc}
+            alt={afterAlt}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div
+          className="inner-page-compare-divider"
+          style={{ left: `${position}%` }}
+          aria-hidden
+        />
+        <div
+          className="inner-page-compare-knob"
+          style={{ left: `${position}%` }}
+          aria-hidden
+        />
+        <input
+          type="range"
+          min={0}
+          max={100}
+          value={position}
+          onChange={(e) => setPosition(Number(e.target.value))}
+          className="inner-page-compare-range"
+          aria-label="Drag to compare before and after"
+        />
+      </div>
+    </div>
   )
 }
 
@@ -120,13 +191,25 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
             {block.link && (
               <>
                 {' '}
-                <a
-                  href={block.link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {block.link.label}
-                </a>
+                {block.link.superscript ? (
+                  <sup className="inner-page-citation">
+                    <a
+                      href={block.link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {block.link.label}
+                    </a>
+                  </sup>
+                ) : (
+                  <a
+                    href={block.link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {block.link.label}
+                  </a>
+                )}
               </>
             )}
           </p>
@@ -136,10 +219,32 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
       return (
         <figure className="inner-page-block inner-page-image">
           <img src={block.src} alt={block.alt} loading="lazy" decoding="async" />
-          {block.caption && (
+          {(block.caption || block.link) && (
             <figcaption className="inner-page-image-caption">
               {block.caption}
+              {block.link && (
+                <>
+                  {block.caption && ' '}
+                  <a href={block.link.href} target="_blank" rel="noopener noreferrer">
+                    {block.link.label}
+                  </a>
+                </>
+              )}
             </figcaption>
+          )}
+        </figure>
+      )
+    case 'imageCompare':
+      return (
+        <figure className="inner-page-block inner-page-image inner-page-compare">
+          <InnerPageImageCompare
+            beforeSrc={block.beforeSrc}
+            afterSrc={block.afterSrc}
+            beforeAlt={block.beforeAlt}
+            afterAlt={block.afterAlt}
+          />
+          {block.caption && (
+            <figcaption className="inner-page-image-caption">{block.caption}</figcaption>
           )}
         </figure>
       )
@@ -152,8 +257,10 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
     case 'quote':
       return (
         <blockquote className="inner-page-block inner-page-quote">
-          <p>"{block.line1}"</p>
-          {block.line2 && <p>"{block.line2}"</p>}
+          <p>
+            "{block.line1}
+            {block.line2 ? ` ${block.line2}` : ''}"
+          </p>
         </blockquote>
       )
     default:
