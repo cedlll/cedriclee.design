@@ -112,7 +112,11 @@ const WRITINGS: Record<
       },
       {
         type: 'point',
-        text: "Indeed, Manila slums' Pietà helped raise the discourse and media texts like these should be explored even more to understand why most Filipinos voted for President Duterte's brand of \"change\" and dig deeper to the WHYs of the populist revolt against elite democracy.\n\n — Cedric",
+        text: "Indeed, Manila slums' Pietà helped raise the discourse and media texts like these should be explored even more to understand why most Filipinos voted for President Duterte's brand of \"change\" and dig deeper to the WHYs of the populist revolt against elite democracy.",
+      },
+      {
+        type: 'point',
+        text: `— Cedric`,
       },
     ],
   },

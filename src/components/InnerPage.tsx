@@ -21,6 +21,13 @@ export type InnerPageBlock =
     }
   | { type: 'carousel'; slides: InnerPageCarouselSlide[] }
   | { type: 'quote'; line1: string; line2?: string }
+  | {
+      type: 'embed'
+      src: string
+      width?: number
+      height?: number
+      title?: string
+    }
 
 export type InnerPageProps = {
   title: string
@@ -262,6 +269,20 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
             {block.line2 ? ` ${block.line2}` : ''}"
           </p>
         </blockquote>
+      )
+    case 'embed':
+      return (
+        <div className="inner-page-block inner-page-embed">
+          <iframe
+            src={block.src}
+            width={block.width ?? 560}
+            height={block.height ?? 314}
+            style={{ border: 'none', overflow: 'hidden' }}
+            allowFullScreen
+            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            title={block.title ?? 'Embedded content'}
+          />
+        </div>
       )
     default:
       return null
