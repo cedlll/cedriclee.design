@@ -16,10 +16,10 @@ const FEATURES: Record<
       {
         type: 'carousel',
         slides: [
+          { src: '/ux-plus-2025-5.png', alt: 'Speaking at UX+ 2025 on First Principles Thinking' },
           { src: '/ux-plus-2025-2.png', alt: 'Wrap-up slide: Adapt using First Principles, Co-create with AI guided by human judgment, AI safety is a shared duty' },
           { src: '/ux-plus-2025-3.png', alt: 'AI Sandbox concept: Play, Design, Build' },
           { src: '/ux-plus-2025-4.png', alt: '3 big lessons from co-creating with AI: Sharpen AI fluency, principles, Human-centered Design as differentiator' },
-          { src: '/ux-plus-2025-5.png', alt: 'First Principles Thinking diagram: Problem, Relationships and dynamics, Future state' },
         ],
       },
       {

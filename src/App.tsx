@@ -76,7 +76,7 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
-  { title: '/designr is your UI engineer in IDE', href: 'https://cedlll.github.io/designr/' },
+  { title: '/designr is your UI engineer in your favorite IDE', href: 'https://cedlll.github.io/designr/' },
   { title: 'Tsek Space is your go-to facilitation tool', href: 'https://www.tsek.space/' },
   { title: 'Labor Complaint Philippines - easily file labor complaints', href: 'https://www.laborcomplaintph.app/' },
 ]

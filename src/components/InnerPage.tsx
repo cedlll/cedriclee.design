@@ -38,7 +38,7 @@ export type InnerPageProps = {
 }
 
 const DEFAULT_BACK_HREF = '/'
-const DEFAULT_BACK_LABEL = 'cclee.design'
+const DEFAULT_BACK_LABEL = 'Back'
 
 export function InnerPage({
   title,
