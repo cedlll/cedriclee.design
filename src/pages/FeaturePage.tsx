@@ -23,11 +23,6 @@ const FEATURES: Record<
         ],
       },
       {
-        type: 'point',
-        label: 'Video highlights',
-        text: '',
-      },
-      {
         type: 'embed',
         src: 'https://www.facebook.com/plugins/video.php?height=314&href=https%3A%2F%2Fwww.facebook.com%2Froundhouseph%2Fvideos%2F2613557655658419%2F&show_text=false&width=560&t=0',
         width: 560,

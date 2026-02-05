@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const isMobile = () =>
   typeof navigator !== 'undefined' &&
@@ -21,7 +21,7 @@ export default function CustomCursor({
   opacity = 1,
   hideOnMobile = true,
 }: CustomCursorProps) {
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+  const cursorRef = useRef<HTMLDivElement>(null)
   const [hidden, setHidden] = useState(true)
 
   useEffect(() => {
@@ -34,7 +34,9 @@ export default function CustomCursor({
     document.head.appendChild(styleEl)
 
     const onMouseMove = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY })
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX - dotSize / 2}px, ${e.clientY - dotSize / 2}px)`
+      }
       setHidden(false)
     }
     const onMouseEnter = () => setHidden(false)
@@ -51,13 +53,14 @@ export default function CustomCursor({
       document.body.style.cursor = 'auto'
       styleEl.remove()
     }
-  }, [hideOnMobile])
+  }, [hideOnMobile, dotSize])
 
   if (typeof window === 'undefined') return null
   if (isMobile() && hideOnMobile) return null
 
   return (
     <div
+      ref={cursorRef}
       style={{
         position: 'fixed',
         left: 0,
@@ -66,7 +69,6 @@ export default function CustomCursor({
         height: `${dotSize}px`,
         backgroundColor: dotColor,
         borderRadius: '50%',
-        transform: `translate(${position.x - dotSize / 2}px, ${position.y - dotSize / 2}px)`,
         pointerEvents: 'none',
         zIndex: 10000,
         mixBlendMode: blendMode as React.CSSProperties['mixBlendMode'],
