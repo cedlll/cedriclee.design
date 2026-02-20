@@ -8,9 +8,6 @@ const WritingPage = lazy(() =>
   import('./pages/WritingPage').then((m) => ({ default: m.WritingPage }))
 )
 const CustomCursor = lazy(() => import('./components/CustomCursor'))
-const NoiseBackground = lazy(() =>
-  import('./components/NoiseBackground').then((m) => ({ default: m.NoiseBackground }))
-)
 
 const THEME_KEY = 'cclee-theme'
 const VISIBLE_COUNT = 3
@@ -150,12 +147,6 @@ function App() {
   const isFeaturePage = pathname.startsWith('/feature/')
   const isInnerPage = isWritingPage || isFeaturePage
 
-  const noise = (
-    <Suspense fallback={null}>
-      <NoiseBackground />
-    </Suspense>
-  )
-
   const cursor = (
     <Suspense fallback={null}>
       <CustomCursor
@@ -198,7 +189,6 @@ function App() {
 
   return (
     <div className="page">
-      {noise}
       {cursor}
       <button
         type="button"
