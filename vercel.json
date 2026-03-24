@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "redirects": [{ "source": "/galaga", "destination": "/galaga/", "permanent": false }],
+  "rewrites": [
+    { "source": "/galaga/", "destination": "/galaga/index.html" },
+    { "source": "/galaga/(.*)", "destination": "/galaga/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

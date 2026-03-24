@@ -101,10 +101,6 @@ Consider these 5 ways to maximize UX in an Agile setting:`,
         label: '5. Make learning a priority',
         text: `Have that beginner and growth mindset. And when you learn, make sure you share it with others, so everybody learns more. Everybody wins. UX and Agile are not about silo but about deep collaboration so that we can also foster meaningful relationships. Remember that successful teams are the ones who work together.`,
       },
-      {
-        type: 'point',
-        text: `— Cedric`,
-      },
     ],
   },
 }

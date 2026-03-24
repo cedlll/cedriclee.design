@@ -163,54 +163,42 @@ function InnerPageImageCompare({
 
 function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
   const AUTO_PLAY_SPEED_MS = 6000
+  const PROGRESS_TICK_MS = 50
 
   const [index, setIndex] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
   const [progress, setProgress] = useState(0)
   const len = slides.length
   if (len === 0) return null
-  const prev = () => setIndex((i) => (i - 1 + len) % len)
-  const next = () => setIndex((i) => (i + 1) % len)
+  const goToNext = () => {
+    if (len <= 1) return
+    setIndex((i) => (i + 1) % len)
+    setProgress(0)
+  }
   const slide = slides[index]
 
   useEffect(() => {
-    if (len <= 1 || isPaused) return
-    let frameId: number | null = null
-    let startTime: number | null = null
-
-    const tick = (timestamp: number) => {
-      if (startTime === null) startTime = timestamp
-      const elapsed = timestamp - startTime
+    if (len <= 1) return
+    let startTime = Date.now()
+    const timerId = globalThis.setInterval(() => {
+      const elapsed = Date.now() - startTime
       const ratio = elapsed / AUTO_PLAY_SPEED_MS
 
       if (ratio >= 1) {
         setIndex((i) => (i + 1) % len)
-        startTime = timestamp
         setProgress(0)
+        startTime = Date.now()
       } else {
         setProgress(ratio * 100)
       }
-
-      frameId = globalThis.requestAnimationFrame(tick)
-    }
-
-    frameId = globalThis.requestAnimationFrame(tick)
+    }, PROGRESS_TICK_MS)
 
     return () => {
-      if (frameId !== null) {
-        globalThis.cancelAnimationFrame(frameId)
-      }
+      globalThis.clearInterval(timerId)
     }
-  }, [len, isPaused, AUTO_PLAY_SPEED_MS, index])
+  }, [len, AUTO_PLAY_SPEED_MS, PROGRESS_TICK_MS, index])
 
   return (
-    <div
-      className="inner-page-carousel-wrap"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onFocusCapture={() => setIsPaused(true)}
-      onBlurCapture={() => setIsPaused(false)}
-    >
+    <div className="inner-page-carousel-wrap">
       <div className="inner-page-carousel-track">
         {len > 1 && (
           <div className="inner-page-carousel-progress">
@@ -219,7 +207,10 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
                 key={i}
                 type="button"
                 className="inner-page-carousel-progress-segment"
-                onClick={() => setIndex(i)}
+                onClick={() => {
+                  setIndex(i)
+                  setProgress(0)
+                }}
                 aria-label={`Go to slide ${i + 1}`}
               >
                 <span
@@ -234,7 +225,14 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
           </div>
         )}
         <figure className="inner-page-carousel-slide">
-          <img src={slide.src} alt={slide.alt} loading="lazy" decoding="async" />
+          <button
+            type="button"
+            className="inner-page-carousel-image-button"
+            onClick={goToNext}
+            aria-label="Next image"
+          >
+            <img src={slide.src} alt={slide.alt} loading="lazy" decoding="async" />
+          </button>
           {slide.caption && (
             <figcaption className="inner-page-image-caption">
               {slide.caption}
@@ -242,26 +240,6 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
           )}
         </figure>
       </div>
-      {len > 1 && (
-        <>
-          <button
-            type="button"
-            className="inner-page-carousel-btn inner-page-carousel-prev"
-            onClick={prev}
-            aria-label="Previous slide"
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            className="inner-page-carousel-btn inner-page-carousel-next"
-            onClick={next}
-            aria-label="Next slide"
-          >
-            →
-          </button>
-        </>
-      )}
     </div>
   )
 }

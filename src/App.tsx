@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type SVGProps } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import './App.css'
 
 const FeaturePage = lazy(() =>
@@ -9,45 +9,7 @@ const WritingPage = lazy(() =>
 )
 const CustomCursor = lazy(() => import('./components/CustomCursor'))
 
-const THEME_KEY = 'cclee-theme'
 const VISIBLE_COUNT = 3
-
-function SunIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
-    </svg>
-  )
-}
-
-function MoonIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-    </svg>
-  )
-}
-
-function useTheme() {
-  const [theme, setThemeState] = useState<'light' | 'dark'>(() => {
-    if (typeof window === 'undefined') return 'dark'
-    const stored = localStorage.getItem(THEME_KEY) as 'light' | 'dark' | null
-    if (stored) return stored
-    return window.matchMedia('(prefers-color-scheme: light)').matches
-      ? 'light'
-      : 'dark'
-  })
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-    localStorage.setItem(THEME_KEY, theme)
-  }, [theme])
-
-  const toggle = () => setThemeState((t) => (t === 'dark' ? 'light' : 'dark'))
-
-  return { theme, toggle }
-}
 
 const TYPING_INTERVAL_MS = 100
 const TYPING_PAUSE_BEFORE_LOOP_MS = 10000
@@ -76,8 +38,8 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
-  { title: 'scratchly - simply write notes in your browser', href: 'https://scratchly.xyz/' },
-  { title: '/designr is your UI engineer in your favorite IDE', href: 'https://cedlll.github.io/designr/' },
+  { title: 'scratchly - scratchpad in your browser', href: 'https://scratchly.xyz/' },
+  { title: '/designr — UI engineer in your IDE', href: 'https://cedlll.github.io/designr/' },
   { title: 'Tsek Space is your go-to facilitation tool', href: 'https://tsek-space-jxfpbny1s-cedricl-projects.vercel.app/' },
   { title: 'Hassle-free labor complaint filing', href: 'https://www.laborcomplaintph.app/' },
 ]
@@ -140,12 +102,44 @@ function Section({ label, items, expandable = true }: SectionProps) {
 }
 
 function App() {
-  const { theme, toggle } = useTheme()
+  const [showScrollTop, setShowScrollTop] = useState(false)
   const pathname =
     typeof globalThis.window !== 'undefined' ? globalThis.window.location.pathname : '/'
   const isWritingPage = pathname.startsWith('/writing/')
   const isFeaturePage = pathname.startsWith('/feature/')
   const isInnerPage = isWritingPage || isFeaturePage
+
+  useEffect(() => {
+    if (typeof globalThis.window === 'undefined') return
+    if (!isInnerPage) {
+      setShowScrollTop(false)
+      return
+    }
+
+    const handleScroll = () => {
+      if (!isInnerPage) {
+        setShowScrollTop(false)
+        return
+      }
+
+      const scrollBottom =
+        globalThis.window.scrollY + globalThis.window.innerHeight
+      const pageHeight = document.documentElement.scrollHeight
+      const isNearBottom = pageHeight - scrollBottom <= 160
+      const hasScrolled = globalThis.window.scrollY > 200
+      setShowScrollTop(isNearBottom && hasScrolled)
+    }
+
+    handleScroll()
+    globalThis.window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      globalThis.window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isInnerPage, pathname])
+
+  const handleScrollTop = () => {
+    globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const cursor = (
     <Suspense fallback={null}>
@@ -165,19 +159,17 @@ function App() {
     return (
       <div className="page">
         {cursor}
-        <button
-          type="button"
-          className="theme-toggle"
-          onClick={toggle}
-          aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-          title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-        >
-          {theme === 'dark' ? (
-            <SunIcon aria-hidden />
-          ) : (
-            <MoonIcon aria-hidden />
-          )}
-        </button>
+        {showScrollTop && (
+          <button
+            type="button"
+            className="scroll-top-button"
+            onClick={handleScrollTop}
+            aria-label="Scroll to top"
+            title="Scroll to top"
+          >
+            ↑
+          </button>
+        )}
         <div className="page-inner">
           <Suspense fallback={null}>
             <InnerContent />
@@ -190,19 +182,17 @@ function App() {
   return (
     <div className="page">
       {cursor}
-      <button
-        type="button"
-        className="theme-toggle"
-        onClick={toggle}
-        aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-        title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
-      >
-        {theme === 'dark' ? (
-          <SunIcon aria-hidden />
-        ) : (
-          <MoonIcon aria-hidden />
-        )}
-      </button>
+      {showScrollTop && (
+        <button
+          type="button"
+          className="scroll-top-button"
+          onClick={handleScrollTop}
+          aria-label="Scroll to top"
+          title="Scroll to top"
+        >
+          ↑
+        </button>
+      )}
       <div className="page-inner">
         <main className="profile-layout">
           <section className="profile-panel">
@@ -226,7 +216,7 @@ function App() {
                   </span>
                 </div>
                 <p className="profile-subtitle">
-                  Building things worth having.
+                  Building things worth having
                 </p>
               </div>
 
@@ -260,7 +250,7 @@ function App() {
             </section>
 
             <a
-              href="/galaga/"
+              href="/galaga/index.html"
               className="galaga-button"
               aria-label="Play Galaga"
             >

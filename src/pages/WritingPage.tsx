@@ -5,33 +5,122 @@ const WRITINGS: Record<
   string,
   { title: string; date: string; blocks: InnerPageBlock[] }
 > = {
-  'field-notes-on-building-with-AI': {
-    title: 'Field notes on building with AI',
-    date: 'TBD',
-    blocks: [
-      {
-        type: 'point',
-        text: 'WIP',
-      },
-    ],
-  },
   'tracing-the-roots-of-graffiti-in-the-philippines': {
     title: 'Tracing the roots of graffiti in the Philippines',
-    date: 'TBD',
+    date: '2018',
     blocks: [
       {
         type: 'point',
-        text: 'Read the full piece on Medium.',
-        link: {
-          href: 'https://cedric-lee.medium.com/tracing-the-roots-of-graffiti-in-the-philippines-a2417dd0b1a6',
-          label: 'cedric-lee.medium.com',
-        },
+        text: 'With the graffiti movement in the Philippines on the rise in the past couple of years, adding vibrancy and diversity to our arts and culture, how much do we know about its beginnings in the Philippines? In this article, I focused on knowing one of the key movers in the history and progression of graffiti in the Philippines: Jayo "Flipone" Santiago.',
+      },
+      {
+        type: 'image',
+        src: '/1_IB8KGxckntZdWIM9nMDhkw.webp',
+        alt: "Flipone's LP '14 piece",
+        caption: "Flipone's LP '14 piece. Image from Jayo Santiago, Facebook.",
+      },
+      {
+        type: 'point',
+        text: 'Jayo Santiago, known in the graffiti scene as Flipone, is among the first or could be the first, to bring graffiti to the Philippines. He was heavily influenced by the growing hip-hop movement in New York City in the late 1970s to early 1980s characterized by its diversity, influence, and innovation. The hip-hop movement revolved around four key areas: MCing (now known as rapping), DJing (disk jockey), graffiti art, and b-boying (breakdancing).',
+      },
+      {
+        type: 'image',
+        src: '/1_ZIIVx3q21LtLRPxr66QdxQ.webp',
+        alt: 'B-Girl Laneski break dancing in New York City, 1985',
+        caption:
+          'B-Girl Laneski break dancing in New York City, 1985. National Museum of American History, Smithsonian Institution.',
+      },
+      {
+        type: 'point',
+        text: "Flipone's main artistic influence rooted from the New York City graffiti movement also in the 1970s to 1980s. Back then, New York City was entirely different than the city today because it was covered in graffiti. This social and cultural phenomenon worthy of attention and study was beautifully captured by Charlie Ahearn's 1983 film Wild Style where it magnified the innocence of early hip-hop and its synergy with graffiti.",
+      },
+      {
+        type: 'image',
+        src: '/1_MNPMzCVGkwh5s7hybG6LRg.webp',
+        alt: 'Freshly Painted Wild Style Wall in Riverside Park, Manhattan, NYC, 1983',
+        caption:
+          'Freshly Painted Wild Style Wall in Riverside Park, Manhattan, NYC, 1983. Steven Kasher Gallery',
+      },
+      {
+        type: 'point',
+        text: 'While exploring various hip-hop books and magazines, Flipone saw photographs of graffiti in different parts of New York City and suddenly thought of bringing the art form in the Philippines. He, later on, did his first graffiti piece in 1990 at a canal in Makati City near the office where his father used to work.',
+      },
+      {
+        type: 'image',
+        src: '/1_lNNgwoIkPiligftBXkxX3A.webp',
+        alt: "Early works of Flipone in the early to mid-90's",
+        caption: "Early works of Flipone in the early to mid-90's. Images from Jayo Santiago, Facebook.",
+      },
+      {
+        type: 'point',
+        label: 'Developing the Own Style',
+        text: 'Inspired initially by Seen, Dondi, Phase 2, and Lee -- all well-known artists from the New York City graffiti scene, Flipone decided to develop a "Pinoy" style graffiti -- getting various influences from Filipino ethnic and indigenous cultures like the Baybayin alphabet, traditional Ifugao weaving patterns, and Kalinga tattoo patterns.',
+      },
+      {
+        type: 'image',
+        src: '/1_pFC3TMoTJFcGSf5Zf6OduQ.webp',
+        alt: 'SBA crew in 2003',
+        caption: 'SBA crew in 2003. Images from Jayo Santiago, Facebook.',
+      },
+      {
+        type: 'point',
+        text: 'Armed with skills and experience, Flipone, together with Flow-1, also a Filipino graffiti artist, formed the Filipino graffiti crew called Syndikato Batang Aerosol (originally called Subway Army) in 1993 and invited other artists to join the growing graffiti movement in the Philippines. Eventually, the graffiti crew changed its name to Samahang Batang Aerosol (SBA) in 1998 and still continued to make waves especially in the hip-hop scene where their art found its home.',
+      },
+      {
+        type: 'point',
+        label: 'Connecting to Worldwide Graffiti',
+        text: 'Flipone used Facebook to post his work and connect with people of the same interests. Social media helped his works reach a wider and diverse audience as it made the connection with other artists and organizations easier.',
+      },
+      {
+        type: 'image',
+        src: '/1_m34rOsGNOSkcCUyrEdJa8Q.webp',
+        alt: 'Flipone in Hong Kong (2001)',
+        caption: 'Flipone in Hong Kong (2001). Images from Jayo Santiago, Facebook.',
+      },
+      {
+        type: 'point',
+        text: 'Before social media emerged, Flipone used the Internet that was starting to develop back in the 1990s as a medium in getting recognized for their art -- with the aim of putting the Philippines on the worldwide graffiti map. He posts photographs of their works in Art Crimes, a premier graffiti website, where SBA\'s website is also linked to expanding their online presence.',
+      },
+      {
+        type: 'point',
+        label: "Graffiti's Challenges in the Philippines",
+        text: 'Flipone describes graffiti as "a letter based art form painted in walls or on trains" and "an art form that developed in the streets and it belongs to the streets." He views galleries and museums as of a higher status where graffiti seems to be out of place there.',
+      },
+      {
+        type: 'image',
+        src: '/1_PxUJgUxW1XOrVpd2uCg_AA.webp',
+        alt: 'Banksy street art reference image',
+        caption:
+          '"Arguably the most controversial street artist in the world, Banksy has developed an entire art subculture devoted to his works. Banksy\'s art can impact any location at any given moment." -- tharum.com',
+      },
+      {
+        type: 'point',
+        text: 'In the October 2016 issue of Rogue, University of the Philippines Los Banos sociology professor Raphael Villasenor considers graffiti as an act of deviancy since "it\'s done in a place where it is not meant to be done" while former National Commission for Culture and the Arts (NCCA) Chairman Felipe de Leon Jr. believes street art give new meaning to blank walls because "it\'s a way of enhancing human quality; you humanize the place."',
+      },
+      {
+        type: 'point',
+        text: 'Asked about what is it like being a graffiti artist in the Philippines, Flipone shared, "You get the best of both worlds. There will be people who will appreciate you and look up to you and there are those who will hate you."',
+      },
+      {
+        type: 'image',
+        src: '/1_x5dcb2dhfGXtzHJJN-xJjQ.webp',
+        alt: 'Updated signature piece celebrating 120 years of Philippine Independence',
+        caption:
+          '"Celebrating 120 years of Philippine Independence with an updated and upgraded version of my signature piece! I am PILIPINO!" -- Jayo Santiago, Facebook.',
+      },
+      {
+        type: 'point',
+        text: 'Flipone believes one of the biggest challenges of graffiti in the Philippines is developing the next generation of graffiti artists given that the scene is continuously getting bigger. He also points to social status as one of the problems with many of the current generation of graffiti artists since they come from either the working or lower middle class. "They can only afford to buy a limited amount of spray paint and the cheapest ones are not even of good quality," he said.',
+      },
+      {
+        type: 'point',
+        text: 'Why is graffiti worthy of our attention? How is graffiti used in different contexts and why graffiti is the chosen medium? How far have we reached in understanding graffiti? The struggle to expand our knowledge of graffiti continues as our society still limit it to vandalism and gang-related. As Lovata and Olton (2015) explain, "Graffiti offer profound social, political, psychological, and cultural insights. It facilitates a discourse that refuses to adhere to any normative protocol. The discourse is inherently democratic because all persons possess the capability to initiate and/or participate in an uninhibited manner.',
       },
     ],
   },
   'the-intertextuality-of-manila-slums-pieta': {
     title: "The intertextuality of Manila slum's Pietà",
-    date: 'June 30, 2018',
+    date: '2018',
     blocks: [
       {
         type: 'point',
@@ -113,10 +202,6 @@ const WRITINGS: Record<
       {
         type: 'point',
         text: "Indeed, Manila slums' Pietà helped raise the discourse and media texts like these should be explored even more to understand why most Filipinos voted for President Duterte's brand of \"change\" and dig deeper to the WHYs of the populist revolt against elite democracy.",
-      },
-      {
-        type: 'point',
-        text: `— Cedric`,
       },
     ],
   },

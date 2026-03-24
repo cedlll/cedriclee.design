@@ -25,22 +25,8 @@ a {
   color: inherit;
 }
 
-/* Dark theme (default) */
-:root,
-[data-theme='dark'] {
-  --color-bg: #1a1a1a;
-  --color-text: #f0f0f0;
-  --color-text-primary: #ffffff;
-  --color-text-muted: #a4a4a4;
-  --color-focus: #f0f0f0;
-  --color-cursor: #ffffff;
-  --color-shadow: rgba(0, 0, 0, 0.4);
-  --color-hover-bg: rgba(255, 255, 255, 0.08);
-}
-
-/* Light theme */
-[data-theme='light'] {
-  --color-bg: #f7f7f7;
+:root {
+  --color-bg: #ffffff;
   --color-text: #333333;
   --color-text-primary: #1a1a1a;
   --color-text-muted: #666666;
