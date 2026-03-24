@@ -76,13 +76,13 @@ function TypingText({ text }: { text: string }) {
 }
 
 const projects = [
+  { title: 'scratchly - simply write notes in your browser', href: 'https://scratchly.xyz/' },
   { title: '/designr is your UI engineer in your favorite IDE', href: 'https://cedlll.github.io/designr/' },
-  { title: 'Tsek Space is your go-to facilitation tool', href: 'https://www.tsek.space/' },
-  { title: 'Labor Complaint Philippines - easily file labor complaints', href: 'https://www.laborcomplaintph.app/' },
+  { title: 'Tsek Space is your go-to facilitation tool', href: 'https://tsek-space-jxfpbny1s-cedricl-projects.vercel.app/' },
+  { title: 'Hassle-free labor complaint filing', href: 'https://www.laborcomplaintph.app/' },
 ]
 
 const writings = [
-  { title: 'Field notes on building with AI', href: '/writing/field-notes-on-building-with-AI' },
   { title: 'Tracing the roots of graffiti in the Philippines', href: '/writing/tracing-the-roots-of-graffiti-in-the-philippines' },
   { title: "The intertextuality of Manila slum's Pietà", href: '/writing/the-intertextuality-of-manila-slums-pieta' },
 ]
@@ -245,7 +245,7 @@ function App() {
 
             <section className="sections" aria-label="Work overview">
               <Section
-                label={`${projects.length} side projects`}
+                label={`${projects.length} fun projects`}
                 items={projects}
                 expandable={false}
               />
