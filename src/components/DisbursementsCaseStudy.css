@@ -1,0 +1,769 @@
+/* ================================================================
+   Disbursements case study — editorial layout
+   Two-column asymmetric, generous whitespace, clean typography
+   ================================================================ */
+
+.ew {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  box-sizing: border-box;
+  --ew-fs-sm: 14px;
+  --ew-fs-md: 18px;
+  --ew-fs-lg: 22px;
+  --ew-lh-body: 1.6;
+  --ew-lh-heading: 1.3;
+  --ew-ls: 0.02em;
+  --ew-fw-emphasis: 500;
+}
+
+.ew *,
+.ew *::before,
+.ew *::after {
+  box-sizing: border-box;
+}
+
+/* ── Reveal animation ── */
+.ew-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+    transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.ew-reveal.ew-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Jump links (e.g. hero “View live prototype”) — show immediately; IO still adds .ew-visible when scrolled. */
+.ew-reveal:target {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ew-reveal.ew-prototype-anchor {
+  scroll-margin-top: 96px;
+}
+
+/* ── Back link ── */
+.ew-back {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  align-self: flex-start;
+  padding: 4px 0;
+  margin-top: 24px;
+  margin-bottom: 32px;
+  transition: color 0.2s;
+}
+
+.ew-back:hover,
+.ew-back:focus-visible {
+  color: var(--color-text-primary);
+}
+
+.ew-back:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ── Typography primitives ── */
+.ew-kicker {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: var(--ew-ls);
+  color: var(--color-text-muted);
+  margin: 0 0 16px;
+}
+
+.ew-label {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: var(--ew-ls);
+  color: var(--color-text-muted);
+  margin: 0 0 12px;
+  display: block;
+}
+
+h2.ew-label {
+  font-size: var(--ew-fs-sm);
+  line-height: inherit;
+}
+
+.ew-h2 {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-lg);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  margin: 0 0 16px;
+  line-height: var(--ew-lh-heading);
+}
+
+.ew-body {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-md);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0 0 16px;
+}
+
+.ew-body:last-child {
+  margin-bottom: 0;
+}
+
+.ew-body--lead {
+  font-size: var(--ew-fs-md);
+  line-height: var(--ew-lh-body);
+}
+
+.ew-body--narrow {
+  max-width: 640px;
+}
+
+/* ── Prototype tooling (Cursor + Claude Code) ── */
+.ew-prototype-built-with {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  min-width: 0;
+}
+
+.ew-prototype-built-with--in-walkthrough {
+  margin-top: 20px;
+  margin-bottom: 28px;
+  max-width: 640px;
+}
+
+.ew-prototype-built-with__lead {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+}
+
+.ew-prototype-built-with__brands {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.ew-prototype-built-with__sep {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-muted);
+  opacity: 0.85;
+}
+
+.ew-prototype-built-with__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+}
+
+.ew-prototype-built-with__logo {
+  display: block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.ew-prototype-built-with__logo--cursor {
+  width: 20px;
+  height: 20px;
+}
+
+.ew-prototype-built-with__name {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: var(--ew-fw-emphasis);
+  letter-spacing: var(--ew-ls);
+}
+
+.ew-aside-body {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.ew-caption {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-muted);
+  margin: 12px 0 0;
+}
+
+/* ================================================================
+   Hero
+   ================================================================ */
+.ew-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding-bottom: 64px;
+}
+
+.ew-hero-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.ew-title {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-lg);
+  font-weight: 400;
+  line-height: var(--ew-lh-heading);
+  color: var(--color-text-primary);
+  margin: 0 0 20px;
+  letter-spacing: var(--ew-ls);
+}
+
+.ew-subtitle {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-md);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+  max-width: 600px;
+}
+
+.ew-hero-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 28px;
+  margin-top: 24px;
+  min-width: 0;
+  width: 100%;
+  max-width: min(720px, 100%);
+}
+
+.ew-hero-cta-row .ew-hero-cta {
+  flex-shrink: 0;
+}
+
+.ew-hero-cta-row .ew-prototype-built-with {
+  flex: 1 1 200px;
+  min-width: min(100%, 220px);
+}
+
+a.ew-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--ew-ls);
+  text-decoration: none;
+  color: #ffffff;
+  /* Steel glass: default uses former hover (stronger frost) */
+  background: rgba(14, 18, 26, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 6px 28px rgba(8, 12, 20, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+a.ew-hero-cta:hover {
+  color: #eef0f3;
+  background: rgba(14, 18, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 24px rgba(8, 12, 20, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+a.ew-hero-cta:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+/* ── Meta (role/scope/domain) ── */
+.ew-meta {
+  padding-top: 4px;
+}
+
+.ew-meta-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 40px;
+  margin: 0;
+  padding: 0;
+}
+
+.ew-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ew-meta-item dt {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: var(--ew-ls);
+  color: var(--color-text-muted);
+}
+
+.ew-meta-item dd {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+/* ================================================================
+   Two-column editorial row pattern
+   narrow col (~33%) + wide col (~60%), gap between
+   Whitespace separates sections, not lines.
+   ================================================================ */
+.ew-row {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  gap: 40px 64px;
+  align-items: start;
+  padding: 56px 0;
+}
+
+.ew-row--reverse {
+  grid-template-columns: 1fr 1.8fr;
+  direction: ltr;
+}
+
+.ew-col-narrow {
+  position: sticky;
+  top: 80px;
+}
+
+.ew-col-wide {
+  min-width: 0;
+}
+
+/* ── Full-width sections ── */
+.ew-full {
+  padding: 56px 0;
+}
+
+/* ================================================================
+   Metrics — simple stacked items
+   ================================================================ */
+.ew-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 24px;
+}
+
+.ew-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 0;
+}
+
+.ew-metric-value {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-md);
+  font-weight: 400;
+  color: var(--color-text-primary);
+  letter-spacing: var(--ew-ls);
+}
+
+.ew-metric-label {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-muted);
+  line-height: var(--ew-lh-body);
+}
+
+/* ================================================================
+   Numbered list (pain points, decisions, lessons)
+   ================================================================ */
+.ew-numbered-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ew-numbered-list li {
+  padding: 16px 0;
+}
+
+.ew-numbered-list li strong {
+  display: block;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-md);
+  font-weight: var(--ew-fw-emphasis);
+  color: var(--color-text-primary);
+  margin-bottom: 6px;
+}
+
+.ew-numbered-list li p {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ================================================================
+   Constraint list
+   ================================================================ */
+.ew-constraint-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ew-constraint {
+  padding: 24px 0;
+}
+
+.ew-constraint-tag {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: var(--ew-ls);
+  color: var(--color-text-muted);
+  margin: 0 0 8px;
+}
+
+.ew-constraint-title,
+.ew-decisions li h3,
+.ew-lessons li h3 {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-md);
+  font-weight: var(--ew-fw-emphasis);
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  line-height: var(--ew-lh-heading);
+}
+
+.ew-constraint-text {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0 0 10px;
+}
+
+.ew-constraint-response {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+  padding-top: 10px;
+}
+
+.ew-constraint-response strong {
+  color: var(--color-text-primary);
+  font-weight: var(--ew-fw-emphasis);
+}
+
+/* ================================================================
+   Decisions & Lessons — ordered list
+   ================================================================ */
+.ew-decisions,
+.ew-lessons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ew-decisions li,
+.ew-lessons li {
+  padding: 16px 0;
+}
+
+.ew-decisions li p,
+.ew-lessons li p {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ================================================================
+   Quote
+   ================================================================ */
+.ew-quote-section {
+  padding: 72px 0;
+  text-align: center;
+  border-left: none;
+  margin: 0;
+}
+
+.ew-quote {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: var(--ew-fs-md);
+  font-style: italic;
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-primary);
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+/* ================================================================
+   Prototype embed
+   ================================================================ */
+.ew-prototype-embed {
+  margin-top: 16px;
+  min-width: 0;
+  isolation: isolate;
+  overflow: visible;
+  transform: translateZ(0);
+  /* Wider than `.ew` (1120px); keep centered in the viewport like the live dashboard. */
+  --ew-prototype-embed-w: min(1520px, calc(100vw - 48px));
+  width: var(--ew-prototype-embed-w);
+  margin-left: calc((100% - var(--ew-prototype-embed-w)) / 2);
+  margin-right: calc((100% - var(--ew-prototype-embed-w)) / 2);
+}
+
+.ew-proto-placeholder {
+  padding: 80px 24px;
+  text-align: center;
+  color: var(--color-text-muted);
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  border-radius: 4px;
+  background: var(--color-surface-subtle);
+  line-height: var(--ew-lh-body);
+}
+
+.ew-proto-placeholder p {
+  margin: 0;
+}
+
+/* ── Next reads — intro band + two-column spread (catalog / editorial duo) ── */
+.ew-next-reads {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 72px 0 56px;
+}
+
+.ew-next-reads-intro {
+  max-width: 40rem;
+}
+
+.ew-next-reads-intro .ew-h2 {
+  margin-bottom: 12px;
+}
+
+.ew-next-reads-lede {
+  max-width: 34rem;
+  margin: 0;
+}
+
+.ew-next-reads-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px min(11vw, 88px);
+  align-items: start;
+}
+
+.ew-next-reads-grid > li {
+  min-width: 0;
+}
+
+.ew-next-read-thumb-wrap {
+  margin: 0 0 18px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--color-surface-subtle);
+  aspect-ratio: 16 / 10;
+}
+
+.ew-next-read-thumb {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ew-next-read-link {
+  display: block;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.ew-next-read-link__line {
+  display: block;
+}
+
+.ew-next-read-link .ew-constraint-text {
+  margin-bottom: 0;
+}
+
+.ew-next-read-link:hover .ew-constraint-title,
+.ew-next-read-link:focus-visible .ew-constraint-title {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-text-muted);
+}
+
+.ew-next-read-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.ew-next-read-static {
+  padding: 0;
+  opacity: 0.72;
+}
+
+.ew-next-read-static .ew-constraint-text {
+  margin-bottom: 0;
+}
+
+.ew-next-read-soon {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 10px 0 0;
+}
+
+.ew-next-reads-more {
+  margin: 0;
+  padding-top: 8px;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+}
+
+.ew-next-reads-more a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--color-text-muted);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s;
+}
+
+.ew-next-reads-more a:hover,
+.ew-next-reads-more a:focus-visible {
+  text-decoration-color: var(--color-text-primary);
+}
+
+.ew-next-reads-more a:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+/* ================================================================
+   Footer
+   ================================================================ */
+.ew-footer {
+  padding: 40px 0 0;
+}
+
+.ew-footer p {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-sm);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+/* ================================================================
+   Responsive
+   ================================================================ */
+@media (max-width: 768px) {
+  .ew-next-reads {
+    gap: 36px;
+    padding: 56px 0 48px;
+  }
+
+  .ew-next-reads-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .ew-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 40px 0;
+  }
+
+  .ew-col-narrow {
+    position: static;
+  }
+
+  .ew-full {
+    padding: 40px 0;
+  }
+
+  .ew-hero {
+    padding-bottom: 40px;
+  }
+
+  .ew-quote-section {
+    padding: 48px 0;
+  }
+
+  .ew-meta-list {
+    gap: 16px 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ew-title {
+    font-size: var(--ew-fs-lg);
+  }
+
+  .ew-h2 {
+    font-size: var(--ew-fs-lg);
+  }
+
+  .ew-quote {
+    font-size: var(--ew-fs-md);
+  }
+
+  .ew-next-reads {
+    padding: 48px 0 40px;
+    gap: 28px;
+  }
+
+  .ew-row {
+    padding: 32px 0;
+  }
+
+  .ew-full {
+    padding: 32px 0;
+  }
+}

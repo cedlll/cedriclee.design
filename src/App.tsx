@@ -1,186 +1,421 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { gsap } from 'gsap'
 import './App.css'
-
+import { useHomeGsap } from './hooks/useHomeGsap'
+import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from './lib/legacyDisbursementsWritingSlug'
+const AboutPage = lazy(() =>
+  import('./pages/AboutPage').then((m) => ({ default: m.AboutPage }))
+)
 const FeaturePage = lazy(() =>
   import('./pages/FeaturePage').then((m) => ({ default: m.FeaturePage }))
 )
 const WritingPage = lazy(() =>
   import('./pages/WritingPage').then((m) => ({ default: m.WritingPage }))
 )
+const WritingIndexPage = lazy(() =>
+  import('./pages/WritingPage').then((m) => ({ default: m.WritingIndexPage }))
+)
 const CustomCursor = lazy(() => import('./components/CustomCursor'))
-
-const VISIBLE_COUNT = 3
-
-const TYPING_INTERVAL_MS = 100
-const TYPING_PAUSE_BEFORE_LOOP_MS = 10000
-
-function TypingText({ text }: { text: string }) {
-  const [displayed, setDisplayed] = useState('')
-
-  useEffect(() => {
-    if (displayed.length >= text.length) {
-      const t = setTimeout(() => setDisplayed(''), TYPING_PAUSE_BEFORE_LOOP_MS)
-      return () => clearTimeout(t)
-    }
-    const t = setTimeout(
-      () => setDisplayed(text.slice(0, displayed.length + 1)),
-      TYPING_INTERVAL_MS
-    )
-    return () => clearTimeout(t)
-  }, [text, displayed])
-
-  return (
-    <>
-      {displayed}
-      <span className="typing-cursor" aria-hidden />
-    </>
-  )
-}
-
-const projects = [
-  { title: 'scratchly - scratchpad in your browser', href: 'https://scratchly.xyz/' },
-  { title: '/designr — UI engineer in your IDE', href: 'https://cedlll.github.io/designr/' },
-  { title: 'Tsek Space is your go-to facilitation tool', href: 'https://tsek-space-jxfpbny1s-cedricl-projects.vercel.app/' },
-  { title: 'Hassle-free labor complaint filing', href: 'https://www.laborcomplaintph.app/' },
-]
-
-const writings = [
-  { title: 'Tracing the roots of graffiti in the Philippines', href: '/writing/tracing-the-roots-of-graffiti-in-the-philippines' },
-  { title: "The intertextuality of Manila slum's Pietà", href: '/writing/the-intertextuality-of-manila-slums-pieta' },
-]
-
-const features = [
-  { title: 'UX+ 2025', href: '/feature/ux-plus-2025' },
-  { title: 'TEDxDigitalServicesCambridgeLtd', href: '/feature/tedx-digital-services-cambridge-ltd' },
-]
-
-type SectionProps = {
-  label: string
-  items: { title: string; href: string }[]
-  expandable?: boolean
-}
 
 function isExternalHref(href: string): boolean {
   return href.startsWith('http://') || href.startsWith('https://')
 }
 
-function Section({ label, items, expandable = true }: SectionProps) {
-  const [expanded, setExpanded] = useState(false)
-  const hasMore = expandable && items.length > VISIBLE_COUNT
-  const visibleItems =
-    !expandable || expanded ? items : items.slice(0, VISIBLE_COUNT)
+/** Writing slugs that use the editorial article layout. Keep in sync with `WritingPage`. */
+const WRITING_EDITORIAL_SLUGS = new Set([
+  'enterprise-disbursements-money-movement',
+  LEGACY_DISBURSEMENTS_WRITING_SLUG,
+  'tracing-the-roots-of-graffiti-in-the-philippines',
+  'the-intertextuality-of-manila-slums-pieta',
+])
 
-  return (
-    <div className="section">
-      <h2 className="section-label">{label}</h2>
-      <div className="section-list">
-        {visibleItems.map((item) => (
-          <a
-            key={item.href}
-            href={item.href}
-            {...(isExternalHref(item.href) && {
-              target: '_blank',
-              rel: 'noopener noreferrer',
-            })}
-          >
-            {item.title}
-          </a>
-        ))}
-        {hasMore && (
-          <button
-            type="button"
-            className="section-more"
-            onClick={() => setExpanded((e) => !e)}
-            aria-expanded={expanded}
-          >
-            {expanded ? 'Less ↑' : 'More ↓'}
-          </button>
-        )}
-      </div>
-    </div>
-  )
+/** Feature slugs that use the editorial article layout. Keep in sync with `FeaturePage` `FEATURES` keys. */
+const FEATURE_EDITORIAL_SLUGS = new Set(['ux-plus-2025', 'tedx-digital-services-cambridge-ltd'])
+
+/** Aligns sticky nav with article column before lazy content mounts (avoids `:has()` flash). */
+function innerMainArticleLayout(pathname: string): 'inner-page' | 'editorial' {
+  if (pathname === '/about') {
+    return 'editorial'
+  }
+  const writingMatch = /^\/writing\/([^/]+)\/?$/.exec(pathname)
+  if (writingMatch) {
+    return WRITING_EDITORIAL_SLUGS.has(writingMatch[1]) ? 'editorial' : 'inner-page'
+  }
+  const featureMatch = /^\/feature\/([^/]+)\/?$/.exec(pathname)
+  if (featureMatch) {
+    return FEATURE_EDITORIAL_SLUGS.has(featureMatch[1]) ? 'editorial' : 'inner-page'
+  }
+  return 'inner-page'
 }
 
-function App() {
-  const [showScrollTop, setShowScrollTop] = useState(false)
-  const pathname =
-    typeof globalThis.window !== 'undefined' ? globalThis.window.location.pathname : '/'
-  const isWritingPage = pathname.startsWith('/writing/')
-  const isFeaturePage = pathname.startsWith('/feature/')
-  const isInnerPage = isWritingPage || isFeaturePage
+const WRITING_CASE_STUDY_SLUGS = new Set([
+  'tracing-the-roots-of-graffiti-in-the-philippines',
+  'the-intertextuality-of-manila-slums-pieta',
+  'the-intertextuality-of-manila-slums',
+  'enterprise-disbursements-money-movement',
+  LEGACY_DISBURSEMENTS_WRITING_SLUG,
+  'hello-world',
+])
+
+function isWritingCaseStudyPath(pathname: string): boolean {
+  const match = /^\/writing\/([^/]+)\/?$/.exec(pathname)
+  return match ? WRITING_CASE_STUDY_SLUGS.has(match[1]) : false
+}
+
+function isWritingLikePath(pathname: string): boolean {
+  if (/^\/writing\/?$/.test(pathname)) return false
+
+  if (isWritingCaseStudyPath(pathname)) return true
+
+  // Some entries are tagged as "Writing" on the homepage but live under `/feature/`.
+  if (pathname === '/feature/tedx-digital-services-cambridge-ltd') return true
+
+  return false
+}
+
+type WorkItem = {
+  id: string
+  tag: string
+  label?: string
+  title: string
+  description: string
+  href: string
+  thumbnailSrc?: string
+  placeholder?: boolean
+  showMedia?: boolean
+  twoUp?: boolean
+}
+
+const works: WorkItem[] = [
+  {
+    id: 'enterprise-disbursements',
+    tag: 'Case study',
+    label: 'Financial Management',
+    title: 'Enterprise disbursements',
+    description: 'Redesigning enterprise money movement\u2014self-service schedules, batch flows, and legible async status inside banking APIs and risk policy.',
+    href: '/writing/enterprise-disbursements-money-movement',
+    thumbnailSrc: '/disbursement-hero-unikorns-ref.png',
+  },
+  {
+    id: 'shipmates',
+    tag: 'Case study',
+    label: 'Logistics and Supply Chain',
+    title: 'Shipmates',
+    description: 'Logistics platform for Philippine e-commerce.',
+    href: '#',
+    thumbnailSrc: '/disbursement-case-before.svg',
+    placeholder: true,
+  },
+  {
+    id: 'cambridge',
+    tag: 'Case study',
+    label: 'Education Technology',
+    title: 'Cambridge',
+    description: 'Enterprise digital services.',
+    href: '#',
+    thumbnailSrc: '/disbursement-case-after.svg',
+    placeholder: true,
+  },
+  {
+    id: 'case-study-04',
+    tag: 'Case study',
+    label: 'Technology Service',
+    title: 'Case Study 04',
+    description: 'Coming soon.',
+    href: '#',
+    thumbnailSrc: '/disbursement-case-before.svg',
+    placeholder: true,
+    twoUp: true,
+  },
+  {
+    id: 'case-study-05',
+    tag: 'Case study',
+    label: 'Technology Service',
+    title: 'Case Study 05',
+    description: 'Coming soon.',
+    href: '#',
+    thumbnailSrc: '/disbursement-case-after.svg',
+    placeholder: true,
+    twoUp: true,
+  },
+]
+
+const sideProjects: WorkItem[] = [
+  {
+    id: 'scratchly',
+    tag: 'Side project',
+    title: 'Scratchly',
+    description: 'Scratch-off game builder.',
+    href: 'https://scratchly.xyz/',
+  },
+  {
+    id: 'designr',
+    tag: 'Side project',
+    title: '/designr',
+    description: 'Design rule generator for Claude Code.',
+    href: 'https://cedlll.github.io/designr/',
+  },
+  {
+    id: 'tsek-space',
+    tag: 'Side project',
+    title: 'Tsek Space',
+    description: 'Community fact-checking tool.',
+    href: 'https://tsek-space-jxfpbny1s-cedricl-projects.vercel.app/',
+  },
+]
+
+const writingItems: WorkItem[] = [
+  {
+    id: 'graffiti',
+    tag: 'Writing',
+    title: 'Tracing the Roots of Graffiti in the Philippines',
+    description: 'On Flipone and the origins of Filipino graffiti culture (2018).',
+    href: '/writing/tracing-the-roots-of-graffiti-in-the-philippines',
+  },
+  {
+    id: 'manila-pieta',
+    tag: 'Writing',
+    title: "Manila Slum\u2019s Piet\u00E0",
+    description: 'Media texts and the Philippine drug war (2018).',
+    href: '/writing/the-intertextuality-of-manila-slums-pieta',
+  },
+  {
+    id: 'tedx-rohq',
+    tag: 'Writing',
+    title: 'TEDxDigitalServicesCambridgeROHQ',
+    description: 'Event curation and cross-cultural storytelling.',
+    href: '/feature/tedx-digital-services-cambridge-ltd',
+  },
+]
+
+const testimonialItems: WorkItem[] = [
+  {
+    id: 'testimonial-1',
+    tag: 'Testimonial',
+    title: 'Head of Product, Fintech',
+    description:
+      '"Cedric is one of the rare designers who can move from systems thinking to execution without losing speed or craft."',
+    href: '#',
+    placeholder: true,
+    showMedia: false,
+  },
+  {
+    id: 'testimonial-2',
+    tag: 'Testimonial',
+    title: 'Startup Founder',
+    description:
+      '"He helped us turn a complex workflow into something customers understood instantly, and adoption improved right away."',
+    href: '#',
+    placeholder: true,
+    showMedia: false,
+  },
+  {
+    id: 'testimonial-3',
+    tag: 'Testimonial',
+    title: 'Design Manager',
+    description:
+      '"Cedric leads with clarity, mentors generously, and consistently raises the quality bar for the whole team."',
+    href: '#',
+    placeholder: true,
+    showMedia: false,
+  },
+]
+
+const selectedWorkTop = works.filter(
+  (w) => w.tag === 'Case study' && !w.twoUp && !w.placeholder
+)
+const selectedWorkBottom = works.filter(
+  (w) => w.tag === 'Case study' && w.twoUp && !w.placeholder
+)
+
+function WorkRow({
+  item,
+  showMedia = true,
+  showTextNudge = false,
+}: Readonly<{ item: WorkItem; showMedia?: boolean; showTextNudge?: boolean }>) {
+  const rowShowMedia = showMedia && item.showMedia !== false
+  const textOnly = rowShowMedia === false
+  const external = isExternalHref(item.href)
+  const rowLinkRef = useRef<HTMLAnchorElement>(null)
+  const textRef = useRef<HTMLDivElement>(null)
+  const linkProps = external
+    ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
+    : {}
 
   useEffect(() => {
-    if (typeof globalThis.window === 'undefined') return
-    if (!isInnerPage) {
-      setShowScrollTop(false)
-      return
+    if (!showTextNudge) return
+    const rowLink = rowLinkRef.current
+    const text = textRef.current
+    if (!rowLink || !text || item.placeholder || item.href === '#') return
+
+    const nudgeIn = () => {
+      gsap.to(text, {
+        x: 4,
+        duration: 0.24,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
     }
 
-    const handleScroll = () => {
-      if (!isInnerPage) {
-        setShowScrollTop(false)
-        return
-      }
-
-      const scrollBottom =
-        globalThis.window.scrollY + globalThis.window.innerHeight
-      const pageHeight = document.documentElement.scrollHeight
-      const isNearBottom = pageHeight - scrollBottom <= 160
-      const hasScrolled = globalThis.window.scrollY > 200
-      setShowScrollTop(isNearBottom && hasScrolled)
+    const nudgeOut = () => {
+      gsap.to(text, {
+        x: 0,
+        duration: 0.18,
+        ease: 'power2.out',
+        overwrite: 'auto',
+      })
     }
 
-    handleScroll()
-    globalThis.window.addEventListener('scroll', handleScroll, { passive: true })
+    gsap.set(text, { x: 0 })
+
+    rowLink.addEventListener('mouseenter', nudgeIn)
+    rowLink.addEventListener('mouseleave', nudgeOut)
+    rowLink.addEventListener('focus', nudgeIn)
+    rowLink.addEventListener('blur', nudgeOut)
+
     return () => {
-      globalThis.window.removeEventListener('scroll', handleScroll)
+      rowLink.removeEventListener('mouseenter', nudgeIn)
+      rowLink.removeEventListener('mouseleave', nudgeOut)
+      rowLink.removeEventListener('focus', nudgeIn)
+      rowLink.removeEventListener('blur', nudgeOut)
     }
-  }, [isInnerPage, pathname])
+  }, [item.href, item.placeholder, showTextNudge])
 
-  const handleScrollTop = () => {
-    globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  const cursor = (
-    <Suspense fallback={null}>
-      <CustomCursor
-        dotSize={6}
-        dotColor="#ffffff"
-        animationDuration={200}
-        blendMode="difference"
-        opacity={1}
-        hideOnMobile
-      />
-    </Suspense>
+  const inner = (
+    <>
+      <div className="ed-work-text" ref={textRef}>
+        {item.tag === 'Case study' && item.label ? (
+          <span className="ed-work-label">{item.label}</span>
+        ) : null}
+        <h3 className="ed-work-title">{item.title}</h3>
+        <p className="ed-work-desc">{item.description}</p>
+      </div>
+      {rowShowMedia ? (
+        <div
+          className={`ed-work-media${item.thumbnailSrc ? ' ed-work-media--thumb' : ''}`.trim()}
+          aria-hidden
+          style={
+            item.thumbnailSrc ? { backgroundImage: `url(${item.thumbnailSrc})` } : undefined
+          }
+        />
+      ) : null}
+    </>
   )
 
-  if (isInnerPage) {
-    const InnerContent = isFeaturePage ? FeaturePage : WritingPage
+  if (item.placeholder || item.href === '#') {
     return (
-      <div className="page">
-        {cursor}
-        {showScrollTop && (
-          <button
-            type="button"
-            className="scroll-top-button"
-            onClick={handleScrollTop}
-            aria-label="Scroll to top"
-            title="Scroll to top"
-          >
-            ↑
-          </button>
-        )}
-        <div className="page-inner">
-          <Suspense fallback={null}>
-            <InnerContent />
-          </Suspense>
-        </div>
-      </div>
+      <article
+        className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ed-work-row--placeholder`.trim()}
+      >
+        {inner}
+      </article>
     )
   }
 
   return (
-    <div className="page">
+    <a
+      ref={rowLinkRef}
+      href={item.href}
+      className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} home-project-link`.trim()}
+      {...linkProps}
+    >
+      {inner}
+    </a>
+  )
+}
+
+function WorkSection({
+  label,
+  items,
+  className,
+  showMedia = true,
+  showTextNudge = false,
+  showLabel = true,
+}: Readonly<{
+  label: string
+  items: readonly WorkItem[]
+  className?: string
+  showMedia?: boolean
+  showTextNudge?: boolean
+  showLabel?: boolean
+}>) {
+  return (
+    <section className={`ed-section ${className ?? ''}`.trim()} aria-label={label}>
+      {showLabel ? <h2 className="ed-section-label">{label}</h2> : null}
+      <div className="ed-work-list">
+        {items.map((item) => (
+          <WorkRow key={item.id} item={item} showMedia={showMedia} showTextNudge={showTextNudge} />
+        ))}
+      </div>
+    </section>
+  )
+}
+
+const NAV_SOCIAL = {
+  linkedin: 'https://www.linkedin.com/in/cedmanila/',
+  github: 'https://github.com/cedlll',
+} as const
+
+function MainNavigation({ pathname }: Readonly<{ pathname: string }>) {
+  const isHomeActive = pathname === '/'
+  const isAboutActive = pathname === '/about'
+
+  const linkClass = (isActive: boolean) => `ed-links-link${isActive ? ' is-active' : ''}`
+
+  return (
+    <nav className="ed-hero-links" aria-label="Navigation">
+      <ul className="ed-links-list">
+        <li className="ed-links-item">
+          <a href="/" className={linkClass(isHomeActive)}>
+            Home
+          </a>
+        </li>
+        <li className="ed-links-item">
+          <a href="/about" className={linkClass(isAboutActive)}>
+            About
+          </a>
+        </li>
+        <li className="ed-links-item">
+          <a
+            href={NAV_SOCIAL.linkedin}
+            className="ed-links-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            LinkedIn
+          </a>
+        </li>
+        <li className="ed-links-item">
+          <a
+            href={NAV_SOCIAL.github}
+            className="ed-links-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub
+          </a>
+        </li>
+      </ul>
+    </nav>
+  )
+}
+
+function HomeView({
+  cursor,
+  showScrollTop,
+  handleScrollTop,
+  pathname,
+}: Readonly<{
+  cursor: ReactNode
+  showScrollTop: boolean
+  handleScrollTop: () => void
+  pathname: string
+}>) {
+  const homeRootRef = useRef<HTMLDivElement>(null)
+  useHomeGsap(homeRootRef)
+
+  return (
+    <div className="page page--home">
       {cursor}
       {showScrollTop && (
         <button
@@ -190,88 +425,209 @@ function App() {
           aria-label="Scroll to top"
           title="Scroll to top"
         >
-          ↑
+          &#8963;
         </button>
       )}
-      <div className="page-inner">
-        <main className="profile-layout">
-          <section className="profile-panel">
-            <header className="profile-header">
-              <div className="profile-header-text">
-                <div className="profile-name-with-preview">
-                  <h1 className="profile-title profile-title-with-preview">
-                    <span className="profile-title-inner">
-                      <TypingText text="Clarence Cedric Lee" />
-                    </span>
-                  </h1>
-                  <span className="profile-photo-preview" aria-hidden>
-                    <img
-                      src="/cedric-photo-400.png"
-                      alt=""
-                      width={200}
-                      height={200}
-                      fetchPriority="high"
-                      decoding="async"
-                    />
-                  </span>
-                </div>
-                <p className="profile-subtitle">
-                  Building things worth having
-                </p>
-              </div>
+      <div ref={homeRootRef} className="page-inner page-inner--home">
+        <main className="home-main">
+          <MainNavigation pathname={pathname} />
 
-              <nav className="profile-links" aria-label="Profile links">
-                <a href="https://www.linkedin.com/in/cedmanila/" target="_blank" rel="noopener noreferrer">
-                  LinkedIn
-                </a>
-                <a href="https://github.com/cedlll" target="_blank" rel="noopener noreferrer">
-                  GitHub
-                </a>
-                <a href="https://v0.app/@cedricl" target="_blank" rel="noopener noreferrer">
-                  v0
-                </a>
-              </nav>
-            </header>
+          {/* Hero headline + description */}
+          <section id="about" className="home-intro-editorial" aria-labelledby="hero-heading">
+            <div className="home-hero-title-row">
+              <h1 id="hero-heading" className="ed-hero-headline home-hero-headline">
+                <span className="ed-hero-headline-line">
+                  <span className="ed-hero-headline-name" />
+                  <span className="ed-hero-headline-line-suffix" />
+                </span>
+                <span className="ed-hero-headline-rotator-wrap" aria-hidden="true">
+                  <span className="ed-hero-headline-serif ed-hero-headline-rotator" />
+                  <span className="ed-hero-headline-cursor" />
+                </span>
+              </h1>
+            </div>
 
-            <section className="sections" aria-label="Work overview">
-              <Section
-                label={`${projects.length} fun projects`}
-                items={projects}
-                expandable={false}
-              />
-              <Section
-                label={`${writings.length} writings`}
-                items={writings}
-              />
-              <Section
-                label={`${features.length} features`}
-                items={features}
-              />
-            </section>
-
-            <a
-              href="/galaga/index.html"
-              className="galaga-button"
-              aria-label="Play Galaga"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden
-              >
-                <path
-                  d="M12 0 L20 8 L16 12 L20 16 L12 24 L4 16 L8 12 L4 8 Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </a>
+            <div className="home-hero-about">
+              <p className="home-hero-about-col">
+                I care about systems thinking, legible complexity, and craft: making dense domains (payments,
+                logistics, policy) feel understandable without dumbing them down.
+              </p>
+            </div>
           </section>
+
+          {/* ── Selected works ── */}
+          <div id="selected-work" className="ed-works home-projects">
+            <WorkSection label="Selected works" items={selectedWorkTop} showLabel={false} />
+            {selectedWorkBottom.length > 0 ? (
+              <WorkSection
+                label="More case studies"
+                items={selectedWorkBottom}
+                className="ed-section--selected-work-tail"
+              />
+            ) : null}
+            <WorkSection
+              label="Testimonials"
+              items={testimonialItems}
+              className="ed-section--testimonials"
+              showMedia={false}
+            />
+            <WorkSection
+              label="Side projects"
+              items={sideProjects}
+              className="ed-section--side-projects"
+              showTextNudge
+            />
+            <WorkSection
+              label="Writing"
+              items={writingItems}
+              className="ed-section--writing-speaking"
+              showTextNudge
+            />
+          </div>
+
+          <footer className="site-footer">
+            <p className="site-footer-copy">
+              Clarence Cedric Lee &copy; {new Date().getFullYear()}
+            </p>
+          </footer>
         </main>
       </div>
     </div>
+  )
+}
+
+function App() {
+  const [showScrollTop, setShowScrollTop] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const pathname = globalThis.window?.location.pathname ?? '/'
+  const isWritingIndexPath = /^\/writing\/?$/.test(pathname)
+  const isWritingArticlePath = /^\/writing\/[^/]+\/?$/.test(pathname) && !isWritingIndexPath
+  const isWritingSection = isWritingIndexPath || isWritingArticlePath
+  const isFeaturePage = pathname.startsWith('/feature/')
+  const isAboutPage = pathname === '/about'
+  const isInnerPage = isWritingSection || isFeaturePage || isAboutPage
+
+  useEffect(() => {
+    if (globalThis.window === undefined) return
+
+    let rafId: number | null = null
+    let lastProgress = -1
+    let lastShowTop = false
+
+    const flushScroll = () => {
+      rafId = null
+      const { scrollY, innerHeight } = globalThis.window
+      const documentHeight = globalThis.window.document.documentElement.scrollHeight
+      const scrollableDistance = documentHeight - innerHeight
+      const progress = scrollableDistance > 0
+        ? Math.min(Math.max(scrollY / scrollableDistance, 0), 1)
+        : 0
+      const hasStartedScrolling = scrollY > 0
+      const nextProgress = isInnerPage && !isAboutPage ? progress : 0
+
+      if (nextProgress !== lastProgress) {
+        lastProgress = nextProgress
+        setScrollProgress(nextProgress)
+      }
+      if (hasStartedScrolling !== lastShowTop) {
+        lastShowTop = hasStartedScrolling
+        setShowScrollTop(hasStartedScrolling)
+      }
+    }
+
+    const handleScroll = () => {
+      if (rafId !== null) return
+      rafId = globalThis.window.requestAnimationFrame(flushScroll)
+    }
+
+    flushScroll()
+    globalThis.window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => {
+      globalThis.window.removeEventListener('scroll', handleScroll)
+      if (rafId !== null) globalThis.window.cancelAnimationFrame(rafId)
+    }
+  }, [isInnerPage, isAboutPage, pathname])
+
+  const handleScrollTop = () => {
+    if (globalThis.window === undefined) return
+    globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const cursor = (
+    <Suspense fallback={null}>
+      <CustomCursor
+        dotSize={10}
+        dotColor="#000"
+        animationDuration={200}
+        blendMode="normal"
+        opacity={1}
+        hideOnMobile
+      />
+    </Suspense>
+  )
+
+  if (isInnerPage) {
+    let innerPageBody: ReactNode
+    if (isAboutPage) {
+      innerPageBody = <AboutPage />
+    } else if (isFeaturePage) {
+      innerPageBody = <FeaturePage />
+    } else if (isWritingIndexPath) {
+      innerPageBody = <WritingIndexPage />
+    } else {
+      innerPageBody = <WritingPage />
+    }
+
+    return (
+      <div className="page page--inner">
+        {cursor}
+        {!isAboutPage && (
+          <div
+            className="scroll-progress"
+            style={{ transform: `scaleX(${scrollProgress})` }}
+            aria-hidden="true"
+          />
+        )}
+        {showScrollTop && (
+          <button
+            type="button"
+            className="scroll-top-button"
+            onClick={handleScrollTop}
+            aria-label="Scroll to top"
+            title="Scroll to top"
+          >
+            &#8963;
+          </button>
+        )}
+        {/* Always `.page-inner` (1200px): toggling `.page-inner--home` (1120px) per route shifted the whole column. */}
+        <div className="page-inner">
+          <main
+            className="home-main"
+            data-inner-main-layout={innerMainArticleLayout(pathname)}
+          >
+            {!isWritingLikePath(pathname) && <MainNavigation pathname={pathname} />}
+            <Suspense
+              fallback={
+                <p className="route-loading-fallback" role="status">
+                  Loading&hellip;
+                </p>
+              }
+            >
+              {innerPageBody}
+            </Suspense>
+          </main>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <HomeView
+      cursor={cursor}
+      showScrollTop={showScrollTop}
+      handleScrollTop={handleScrollTop}
+      pathname={pathname}
+    />
   )
 }
 

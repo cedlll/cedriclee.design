@@ -1,5 +1,19 @@
+import { lazy, Suspense, useLayoutEffect } from 'react'
 import { InnerPage } from '../components/InnerPage'
 import type { InnerPageBlock } from '../components/InnerPage'
+import { EditorialWritingLayout } from '../components/EditorialWritingLayout'
+import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from '../lib/legacyDisbursementsWritingSlug'
+
+const DisbursementsCaseStudy = lazy(() =>
+  import('../components/DisbursementsCaseStudy').then((m) => ({ default: m.DisbursementsCaseStudy }))
+)
+
+/** Canonical slug for the disbursements case study; legacy URL is rewritten in the client. */
+const DISBURSEMENTS_CASE_STUDY_SLUG = 'enterprise-disbursements-money-movement'
+
+function normalizeWritingSlug(raw: string): string {
+  return raw === LEGACY_DISBURSEMENTS_WRITING_SLUG ? DISBURSEMENTS_CASE_STUDY_SLUG : raw
+}
 
 const WRITINGS: Record<
   string,
@@ -119,7 +133,7 @@ const WRITINGS: Record<
     ],
   },
   'the-intertextuality-of-manila-slums-pieta': {
-    title: "The intertextuality of Manila slum's Pietà",
+    title: "The intertextuality of Manila slum's Piet\u00E0",
     date: '2018',
     blocks: [
       {
@@ -129,12 +143,12 @@ const WRITINGS: Record<
       {
         type: 'image',
         src: '/pieta.webp',
-        alt: "Michelangelo's Pietà sculpture, photo by Stanislav Traykov on Wikimedia Commons (CC BY 2.5)",
+        alt: "Michelangelo's Piet\u00E0 sculpture, photo by Stanislav Traykov on Wikimedia Commons (CC BY 2.5)",
         caption: 'Stanislav Traykov, Wikimedia Commons. CC BY 2.5.',
       },
       {
         type: 'point',
-        text: "Michelangelo's Pietà depicts the body of Jesus Christ lying in the lap of Mother Mary after his Crucifixion. Contrary to popular belief, Michelangelo did not intend to signify death, but to espouse the \"religious vision of abandonment and a serene face of the Son.\"",
+        text: "Michelangelo's Piet\u00E0 depicts the body of Jesus Christ lying in the lap of Mother Mary after his Crucifixion. Contrary to popular belief, Michelangelo did not intend to signify death, but to espouse the \"religious vision of abandonment and a serene face of the Son.\"",
         link: {
           href: 'https://books.google.com.ph/books?id=dYTxCwAAQBAJ&pg=PT31&lpg=PT31&dq=%E2%80%9Creligious+vision+of+abandonment+and+a+serene+face+of+the+Son.%E2%80%9D+vatican&ots=Yj5lml-53F&sig=EGC17GZpxJuBmPQd_zhjeyo7BWY&hl=en&sa=X&ved=0ahUKEwi94ce6kv3bAhUId94KHYkpDDcQ6AEIRTAD#v=onepage&q=%E2%80%9Creligious%20vision%20of%20abandonment%20and%20a%20serene%20face%20of%20the%20Son.%E2%80%9D%20vatican&f=false',
           label: '[1]',
@@ -143,13 +157,13 @@ const WRITINGS: Record<
       },
       {
         type: 'point',
-        text: "Since Pietà's creation in 1499, the famous Renaissance sculpture, the only piece ever signed by Michelangelo, has inspired faith and emotion through its beautiful depiction of the Virgin Mary and Jesus Christ.",
+        text: "Since Piet\u00E0's creation in 1499, the famous Renaissance sculpture, the only piece ever signed by Michelangelo, has inspired faith and emotion through its beautiful depiction of the Virgin Mary and Jesus Christ.",
       },
       {
         type: 'image',
         src: '/pdi.webp',
-        alt: 'Front page of the Philippine Daily Inquirer showing the Pietà-like photograph of Jennilyn Olayres holding Michael Siaron after his killing during the Philippine drug war. Photo by Raffy Lerma.',
-        caption: "Raffy Lerma’s Pietà-like photograph as the Philippine Daily Inquirer’s front page on July 24, 2016.",
+        alt: "Front page of the Philippine Daily Inquirer showing the Piet\u00E0-like photograph of Jennilyn Olayres holding Michael Siaron after his killing during the Philippine drug war. Photo by Raffy Lerma.",
+        caption: "Raffy Lerma's Piet\u00E0-like photograph as the Philippine Daily Inquirer's front page on July 24, 2016.",
       },
       {
         type: 'point',
@@ -157,38 +171,38 @@ const WRITINGS: Record<
       },
       {
         type: 'point',
-        text: "Siaron's death is considered as \"cardboard justice\" in the Philippines wherein suspected criminals are hastily killed—leaving a cardboard sign on their corpse, and labeling who they are and how they should not be emulated by the public.",
+        text: "Siaron's death is considered as \"cardboard justice\" in the Philippines wherein suspected criminals are hastily killed\u2014leaving a cardboard sign on their corpse, and labeling who they are and how they should not be emulated by the public.",
       },
       {
         type: 'point',
-        text: "During his 9 PM to 5 AM shift, Raffy Lerma, a photographer for the Philippine Daily Inquirer, had photographed Siaron's death that night, and did not expect his photograph to be likened to Michelangelo's Pietà. The photograph easily went viral and even made it to the front page of the Philippine Daily Inquirer and was carried by international news outlets like The New York Times and The Times. The photograph quickly irked President Duterte and described the public outcry as \"melodramatic\" during his first State of the Nation Address (SONA) in 2016.",
+        text: "During his 9 PM to 5 AM shift, Raffy Lerma, a photographer for the Philippine Daily Inquirer, had photographed Siaron's death that night, and did not expect his photograph to be likened to Michelangelo's Piet\u00E0. The photograph easily went viral and even made it to the front page of the Philippine Daily Inquirer and was carried by international news outlets like The New York Times and The Times. The photograph quickly irked President Duterte and described the public outcry as \"melodramatic\" during his first State of the Nation Address (SONA) in 2016.",
       },
       {
         type: 'imageCompare',
         beforeSrc: '/pieta.webp',
         afterSrc: '/rlerma.webp',
-        beforeAlt: "Michelangelo's Pietà sculpture",
-        afterAlt: "Raffy Lerma's Pietà-like photograph, Philippine Daily Inquirer front page, 2016",
-        caption: "The glaring similarities of Raffy Lerma’s photograph to Michelangelo’s Pietà has caught the public’s attention.",
+        beforeAlt: "Michelangelo's Piet\u00E0 sculpture",
+        afterAlt: "Raffy Lerma's Piet\u00E0-like photograph, Philippine Daily Inquirer front page, 2016",
+        caption: "The glaring similarities of Raffy Lerma's photograph to Michelangelo's Piet\u00E0 has caught the public's attention.",
       },
       {
         type: 'point',
-        text: "Nonetheless, Manila slums' Pietà personified the cost of the drug war in the Philippines—thus, raising the debate over the rise of extrajudicial killings and impunity while President Duterte's allies shrugged the issue by labeling it as a Yellow media-driven propaganda and deemed the killings as a \"necessary\" step to ensure safety and security.",
+        text: "Nonetheless, Manila slums' Piet\u00E0 personified the cost of the drug war in the Philippines\u2014thus, raising the debate over the rise of extrajudicial killings and impunity while President Duterte's allies shrugged the issue by labeling it as a Yellow media-driven propaganda and deemed the killings as a \"necessary\" step to ensure safety and security.",
       },
       {
         type: 'image',
         src: '/reuters.webp',
-        alt: 'Protesters and residents holding lighted candles and placards at the wake of Kian Loyd delos Santos, a 17-year-old student killed in Duterte’s drug war. Photo by Dondi Tawatao, 2017, Reuters.',
-        caption: 'Protesters and residents hold lighted candles and placards at the wake of Kian Loyd delos Santos, a 17-year-old high school student, who was among the thousands killed by President Duterte’s war on drugs. © 2017 Dondi Tawatao / Reuters',
+        alt: "Protesters and residents holding lighted candles and placards at the wake of Kian Loyd delos Santos, a 17-year-old student killed in Duterte's drug war. Photo by Dondi Tawatao, 2017, Reuters.",
+        caption: 'Protesters and residents hold lighted candles and placards at the wake of Kian Loyd delos Santos, a 17-year-old high school student, who was among the thousands killed by President Duterte\'s war on drugs. \u00A9 2017 Dondi Tawatao / Reuters',
         
       },
       {
         type: 'point',
-        text: "For human rights advocates, time is of the essence so they must gather all the support they need to counter the popularity or momentum of the drug war and the continuing impunity in the country. Manila slums' Pietà adds to their ammunition as it helped the international news outlets depict and narrate the bloody drug war to the rest of the world—thus, prompting other nations to act and condemn President Duterte's controversial methods and paradigm shift.",
+        text: "For human rights advocates, time is of the essence so they must gather all the support they need to counter the popularity or momentum of the drug war and the continuing impunity in the country. Manila slums' Piet\u00E0 adds to their ammunition as it helped the international news outlets depict and narrate the bloody drug war to the rest of the world\u2014thus, prompting other nations to act and condemn President Duterte's controversial methods and paradigm shift.",
       },
       {
         type: 'point',
-        text: "Manila slums' Pietà is speaking to us by telling the hypocrisy of a Catholic-dominated country blindly supporting President Duterte's drug war where it goes against the Church's teaching of valuing human life by the \"Thou Shall Not Kill\" commandment.",
+        text: "Manila slums' Piet\u00E0 is speaking to us by telling the hypocrisy of a Catholic-dominated country blindly supporting President Duterte's drug war where it goes against the Church's teaching of valuing human life by the \"Thou Shall Not Kill\" commandment.",
       },
       {
         type: 'quote',
@@ -197,11 +211,11 @@ const WRITINGS: Record<
       },
       {
         type: 'point',
-        text: "Michelangelo's Pietà enriches the discourse and message of Manila slums' own version of it by asking the re-evaluation of our moral values and who we really are as a nation. The moral decay of blatantly disregarding human life is damaging our institutions and foundations as a rights-respecting nation at an alarming rate. For instance, the attack and intimidation of institutions like the Commission on Human Rights (CHR) of the Philippines.",
+        text: "Michelangelo's Piet\u00E0 enriches the discourse and message of Manila slums' own version of it by asking the re-evaluation of our moral values and who we really are as a nation. The moral decay of blatantly disregarding human life is damaging our institutions and foundations as a rights-respecting nation at an alarming rate. For instance, the attack and intimidation of institutions like the Commission on Human Rights (CHR) of the Philippines.",
       },
       {
         type: 'point',
-        text: "Indeed, Manila slums' Pietà helped raise the discourse and media texts like these should be explored even more to understand why most Filipinos voted for President Duterte's brand of \"change\" and dig deeper to the WHYs of the populist revolt against elite democracy.",
+        text: "Indeed, Manila slums' Piet\u00E0 helped raise the discourse and media texts like these should be explored even more to understand why most Filipinos voted for President Duterte's brand of \"change\" and dig deeper to the WHYs of the populist revolt against elite democracy.",
       },
     ],
   },
@@ -216,9 +230,12 @@ const WRITINGS: Record<
       },
       {
         type: 'image',
-        src: '/cedric-photo.png',
+        src: '/cedric-photo-400.png',
+        srcWebp: '/cedric-photo-400.webp',
         alt: 'Writing image',
         caption: '28 12 2025',
+        width: 400,
+        height: 400,
       },
       {
         type: 'point',
@@ -234,6 +251,79 @@ const WRITINGS: Record<
         type: 'point',
         label: 'Point',
         text: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+      },
+    ],
+  },
+  [DISBURSEMENTS_CASE_STUDY_SLUG]: {
+    title: 'Enterprise disbursements \u2014 Redesigning enterprise money movement',
+    date: '2021\u20132023',
+    blocks: [
+      {
+        type: 'point',
+        label: 'TL;DR',
+        text: "As Senior Product Designer at a Philippine payment gateway fintech (2021\u20132023), I redesigned the enterprise disbursement feature to address critical user pain points while navigating technical constraints from banking APIs and compliance requirements. Adoption had stalled at 9% with only 12 of 133 onboarded merchants transacting. I led end-to-end design for self-service payout scheduling, simplified disbursement flows, transparent status communication, bulk CSV uploads with pre-submit validation, saved recipients, and recovery-oriented error handling\u2014trading \u201Cinstant\u201D promises for transparency. The work transformed disbursements from a manual, ops-heavy process to a scalable self-service product and positioned the company to compete with Xendit and Paynamics in the enterprise disbursement market.",
+      },
+      {
+        type: 'point',
+        label: 'Context \u2014 A payment gateway & the disbursement opportunity',
+        text: "The company was a fintech platform enabling Philippine businesses to accept online payments and move money. While payment acceptance was our core product, disbursements represented a critical gap for enterprise customers who needed to pay out funds to suppliers, employees, and partners.\n\nPhilippine enterprises were relying on manual bank transfers\u2014spreadsheets, multiple bank logins, and hours of reconciliation. Competitors like Xendit and Paynamics already offered disbursement products with external funding, real-time transfers, scheduled disbursements, and proof of deposit\u2014features we lacked. Our target segments included traditional enterprises, startups, and medium-to-large online sellers with high-volume payment needs, where 85% of disbursements were for operational expenses and supplier payments.",
+      },
+      {
+        type: 'point',
+        label: 'The strategic opportunity',
+        text: "The company\u2019s growth strategy identified disbursements as critical for capturing high-value enterprise customers. The cash-out market was highly concentrated\u2014once we became a merchant\u2019s sole provider for disbursements, we could capture significantly higher TPV compared to fragmented payment acceptance.\n\nTwo core use cases anchored the roadmap. Internal payouts covered payroll and gig-economy payments\u2014companies like Mober and Entrego paying riders, plus SMBs needing payroll solutions. External marketplace splits enabled platforms like ShopSM, Edamama, and Stance to pay sub-merchants and suppliers. The strategic bet: by offering easier payroll for smaller merchants and tapping emerging marketplaces onboarding their own merchants, we could build durable competitive moats through high switching costs.\n\nStrategic blockers included Finance team manpower required for manual reconciliation (short-term) and the need for an Electronic Money Issuer (EMI) license for advanced features like real-time transfers and bank deposit confirmation via API (long-term).",
+      },
+      {
+        type: 'point',
+        label: 'The challenge \u2014 low adoption & feature gaps',
+        text: "When I joined the project, the disbursement feature had launched but was severely underperforming. In the April\u2013June 2022 review period, only 12 of 133 onboarded merchants had transacted\u2014a 9.02% adoption rate\u2014with 32 total transactions and \u20B1163.9K in TPV (average ticket size of \u20B15,122).\n\nThrough user research and customer support analysis, we identified six critical friction points: merchants confused \u201Cpayout schedule\u201D (when the platform settled to them) with \u201Cdisbursement schedule\u201D (when they can push funds out); there was no self-service control over payout timing\u2014every change required contacting support; batch-based processing left users uncertain about when funds would arrive; there was no external funding capability; compliance-grade receipts were missing; and when disbursements failed, users had no clear path to diagnose or fix issues.\n\nOur competitor analysis confirmed we were missing table-stakes features. Xendit and Paynamics offered external funding, real-time transfers, scheduled disbursements, and user management\u2014all critical for enterprise adoption.",
+      },
+      {
+        type: 'point',
+        label: 'Technical constraints \u2014 designing within API limitations',
+        text: "The biggest challenge wasn\u2019t just user needs\u2014it was what our banking APIs and infrastructure could actually support. Every design decision involved trade-offs between user expectations and technical reality.\n\nAsynchronous processing: Our banking partner\u2019s API couldn\u2019t provide real-time status updates. Once submitted, disbursements were \u201Cqueued\u201D and processed in batches every few hours. I designed a status system that set accurate expectations\u2014clear states (Processing, In Transit, Completed) with estimated completion times and email/SMS notifications at each stage.\n\nBatch processing limitations: The API could only process a certain number of disbursements per batch with rate limits. I implemented a bulk upload feature with clear CSV templates and pre-submission validation\u2014errors flagged before submission, not after batch processing started.\n\nLimited pre-submission validation: We couldn\u2019t validate recipient bank account details before submission, meaning disbursements could fail hours later. I introduced saved recipients with verification workflows\u2014accounts checked when saved, not when disbursed\u2014reducing post-submission failures.\n\nRisk & compliance requirements: Not all merchants could use faster payout schedules. I designed a gated system where Risk Ops configured merchant eligibility via Retool, and the dashboard dynamically showed only eligible payout options\u2014balancing security with user autonomy.",
+      },
+      {
+        type: 'imageCompare',
+        beforeSrc: '/disbursement-case-before.svg',
+        afterSrc: '/disbursement-case-after.svg',
+        beforeAlt:
+          'Illustrative wireframe: vague pending state, conflated payout vs send-money language, and dependence on support',
+        afterAlt:
+          'Illustrative wireframe: separated settlement vs outbound language, named batch lifecycle with ETA, and visible cadence options when eligible',
+        caption:
+          'Before / after: from opaque pending states and support-heavy changes to explicit lifecycle language and self-service where policy allowed. Illustrative wireframes\u2014not production screenshots.',
+      },
+      {
+        type: 'quote',
+        line1: 'Transparency beats false promises.',
+        line2: 'Shift errors left; make risk guardrails invisible to eligible merchants.',
+      },
+      {
+        type: 'point',
+        label: 'My role & approach',
+        text: "As the lead Product Designer for Disbursements, I owned the end-to-end design process\u2014from research to final implementation. My work spanned user research (onboarding studies with 93 merchants), cross-functional collaboration with Risk Ops, Engineering, Finance, and PMM, interaction design for self-service scheduling, bulk upload flows, error states, and status communication, design system contributions (reusable status indicators, modals, error patterns), and developer handoff with detailed specs, edge case documentation, and interactive prototypes.\n\nMy design philosophy centered on transparency over false promises. Rather than hiding technical limitations, I designed for honesty. If we couldn\u2019t offer real-time transfers, I communicated that clearly. If batch processing took hours, I set expectations with timelines and notifications. This approach built trust and reduced support burden\u2014users knew what to expect, even if the answer wasn\u2019t instant.",
+      },
+      {
+        type: 'point',
+        label: 'Key design decisions',
+        text: "1. Self-service payout schedule \u2014 Enabled merchants to change their payout frequency (monthly \u2192 bi-weekly \u2192 on-demand) without contacting support. Automated eligibility checks based on transaction history and KYC status reduced operational overhead. High-risk merchants stayed on monthly payouts until meeting thresholds; the UI surfaced only eligible options, preventing confusion.\n\n2. Transparent status communication \u2014 Designed a multi-state system (Processing, In Transit, Completed, Failed) with estimated timelines. Balanced detail with simplicity: too much technical info would confuse users, too little wouldn\u2019t give confidence. Settled on user-friendly states with proactive email/SMS notifications at each stage.\n\n3. Bulk upload with pre-validation \u2014 Created a CSV upload flow that validated file format, account numbers, and amounts before submission. Added upfront friction (strict templates) but prevented catastrophic batch failures. Clear error messages (\u201CRow 12: Invalid account number\u201D) let users fix issues before submitting.\n\n4. Saved recipients for recurring disbursements \u2014 85% of disbursements were recurring (same suppliers, same employees). Saved recipients required upfront verification but eliminated re-entry errors, sped up recurring flows, and created a validation layer compensating for API limitations.\n\n5. Error handling & recovery paths \u2014 Designed detailed error states with actionable recovery steps (\u201CDisbursement failed: Invalid account number. Edit and retry?\u201D). Mapped error codes to plain-language explanations with clear CTAs\u2014precise enough to guide users, not so technical as to overwhelm them.",
+      },
+      {
+        type: 'point',
+        label: 'Interactive prototype',
+        text: 'Below is a placeholder for a React-based interactive walkthrough of the disbursement redesign\u2014covering the status model, self-service scheduling, CSV validation, and error recovery patterns.',
+      },
+      { type: 'disbursementsPrototype' },
+      {
+        type: 'point',
+        label: 'Outcomes & business impact',
+        text: "93 merchants onboarded within the first quarter post-redesign (up from 12 active users at 9% adoption). \u20B1163.9K in TPV processed across 32 transactions, with an average ticket size of \u20B15,122. Reduced support tickets for disbursement-related inquiries\u2014self-service payout scheduling eliminated the manual ops bottleneck. Positioned for competitive parity by addressing feature gaps that put us on par with Xendit and Paynamics.\n\nOperationally, Finance and Risk Ops teams no longer had to manually process payout schedule changes or troubleshoot failed disbursements. The self-service model scaled without headcount growth. The design patterns I created\u2014status communication, error handling, validation flows\u2014became reusable components across the company\u2019s product suite, accelerating future feature development.\n\nBy 2023, the product strategy shifted to focus on high-margin products like disbursements (vs. low-margin payment acceptance). My work laid the foundation for future monetization through Treasury APIs, premium on-demand transfers, and proof of deposit features\u2014positioning the company as a serious competitor in the enterprise disbursement market.",
+      },
+      {
+        type: 'point',
+        label: 'Lessons learned',
+        text: "1. Transparency beats false promises \u2014 Users would rather know the truth about processing times than be promised instant results that don\u2019t materialize. Setting accurate expectations built trust and reduced support burden.\n\n2. Shift errors left \u2014 Pre-submission validation (file format checks, saved recipient verification) prevented catastrophic failures downstream. Better to add friction upfront than deal with errors after hours of batch processing.\n\n3. Self-service at scale requires guardrails \u2014 Risk requirements demanded merchant segmentation. The key was making guardrails invisible to eligible users while protecting the business from fraud.\n\n4. API limitations are design constraints, not excuses \u2014 Asynchronous processing, batch limits, and validation gaps weren\u2019t reasons to ship a bad product\u2014they were constraints that required creative design solutions. The best products work within reality, not against it.\n\n5. Cross-functional collaboration is non-negotiable \u2014 Every design decision involved trade-offs between user needs, technical feasibility, risk requirements, and business goals. Success required constant alignment with Engineering, Risk Ops, Finance, and PMM\u2014not shipping designs in isolation.",
       },
     ],
   },
@@ -254,9 +344,48 @@ const WRITINGS: Record<
   },
 }
 
+/** Display order on `/writing`. Every slug must exist on `WRITINGS`. */
+export const WRITING_INDEX_SLUGS: readonly (keyof typeof WRITINGS)[] = [
+  DISBURSEMENTS_CASE_STUDY_SLUG,
+  'tracing-the-roots-of-graffiti-in-the-philippines',
+  'the-intertextuality-of-manila-slums-pieta',
+  'the-intertextuality-of-manila-slums',
+  'hello-world',
+]
+
+export function WritingIndexPage() {
+  return (
+    <article className="inner-page">
+      <a href="/" className="inner-page-back">
+        &larr; Back
+      </a>
+      <header className="inner-page-header">
+        <h1 className="inner-page-title">Writing</h1>
+        <p className="inner-page-date writing-index-lede">Essays and case studies</p>
+      </header>
+      <ul className="writing-index-list">
+        {WRITING_INDEX_SLUGS.map((slug) => {
+          const entry = WRITINGS[slug]
+          if (!entry) return null
+          return (
+            <li key={slug} className="writing-index-item">
+              <a className="writing-index-link" href={`/writing/${slug}`}>
+                {entry.title}
+              </a>
+              {entry.date ? (
+                <span className="writing-index-meta">{entry.date}</span>
+              ) : null}
+            </li>
+          )
+        })}
+      </ul>
+    </article>
+  )
+}
+
 function getWritingSlug(): string {
-  if (typeof globalThis.window === 'undefined') return ''
-  const match = globalThis.window.location.pathname.match(/^\/writing\/(.+)$/)
+  if (globalThis.window === undefined) return ''
+  const match = /^\/writing\/([^/]+)\/?$/.exec(globalThis.window.location.pathname)
   return match ? match[1] : ''
 }
 
@@ -265,7 +394,34 @@ function getWritingSlug(): string {
  * Renders content based on the URL slug.
  */
 export function WritingPage() {
-  const slug = getWritingSlug()
+  const rawSlug = getWritingSlug()
+  const slug = normalizeWritingSlug(rawSlug)
+
+  useLayoutEffect(() => {
+    if (globalThis.window === undefined) return
+    if (rawSlug !== LEGACY_DISBURSEMENTS_WRITING_SLUG) return
+    const { search, hash } = globalThis.window.location
+    globalThis.window.history.replaceState(
+      null,
+      '',
+      `/writing/${DISBURSEMENTS_CASE_STUDY_SLUG}${search}${hash}`,
+    )
+  }, [rawSlug])
+
+  if (slug === DISBURSEMENTS_CASE_STUDY_SLUG) {
+    return (
+      <Suspense
+        fallback={
+          <p className="inner-page-block" role="status">
+            Loading case study&hellip;
+          </p>
+        }
+      >
+        <DisbursementsCaseStudy />
+      </Suspense>
+    )
+  }
+
   const writing = WRITINGS[slug]
 
   if (!writing) {
@@ -283,12 +439,27 @@ export function WritingPage() {
     )
   }
 
-  return (
-    <InnerPage
-      title={writing.title}
-      date={writing.date}
-      backHref="/"
-      blocks={writing.blocks}
-    />
-  )
+  if (slug === 'tracing-the-roots-of-graffiti-in-the-philippines') {
+    return (
+      <EditorialWritingLayout
+        title={writing.title}
+        date={writing.date}
+        backHref="/"
+        blocks={writing.blocks}
+      />
+    )
+  }
+
+  if (slug === 'the-intertextuality-of-manila-slums-pieta') {
+    return (
+      <EditorialWritingLayout
+        title={writing.title}
+        date={writing.date}
+        backHref="/"
+        blocks={writing.blocks}
+      />
+    )
+  }
+
+  return <InnerPage title={writing.title} date={writing.date} backHref="/" blocks={writing.blocks} />
 }

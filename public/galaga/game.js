@@ -1,8 +1,8 @@
 // cedriclee.design theme (from src/index.css dark theme)
 const THEME = {
-    bg: '#1a1a1a',
+    bg: 'var(--color-text)',
     text: '#f0f0f0',
-    textPrimary: '#ffffff',
+    textPrimary: 'var(--color-bg)',
     textMuted: '#a4a4a4',
     focus: '#f0f0f0',
     overlay: 'rgba(0, 0, 0, 0.7)',
@@ -10,7 +10,7 @@ const THEME = {
     enemyRedDark: '#c0392b',
     enemyBlue: '#3498db',
     enemyPurple: '#9b59b6',
-    starColors: ['#ffffff', '#f0f0f0', '#e8e8e8', '#a4a4a4', '#c0c0c0']
+    starColors: ['var(--color-bg)', '#f0f0f0', '#e8e8e8', '#a4a4a4', '#c0c0c0']
 };
 
 class GalagaGame {

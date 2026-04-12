@@ -1,0 +1,28 @@
+/* Live prototype (Vercel) — framed like the in-repo embed */
+.ew-prototype-frame {
+  max-width: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 10%, transparent);
+  box-shadow: 0 8px 40px color-mix(in srgb, var(--color-text) 8%, transparent);
+  background: var(--color-bg);
+}
+
+.ew-prototype-iframe {
+  display: block;
+  width: 100%;
+  border: 0;
+  /*
+   * Hosted app uses min-h-screen; inner 100vh tracks *this* iframe’s box height.
+   * Use almost the full viewport height, with a high cap for very tall displays.
+   */
+  height: min(2200px, max(620px, calc(100dvh - 0.75rem)));
+}
+
+/* `InnerPage` embeds the frame directly (no `.ew-prototype-embed` wrapper). */
+.inner-page > .ew-prototype-frame.inner-page-block {
+  align-self: center;
+  width: min(1520px, calc(100vw - 48px));
+  max-width: none;
+}

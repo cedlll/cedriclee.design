@@ -1,4 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useId, useState } from 'react'
+import { useCarouselAutoplay } from '../hooks/useCarouselAutoplay'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
+import { DisbursementsPrototypeEmbed } from './DisbursementsPrototypeEmbed'
 import './InnerPage.css'
 
 export type InnerPageCarouselSlide = { src: string; alt: string; caption?: string }
@@ -10,7 +13,17 @@ export type InnerPageBlock =
       text: string
       link?: { href: string; label: string; superscript?: boolean }
     }
-  | { type: 'image'; src: string; alt: string; caption?: string; link?: { href: string; label: string } }
+  | {
+      type: 'image'
+      src: string
+      alt: string
+      caption?: string
+      link?: { href: string; label: string }
+      width?: number
+      height?: number
+      /** Optional WebP URL for `<picture>`; keep `src` as a universally supported fallback. */
+      srcWebp?: string
+    }
   | {
       type: 'imageCompare'
       beforeSrc: string
@@ -28,6 +41,7 @@ export type InnerPageBlock =
       height?: number
       title?: string
     }
+  | { type: 'disbursementsPrototype' }
 
 export type InnerPageProps = {
   title: string
@@ -35,6 +49,18 @@ export type InnerPageProps = {
   backHref?: string
   backLabel?: string
   blocks: InnerPageBlock[]
+}
+
+function machineReadableDateTime(display: string): string | undefined {
+  const t = display.trim()
+  if (t === '') return undefined
+  if (/^\d{4}$/.test(t)) return `${t}-01-01`
+  if (/^\d{4}-\d{2}-\d{2}$/.test(t)) return t
+  const parsed = Date.parse(t)
+  if (!Number.isNaN(parsed)) {
+    return new Date(parsed).toISOString().slice(0, 10)
+  }
+  return undefined
 }
 
 const DEFAULT_BACK_HREF = '/'
@@ -47,6 +73,8 @@ export function InnerPage({
   backLabel = DEFAULT_BACK_LABEL,
   blocks,
 }: InnerPageProps) {
+  const dateTimeAttr = date ? machineReadableDateTime(date) : undefined
+
   return (
     <article className="inner-page">
       <a href={backHref} className="inner-page-back">
@@ -55,11 +83,14 @@ export function InnerPage({
 
       <header className="inner-page-header">
         <h1 className="inner-page-title">{title}</h1>
-        {date && (
-          <time className="inner-page-date" dateTime={date}>
-            {date}
-          </time>
-        )}
+        {date &&
+          (dateTimeAttr ? (
+            <time className="inner-page-date" dateTime={dateTimeAttr}>
+              {date}
+            </time>
+          ) : (
+            <p className="inner-page-date">{date}</p>
+          ))}
       </header>
 
       <div className="inner-page-content">
@@ -83,6 +114,7 @@ function InnerPageImageCompare({
   afterAlt?: string
 }) {
   const [position, setPosition] = useState(50)
+  const compareHintId = useId()
 
   const updatePositionFromClientX = (clientX: number, rect: DOMRect) => {
     const relativeX = clientX - rect.left
@@ -147,6 +179,9 @@ function InnerPageImageCompare({
           style={{ left: `${position}%` }}
           aria-hidden
         />
+        <span id={compareHintId} className="visually-hidden">
+          Use left and right arrow keys to adjust the comparison.
+        </span>
         <input
           type="range"
           min={0}
@@ -155,6 +190,7 @@ function InnerPageImageCompare({
           onChange={(e) => setPosition(Number(e.target.value))}
           className="inner-page-compare-range"
           aria-label="Drag to compare before and after"
+          aria-describedby={compareHintId}
         />
       </div>
     </div>
@@ -165,40 +201,42 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
   const AUTO_PLAY_SPEED_MS = 6000
   const PROGRESS_TICK_MS = 50
 
-  const [index, setIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
   const len = slides.length
+  const reducedMotion = usePrefersReducedMotion()
+  const [userPaused, setUserPaused] = useState(false)
+  const autoPlayActive = len > 1 && !reducedMotion && !userPaused
+
+  const { index, progress, goToSlide, goToNext } = useCarouselAutoplay(
+    len,
+    AUTO_PLAY_SPEED_MS,
+    PROGRESS_TICK_MS,
+    autoPlayActive,
+  )
+
   if (len === 0) return null
-  const goToNext = () => {
-    if (len <= 1) return
-    setIndex((i) => (i + 1) % len)
-    setProgress(0)
-  }
+
   const slide = slides[index]
-
-  useEffect(() => {
-    if (len <= 1) return
-    let startTime = Date.now()
-    const timerId = globalThis.setInterval(() => {
-      const elapsed = Date.now() - startTime
-      const ratio = elapsed / AUTO_PLAY_SPEED_MS
-
-      if (ratio >= 1) {
-        setIndex((i) => (i + 1) % len)
-        setProgress(0)
-        startTime = Date.now()
-      } else {
-        setProgress(ratio * 100)
-      }
-    }, PROGRESS_TICK_MS)
-
-    return () => {
-      globalThis.clearInterval(timerId)
-    }
-  }, [len, AUTO_PLAY_SPEED_MS, PROGRESS_TICK_MS, index])
 
   return (
     <div className="inner-page-carousel-wrap">
+      {len > 1 && (
+        <div className="inner-page-carousel-toolbar">
+          {reducedMotion ? (
+            <span className="visually-hidden" role="status">
+              Slideshow auto-advance is disabled to respect reduced motion.
+            </span>
+          ) : (
+            <button
+              type="button"
+              className="inner-page-carousel-pause"
+              onClick={() => setUserPaused((p) => !p)}
+              aria-pressed={userPaused}
+            >
+              {userPaused ? 'Play slideshow' : 'Pause slideshow'}
+            </button>
+          )}
+        </div>
+      )}
       <div className="inner-page-carousel-track">
         {len > 1 && (
           <div className="inner-page-carousel-progress">
@@ -207,19 +245,18 @@ function InnerPageCarousel({ slides }: { slides: InnerPageCarouselSlide[] }) {
                 key={i}
                 type="button"
                 className="inner-page-carousel-progress-segment"
-                onClick={() => {
-                  setIndex(i)
-                  setProgress(0)
-                }}
+                onClick={() => goToSlide(i)}
                 aria-label={`Go to slide ${i + 1}`}
               >
-                <span
-                  className="inner-page-carousel-progress-fill"
-                  style={{
-                    width:
-                      i < index ? '100%' : i === index ? `${Math.min(progress, 100)}%` : '0%',
-                  }}
-                />
+                <span className="inner-page-carousel-progress-bar" aria-hidden>
+                  <span
+                    className="inner-page-carousel-progress-fill"
+                    style={{
+                      width:
+                        i < index ? '100%' : i === index ? `${Math.min(progress, 100)}%` : '0%',
+                    }}
+                  />
+                </span>
               </button>
             ))}
           </div>
@@ -284,7 +321,28 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
     case 'image':
       return (
         <figure className="inner-page-block inner-page-image">
-          <img src={block.src} alt={block.alt} loading="lazy" decoding="async" />
+          {block.srcWebp ? (
+            <picture>
+              <source srcSet={block.srcWebp} type="image/webp" />
+              <img
+                src={block.src}
+                alt={block.alt}
+                width={block.width}
+                height={block.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
+          ) : (
+            <img
+              src={block.src}
+              alt={block.alt}
+              width={block.width}
+              height={block.height}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
           {(block.caption || block.link) && (
             <figcaption className="inner-page-image-caption">
               {block.caption}
@@ -340,10 +398,13 @@ function InnerPageBlockRenderer({ block }: { block: InnerPageBlock }) {
             style={{ border: 'none', overflow: 'hidden' }}
             allowFullScreen
             allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+            sandbox="allow-scripts allow-same-origin allow-popups"
             title={block.title ?? 'Embedded content'}
           />
         </div>
       )
+    case 'disbursementsPrototype':
+      return <DisbursementsPrototypeEmbed className="inner-page-block" />
     default:
       return null
   }

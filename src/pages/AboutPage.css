@@ -1,0 +1,224 @@
+/* About — same tokens as InnerPage / inner shell (Satoshi, spacing, neutrals) */
+
+.about-editorial {
+  --about-fs-sm: 14px;
+  --about-fs-md: 18px;
+  --about-fs-lg: 22px;
+  --about-lh-body: 1.6;
+  --about-lh-heading: 1.3;
+  --about-ls: 0.02em;
+  --about-rule: var(--color-hover-bg);
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-bottom: 64px;
+  box-sizing: border-box;
+}
+
+.about-editorial *,
+.about-editorial *::before,
+.about-editorial *::after {
+  box-sizing: border-box;
+}
+
+.about-editorial-hero {
+  padding: 24px 0 64px;
+}
+
+.about-editorial-title {
+  margin: 0;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--about-fs-lg);
+  font-weight: 400;
+  line-height: var(--about-lh-heading);
+  letter-spacing: var(--about-ls);
+  color: var(--color-text-primary);
+}
+
+.about-editorial-row {
+  display: grid;
+  grid-template-columns: minmax(108px, 0.72fr) minmax(0, 1.28fr) minmax(0, 1fr);
+  gap: 40px 56px;
+  align-items: start;
+  padding: 56px 0;
+  border-top: 1px solid var(--about-rule);
+}
+
+.about-editorial-row:first-of-type {
+  border-top: none;
+  padding-top: 0;
+}
+
+.about-editorial-heading-col {
+  position: sticky;
+  top: 80px;
+}
+
+/* Match `.ew-label` / editorial section labels — not uppercase UI chrome */
+.about-editorial-section-title {
+  margin: 0;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--about-fs-sm);
+  font-weight: 400;
+  line-height: var(--about-lh-heading);
+  letter-spacing: var(--about-ls);
+  text-transform: none;
+  color: var(--color-text-muted);
+}
+
+.about-editorial-body {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--about-fs-md);
+  line-height: var(--about-lh-body);
+  color: var(--color-text-muted);
+  min-width: 0;
+}
+
+.about-editorial-body p {
+  margin: 0 0 1em;
+}
+
+.about-editorial-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Match editorial writing / next-reads in-page links */
+.about-editorial-link {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--color-text-muted);
+  transition: text-decoration-color 0.2s ease;
+}
+
+.about-editorial-link:hover,
+.about-editorial-link:focus-visible {
+  text-decoration-color: var(--color-text-primary);
+}
+
+.about-editorial-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.about-editorial-media {
+  margin: 0;
+  min-width: 0;
+}
+
+.about-editorial-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+  background: var(--color-surface-subtle);
+}
+
+.about-editorial-caption {
+  margin: 10px 0 0;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--about-fs-sm);
+  line-height: var(--about-lh-body);
+  color: var(--color-text-muted);
+}
+
+.about-editorial-media-placeholder {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  max-height: 420px;
+  border-radius: 2px;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--about-rule);
+}
+
+.about-editorial-cta-row .about-editorial-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.about-editorial-pullquote {
+  display: grid;
+  grid-template-columns: minmax(0, 0.35fr) minmax(0, 1fr);
+  gap: 24px 48px;
+  align-items: start;
+  margin: 0;
+  padding: 56px 0;
+  border-top: 1px solid var(--about-rule);
+  border-bottom: 1px solid var(--about-rule);
+}
+
+.about-editorial-pullquote-source {
+  margin: 0;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--about-fs-sm);
+  line-height: var(--about-lh-body);
+  color: var(--color-text-muted);
+}
+
+.about-editorial-pullquote-quote {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Match case-study `.ew-quote` — serif pull quote */
+.about-editorial-pullquote-text {
+  margin: 0;
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: var(--about-fs-md);
+  font-style: italic;
+  font-weight: 400;
+  line-height: var(--about-lh-body);
+  letter-spacing: 0;
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 900px) {
+  .about-editorial-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 32px;
+    padding: 48px 0;
+  }
+
+  .about-editorial-heading-col {
+    position: static;
+    grid-column: 1 / -1;
+  }
+
+  .about-editorial-media {
+    grid-column: 1 / -1;
+    max-width: 420px;
+  }
+
+  .about-editorial-media-placeholder {
+    max-height: 320px;
+    aspect-ratio: 16 / 10;
+  }
+
+  .about-editorial-cta-row .about-editorial-media {
+    display: none;
+  }
+
+  .about-editorial-pullquote {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 48px 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .about-editorial-hero {
+    padding: 16px 0 48px;
+  }
+
+  .about-editorial-row {
+    grid-template-columns: 1fr;
+    padding: 40px 0;
+  }
+
+  .about-editorial-media {
+    max-width: none;
+  }
+}

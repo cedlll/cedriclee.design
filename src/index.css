@@ -4,6 +4,11 @@
   box-sizing: border-box;
 }
 
+html {
+  /* Reserve space for the vertical scrollbar so centered layouts don’t shift when scrollability changes between pages. */
+  scrollbar-gutter: stable;
+}
+
 html,
 body {
   margin: 0;
@@ -15,7 +20,7 @@ body {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'DM Sans', sans-serif;
+  font-family: 'Satoshi', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   transition: background-color 0.2s ease, color 0.2s ease;
@@ -25,13 +30,29 @@ a {
   color: inherit;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 :root {
   --color-bg: #ffffff;
-  --color-text: #333333;
-  --color-text-primary: #1a1a1a;
+  --color-text: #1a1a1a;
+  --color-text-primary: var(--color-text);
   --color-text-muted: #666666;
-  --color-focus: #1a1a1a;
-  --color-cursor: #1a1a1a;
+  --color-focus: #333333;
+  --color-surface-subtle: #fafafa;
+  --color-overlay-weak: rgba(255, 255, 255, 0.5);
+  --color-overlay-strong: rgba(0, 0, 0, 0.35);
+  --color-overlay-mid: rgba(0, 0, 0, 0.2);
+  --color-cursor: var(--color-text);
   --color-shadow: rgba(0, 0, 0, 0.15);
   --color-hover-bg: rgba(0, 0, 0, 0.06);
 }

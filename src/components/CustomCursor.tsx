@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion'
 
 const isMobile = () =>
   typeof navigator !== 'undefined' &&
@@ -15,7 +16,7 @@ type CustomCursorProps = {
 
 export default function CustomCursor({
   dotSize = 6,
-  dotColor = '#ffffff',
+  dotColor = 'var(--color-bg)',
   animationDuration = 200,
   blendMode = 'difference',
   opacity = 1,
@@ -23,10 +24,12 @@ export default function CustomCursor({
 }: CustomCursorProps) {
   const cursorRef = useRef<HTMLDivElement>(null)
   const [hidden, setHidden] = useState(true)
+  const reducedMotion = usePrefersReducedMotion()
 
   useEffect(() => {
     if (typeof window === 'undefined') return
     if (isMobile() && hideOnMobile) return
+    if (reducedMotion) return
 
     document.body.style.cursor = 'none'
     const styleEl = document.createElement('style')
@@ -53,10 +56,11 @@ export default function CustomCursor({
       document.body.style.cursor = 'auto'
       styleEl.remove()
     }
-  }, [hideOnMobile, dotSize])
+  }, [hideOnMobile, dotSize, reducedMotion])
 
   if (typeof window === 'undefined') return null
   if (isMobile() && hideOnMobile) return null
+  if (reducedMotion) return null
 
   return (
     <div

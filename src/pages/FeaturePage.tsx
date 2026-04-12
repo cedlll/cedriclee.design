@@ -1,5 +1,6 @@
 import { InnerPage } from '../components/InnerPage'
 import type { InnerPageBlock } from '../components/InnerPage'
+import { EditorialWritingLayout } from '../components/EditorialWritingLayout'
 
 const FEATURES: Record<
   string,
@@ -107,7 +108,7 @@ Consider these 5 ways to maximize UX in an Agile setting:`,
 
 function getFeatureSlug(): string {
   if (globalThis.window === undefined) return ''
-  const match = /^\/feature\/(.+)$/.exec(globalThis.window.location.pathname)
+  const match = /^\/feature\/([^/]+)\/?$/.exec(globalThis.window.location.pathname)
   return match ? match[1] : ''
 }
 
@@ -131,11 +132,6 @@ export function FeaturePage() {
   }
 
   return (
-    <InnerPage
-      title={feature.title}
-      date={feature.date}
-      backHref="/"
-      blocks={feature.blocks}
-    />
+    <EditorialWritingLayout title={feature.title} date={feature.date} backHref="/" blocks={feature.blocks} />
   )
 }

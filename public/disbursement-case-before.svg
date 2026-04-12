@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Illustrative before state: vague status and support-dependent controls">
+  <rect width="640" height="360" fill="#ebe8e3"/>
+  <rect x="24" y="20" width="592" height="40" rx="4" fill="#d8d4cc"/>
+  <text x="40" y="46" font-family="ui-monospace, monospace" font-size="13" fill="#3d3a36">Disbursements</text>
+  <rect x="24" y="80" width="280" height="72" rx="4" fill="#fff" stroke="#c4bfb6" stroke-width="1"/>
+  <text x="40" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#8a847a">Your payout</text>
+  <text x="40" y="132" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#5c5852">Monthly (fixed)</text>
+  <rect x="320" y="80" width="296" height="72" rx="4" fill="#fff" stroke="#c4bfb6" stroke-width="1"/>
+  <text x="336" y="108" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#8a847a">Send funds</text>
+  <text x="336" y="132" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12" fill="#5c5852">?</text>
+  <rect x="24" y="176" width="592" height="120" rx="4" fill="#fff" stroke="#c4bfb6" stroke-width="1"/>
+  <text x="40" y="206" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#8a847a">Last disbursement</text>
+  <text x="40" y="234" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" fill="#3d3a36">Pending</text>
+  <text x="40" y="268" font-family="ui-sans-serif, system-ui, sans-serif" font-size="11" fill="#a67c52">No ETA · contact support to change schedule</text>
+  <rect x="24" y="312" width="200" height="28" rx="4" fill="#d8d4cc"/>
+  <text x="36" y="330" font-family="ui-sans-serif, system-ui, sans-serif" font-size="10" fill="#6b665e">support@&</text>
+</svg>

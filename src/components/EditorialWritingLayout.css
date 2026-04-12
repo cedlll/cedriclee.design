@@ -1,0 +1,160 @@
+.ew-writing-body {
+  white-space: pre-line;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.ew-writing-body a,
+.ew-writing-citation a {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ew-writing-citation {
+  font-size: var(--ew-fs-sm);
+}
+
+.ew-writing-image-figure {
+  margin: 0;
+}
+
+.ew-writing-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  border-radius: 2px;
+}
+
+.ew-writing-embed {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.07%;
+  overflow: hidden;
+}
+
+.ew-writing-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.ew-carousel {
+  margin: 0;
+}
+
+.ew-carousel-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 8px;
+}
+
+.ew-carousel-pause {
+  border: none;
+  padding: 6px 10px;
+  margin: 0;
+  font: inherit;
+  font-size: var(--ew-fs-sm);
+  color: var(--color-text-primary);
+  background: var(--color-surface-subtle);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.ew-carousel-pause:hover {
+  color: var(--color-text);
+}
+
+.ew-carousel-pause:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.ew-carousel-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.ew-carousel-progress {
+  position: absolute;
+  inset: 8px 12px auto;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+
+.ew-carousel-progress-segment {
+  flex: 1;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ew-carousel-progress-bar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: inherit;
+  background: var(--color-overlay-strong);
+  overflow: hidden;
+}
+
+.ew-carousel-progress-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-bg);
+  transition: width 160ms linear;
+}
+
+.ew-carousel-slide {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  animation: ew-carousel-reel-in 900ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.ew-carousel-image-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.ew-carousel-image-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.ew-carousel-slide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+@keyframes ew-carousel-reel-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.995);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+

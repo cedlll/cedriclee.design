@@ -578,3 +578,67 @@ A comprehensive checklist to ensure you're building fast, performant websites, o
 3. Edge computing for dynamic content
 4. Advanced caching strategies
 5. Progressive web app features
+
+---
+
+## Site audit: cedriclee.design
+
+_Last updated: April 2026. This section tracks how the portfolio repo maps to the checklist above._
+
+### Build & JavaScript
+
+| Item | Status |
+|------|--------|
+| Route-based code splitting (`React.lazy` for inner pages, case study, cursor) | Done |
+| Vendor chunk split (React, GSAP) in Vite | Done |
+| Tree-shaking / production minify (Vite defaults) | Done |
+| `DisbursementsInteractive` loaded only via shared `lazy()` + `Suspense` (no static import from `InnerPage`) | Done |
+| Disbursements prototype (`DisbPrototypeApp`) lazy inside `DisbursementsCaseStudy` | Done |
+| Heavy `src/prototypes/disb` dependencies still live in root `package.json` | Acceptable for now; split workspace or separate Vite entry if the main bundle grows |
+
+### Runtime & interaction
+
+| Item | Status |
+|------|--------|
+| Passive `scroll` listener + `requestAnimationFrame` coalescing + state updates only when values change | Done |
+| Event listener cleanup on work rows / hooks | Done |
+| `scrollbar-gutter: stable` (layout shift when scrollbars appear) | Done |
+
+### Fonts & CSS
+
+| Item | Status |
+|------|--------|
+| `preconnect` to Google Fonts and Fontshare | Done |
+| Non-blocking font CSS (`preload` as style + `onload` → stylesheet, `noscript` fallback) | Done |
+| `display=swap` on font requests | Done |
+| Home work thumbnails: `aspect-ratio` on `.ed-work-media` | Done |
+
+### Images & media
+
+| Item | Status |
+|------|--------|
+| `loading="lazy"` / `decoding="async"` on article and carousel images | Done |
+| Draft writing image: smaller PNG (`cedric-photo-400.png`), intrinsic `width`/`height`, WebP via `<picture>` + `npm run generate-images` | Done |
+| Removed unused global `preload` of `cedric-photo-400.png` from `index.html` (was not tied to LCP on most routes) | Done |
+| Editorial writing layout embed iframes: explicit `width` / `height` on `<iframe>` | Done |
+
+### Third-party & analytics
+
+| Item | Status |
+|------|--------|
+| `@vercel/analytics` (lightweight) | In use |
+| Social / maps facades | N/A on current pages |
+
+### Production & monitoring (hosting / process)
+
+| Item | Status |
+|------|--------|
+| Compression (Brotli/gzip), HTTP/2+, CDN, cache headers | Rely on Vercel defaults; confirm in Network panel after deploy |
+| Core Web Vitals RUM, Lighthouse in CI, performance budgets | Recommended next step; not wired in this repo yet |
+| Quarterly third-party script review | Process |
+
+### Quick commands
+
+- Production build: `npm run build`
+- Profile output sizes: inspect `dist/assets/` after build
+- Regenerate profile WebP: `npm run generate-images` (writes `public/cedric-photo-400.webp`)
