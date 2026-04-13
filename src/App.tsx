@@ -1,5 +1,4 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
-import { gsap } from 'gsap'
 import './App.css'
 import { HERO_HEADLINE_PREFIX, HERO_HEADLINE_ROTATOR_WORDS } from './homeHeroHeadline'
 import { useHomeGsap } from './hooks/useHomeGsap'
@@ -248,8 +247,6 @@ function WorkRow({
   const rowShowMedia = showMedia && item.showMedia !== false
   const textOnly = rowShowMedia === false
   const external = isExternalHref(item.href)
-  const rowLinkRef = useRef<HTMLAnchorElement>(null)
-  const textRef = useRef<HTMLDivElement>(null)
   const linkProps = external
     ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
     : {}
@@ -279,48 +276,9 @@ function WorkRow({
     onPreviewOpen(item)
   }
 
-  useEffect(() => {
-    if (!showTextNudge) return
-    const rowLink = rowLinkRef.current
-    const text = textRef.current
-    if (!rowLink || !text || item.placeholder || item.href === '#') return
-
-    const nudgeIn = () => {
-      gsap.to(text, {
-        x: 4,
-        duration: 0.24,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      })
-    }
-
-    const nudgeOut = () => {
-      gsap.to(text, {
-        x: 0,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: 'auto',
-      })
-    }
-
-    gsap.set(text, { x: 0 })
-
-    rowLink.addEventListener('mouseenter', nudgeIn)
-    rowLink.addEventListener('mouseleave', nudgeOut)
-    rowLink.addEventListener('focus', nudgeIn)
-    rowLink.addEventListener('blur', nudgeOut)
-
-    return () => {
-      rowLink.removeEventListener('mouseenter', nudgeIn)
-      rowLink.removeEventListener('mouseleave', nudgeOut)
-      rowLink.removeEventListener('focus', nudgeIn)
-      rowLink.removeEventListener('blur', nudgeOut)
-    }
-  }, [item.href, item.placeholder, showTextNudge])
-
   const inner = (
     <>
-      <div className="ed-work-text" ref={textRef}>
+      <div className="ed-work-text">
         {item.tag === 'Case study' && item.label ? (
           <span className="ed-work-label">{item.label}</span>
         ) : null}
@@ -370,9 +328,8 @@ function WorkRow({
 
   return (
     <a
-      ref={rowLinkRef}
       href={item.href}
-      className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} home-project-link`.trim()}
+      className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${showTextNudge ? 'ed-work-row--text-nudge' : ''} home-project-link`.trim()}
       onClick={handleLinkClick}
       onMouseEnter={handleActivateVideo}
       onFocus={handleActivateVideo}

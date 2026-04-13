@@ -1,228 +1,70 @@
 import { useLayoutEffect, type RefObject } from 'react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { HERO_HEADLINE_PREFIX, HERO_HEADLINE_ROTATOR_WORDS } from '../homeHeroHeadline'
-
-gsap.registerPlugin(ScrollTrigger)
 
 /** Pause (seconds) after a word finishes typing before the next cycle. */
 const HERO_ROTATOR_PAUSE_SEC = 3
 
-const HERO_TYPEWRITER_DELETE_STEP_SEC = 0.02
-const HERO_TYPEWRITER_TYPE_STEP_SEC = 0.03
-
-function appendTypewriterTimeline(
-  tl: gsap.core.Timeline,
-  el: HTMLElement,
-  fromWord: string,
-  toWord: string,
-): void {
-  for (let i = fromWord.length; i > 0; i--) {
-    const sliceEnd = i - 1
-    tl.call(
-      () => {
-        el.textContent = fromWord.slice(0, sliceEnd)
-      },
-      undefined,
-      i === fromWord.length ? 0 : `+=${HERO_TYPEWRITER_DELETE_STEP_SEC}`,
-    )
-  }
-  for (let j = 1; j <= toWord.length; j++) {
-    let position: number | string = `+=${HERO_TYPEWRITER_TYPE_STEP_SEC}`
-    if (j === 1) {
-      position = fromWord.length === 0 ? 0 : `+=${HERO_TYPEWRITER_TYPE_STEP_SEC}`
-    }
-    tl.call(
-      () => {
-        el.textContent = toWord.slice(0, j)
-      },
-      undefined,
-      position,
-    )
-  }
-}
-
-function attachCaseStudyHover(row: HTMLElement): () => void {
-  const media = row.querySelector<HTMLElement>('.ed-work-media')
-
-  const onEnter = () => {
-    gsap.to(row, {
-      y: -3,
-      duration: 0.22,
-      ease: 'power2.out',
-      overwrite: 'auto',
-    })
-
-    if (!media) return
-    gsap.to(media, {
-      scale: 1.015,
-      duration: 0.28,
-      ease: 'power2.out',
-      overwrite: 'auto',
-    })
-  }
-
-  const onLeave = () => {
-    gsap.to(row, {
-      y: 0,
-      duration: 0.25,
-      ease: 'power2.out',
-      overwrite: 'auto',
-    })
-
-    if (!media) return
-    gsap.to(media, {
-      scale: 1,
-      duration: 0.3,
-      ease: 'power2.out',
-      overwrite: 'auto',
-    })
-  }
-
-  row.addEventListener('mouseenter', onEnter)
-  row.addEventListener('mouseleave', onLeave)
-  row.addEventListener('focus', onEnter)
-  row.addEventListener('blur', onLeave)
-
-  return () => {
-    row.removeEventListener('mouseenter', onEnter)
-    row.removeEventListener('mouseleave', onLeave)
-    row.removeEventListener('focus', onEnter)
-    row.removeEventListener('blur', onLeave)
-  }
-}
-
 /**
- * Entrance + scroll-driven motion for the portfolio home.
- * @see https://github.com/greensock/GSAP
+ * Lightweight home interactions without animation libraries.
  */
 export function useHomeGsap(rootRef: RefObject<HTMLElement | null>) {
   useLayoutEffect(() => {
     const root = rootRef.current
     if (!root || globalThis.matchMedia === undefined) return
 
-    const cleanupFns: Array<() => void> = []
-
     const mqReduce = globalThis.matchMedia('(prefers-reduced-motion: reduce)')
     const reduceMotion = mqReduce.matches
+    const cleanupFns: Array<() => void> = []
 
-    const ctx = gsap.context(() => {
-      const headlineLineRm = root.querySelector<HTMLElement>('.ed-hero-headline-line')
-      const headlineRotatorRm = root.querySelector<HTMLElement>('.ed-hero-headline-rotator')
-      if (reduceMotion) {
-        if (headlineLineRm) headlineLineRm.textContent = HERO_HEADLINE_PREFIX
-        if (headlineRotatorRm) headlineRotatorRm.textContent = HERO_HEADLINE_ROTATOR_WORDS[0]
-        const heroHeadingRm = root.querySelector<HTMLElement>('#hero-heading')
-        heroHeadingRm?.setAttribute(
-          'aria-label',
-          `Cedric is a product designer building things worth ${HERO_HEADLINE_ROTATOR_WORDS[0]}`,
-        )
-        return
-      }
+    const headlineLine = root.querySelector<HTMLElement>('.ed-hero-headline-line')
+    const headlineRotator = root.querySelector<HTMLElement>('.ed-hero-headline-rotator')
+    const heroHeading = root.querySelector<HTMLElement>('#hero-heading')
 
-      const heroTl = gsap.timeline({ delay: 0.2, defaults: { ease: 'power3.out' } })
-      heroTl.from('.home-hero-about-col', { opacity: 0, y: 8, duration: 0.55 }, 0.06)
+    if (headlineLine && headlineRotator) {
+      headlineLine.textContent = HERO_HEADLINE_PREFIX
+      headlineRotator.textContent = HERO_HEADLINE_ROTATOR_WORDS[0]
+      heroHeading?.setAttribute(
+        'aria-label',
+        `Cedric is a product designer building things worth ${HERO_HEADLINE_ROTATOR_WORDS[0]}`,
+      )
+    }
 
-      const headlineLine = root.querySelector<HTMLElement>('.ed-hero-headline-line')
-      const headlineRotator = root.querySelector<HTMLElement>('.ed-hero-headline-rotator')
-      const heroHeading = root.querySelector<HTMLElement>('#hero-heading')
-
-      if (headlineLine && headlineRotator) {
-        headlineLine.textContent = HERO_HEADLINE_PREFIX
-        headlineRotator.textContent = HERO_HEADLINE_ROTATOR_WORDS[0]
-        heroHeading?.setAttribute('aria-busy', 'true')
+    if (!reduceMotion && headlineRotator) {
+      let wordIndex = 0
+      const intervalId = globalThis.window.setInterval(() => {
+        wordIndex = (wordIndex + 1) % HERO_HEADLINE_ROTATOR_WORDS.length
+        const word = HERO_HEADLINE_ROTATOR_WORDS[wordIndex]
+        headlineRotator.textContent = word
         heroHeading?.setAttribute(
           'aria-label',
-          `Cedric is a product designer building things worth ${HERO_HEADLINE_ROTATOR_WORDS[0]}`,
+          `Cedric is a product designer building things worth ${word}`,
         )
+      }, HERO_ROTATOR_PAUSE_SEC * 1000)
 
-        let wordIndex = 0
-        let rotateDelay: gsap.core.Tween | null = null
-        let activeTypewriter: gsap.core.Timeline | null = null
+      cleanupFns.push(() => globalThis.window.clearInterval(intervalId))
+    }
 
-        const setHeadingAriaLabel = (word: string) => {
-          heroHeading?.setAttribute(
-            'aria-label',
-            `Cedric is a product designer building things worth ${word}`,
-          )
-        }
+    if (!reduceMotion && globalThis.IntersectionObserver) {
+      const revealTargets = root.querySelectorAll<HTMLElement>('.ed-work-row, .site-footer')
+      revealTargets.forEach((el) => el.classList.add('ed-reveal'))
 
-        const rotate = () => {
-          const fromWord = (headlineRotator.textContent ?? '').trim()
-          wordIndex = (wordIndex + 1) % HERO_HEADLINE_ROTATOR_WORDS.length
-          const toWord = HERO_HEADLINE_ROTATOR_WORDS[wordIndex]
-
-          activeTypewriter?.kill()
-          const tl = gsap.timeline({
-            onComplete: () => {
-              activeTypewriter = null
-              setHeadingAriaLabel(toWord)
-              rotateDelay = gsap.delayedCall(HERO_ROTATOR_PAUSE_SEC, rotate)
-            },
+      const observer = new globalThis.IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            entry.target.classList.add('is-visible')
+            observer.unobserve(entry.target)
           })
-          activeTypewriter = tl
-          appendTypewriterTimeline(tl, headlineRotator, fromWord, toWord)
-        }
+        },
+        { rootMargin: '0px 0px -10% 0px', threshold: 0.05 },
+      )
 
-        rotateDelay = gsap.delayedCall(HERO_ROTATOR_PAUSE_SEC, rotate)
-        heroHeading?.removeAttribute('aria-busy')
-        setHeadingAriaLabel(HERO_HEADLINE_ROTATOR_WORDS[0])
-
-        cleanupFns.push(() => {
-          rotateDelay?.kill()
-          activeTypewriter?.kill()
-          gsap.killTweensOf(headlineRotator)
-          gsap.killTweensOf(headlineLine)
-          heroHeading?.removeAttribute('aria-busy')
-        })
-      }
-
-      // Reveal each work section independently.
-      const workLists = root.querySelectorAll<HTMLElement>('.ed-work-list')
-      workLists.forEach((list) => {
-        const rows = list.querySelectorAll<HTMLElement>('.ed-work-row')
-        gsap.set(rows, { opacity: 0, y: 28 })
-        gsap.to(rows, {
-          opacity: 1,
-          y: 0,
-          duration: 0.7,
-          stagger: 0.07,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: list,
-            start: 'top 88%',
-            toggleActions: 'play none none none',
-          },
-        })
-      })
-
-      root
-        .querySelectorAll<HTMLElement>('.home-case-study-row')
-        .forEach((row) => cleanupFns.push(attachCaseStudyHover(row)))
-
-      const footer = root.querySelector('.site-footer')
-      if (footer) {
-        gsap.set(footer, { opacity: 0, y: 24 })
-        gsap.to(footer, {
-          opacity: 1,
-          y: 0,
-          duration: 0.65,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: footer,
-            start: 'top 94%',
-            toggleActions: 'play none none none',
-          },
-        })
-      }
-
-      // Ensure ScrollTrigger recalculates after layout settles.
-      requestAnimationFrame(() => ScrollTrigger.refresh())
-    }, root)
+      revealTargets.forEach((el) => observer.observe(el))
+      cleanupFns.push(() => observer.disconnect())
+    }
 
     return () => {
       cleanupFns.forEach((cleanup) => cleanup())
-      ctx.revert()
     }
   }, [rootRef])
 }
