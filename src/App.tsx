@@ -15,7 +15,6 @@ const WritingPage = lazy(() =>
 const WritingIndexPage = lazy(() =>
   import('./pages/WritingPage').then((m) => ({ default: m.WritingIndexPage }))
 )
-const CustomCursor = lazy(() => import('./components/CustomCursor'))
 
 function isExternalHref(href: string): boolean {
   return href.startsWith('http://') || href.startsWith('https://')
@@ -81,6 +80,8 @@ type WorkItem = {
   description: string
   href: string
   thumbnailSrc?: string
+  /** Muted looping tile video (served from `public/`). Takes precedence over `thumbnailSrc` when both are set. */
+  thumbnailVideoSrc?: string
   placeholder?: boolean
   showMedia?: boolean
   twoUp?: boolean
@@ -94,7 +95,7 @@ const works: WorkItem[] = [
     title: 'Enterprise disbursements',
     description: 'Redesigning enterprise money movement\u2014self-service schedules, batch flows, and legible async status inside banking APIs and risk policy.',
     href: '/writing/enterprise-disbursements-money-movement',
-    thumbnailSrc: '/disbursement-hero-unikorns-ref.png',
+    thumbnailVideoSrc: '/showreel-web-gallery-remix.mp4',
   },
   {
     id: 'shipmates',
@@ -292,12 +293,27 @@ function WorkRow({
       </div>
       {rowShowMedia ? (
         <div
-          className={`ed-work-media${item.thumbnailSrc ? ' ed-work-media--thumb' : ''}`.trim()}
+          className={`ed-work-media${
+            item.thumbnailSrc || item.thumbnailVideoSrc ? ' ed-work-media--thumb' : ''
+          }${item.thumbnailVideoSrc ? ' ed-work-media--video' : ''}`.trim()}
           aria-hidden
           style={
-            item.thumbnailSrc ? { backgroundImage: `url(${item.thumbnailSrc})` } : undefined
+            item.thumbnailSrc && !item.thumbnailVideoSrc
+              ? { backgroundImage: `url(${item.thumbnailSrc})` }
+              : undefined
           }
-        />
+        >
+          {item.thumbnailVideoSrc ? (
+            <video
+              className="ed-work-media-video"
+              src={item.thumbnailVideoSrc}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : null}
+        </div>
       ) : null}
     </>
   )
@@ -401,12 +417,10 @@ function MainNavigation({ pathname }: Readonly<{ pathname: string }>) {
 }
 
 function HomeView({
-  cursor,
   showScrollTop,
   handleScrollTop,
   pathname,
 }: Readonly<{
-  cursor: ReactNode
   showScrollTop: boolean
   handleScrollTop: () => void
   pathname: string
@@ -416,7 +430,6 @@ function HomeView({
 
   return (
     <div className="page page--home">
-      {cursor}
       {showScrollTop && (
         <button
           type="button"
@@ -553,19 +566,6 @@ function App() {
     globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const cursor = (
-    <Suspense fallback={null}>
-      <CustomCursor
-        dotSize={10}
-        dotColor="#000"
-        animationDuration={200}
-        blendMode="normal"
-        opacity={1}
-        hideOnMobile
-      />
-    </Suspense>
-  )
-
   if (isInnerPage) {
     let innerPageBody: ReactNode
     if (isAboutPage) {
@@ -580,7 +580,6 @@ function App() {
 
     return (
       <div className="page page--inner">
-        {cursor}
         {!isAboutPage && (
           <div
             className="scroll-progress"
@@ -623,7 +622,6 @@ function App() {
 
   return (
     <HomeView
-      cursor={cursor}
       showScrollTop={showScrollTop}
       handleScrollTop={handleScrollTop}
       pathname={pathname}
