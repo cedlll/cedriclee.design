@@ -83,6 +83,8 @@ type WorkItem = {
   thumbnailSrc?: string
   /** Muted looping tile video (served from `public/`). Takes precedence over `thumbnailSrc` when both are set. */
   thumbnailVideoSrc?: string
+  /** Optional poster image shown before a video tile is activated. */
+  thumbnailPosterSrc?: string
   placeholder?: boolean
   showMedia?: boolean
   twoUp?: boolean
@@ -97,6 +99,7 @@ const works: WorkItem[] = [
     description: 'Redesigning enterprise money movement\u2014self-service schedules, batch flows, and legible async status inside banking APIs and risk policy.',
     href: '/writing/enterprise-disbursements-money-movement',
     thumbnailVideoSrc: '/showreel-web-gallery-remix.mp4',
+    thumbnailPosterSrc: '/disbursement-case-before.svg',
   },
   {
     id: 'shipmates',
@@ -241,6 +244,7 @@ function WorkRow({
   showTextNudge?: boolean
   onPreviewOpen?: (item: WorkItem) => void
 }>) {
+  const [isVideoActivated, setIsVideoActivated] = useState(false)
   const rowShowMedia = showMedia && item.showMedia !== false
   const textOnly = rowShowMedia === false
   const external = isExternalHref(item.href)
@@ -250,6 +254,14 @@ function WorkRow({
     ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
     : {}
   const shouldOpenPreview = external && Boolean(onPreviewOpen)
+  const hasVideo = Boolean(item.thumbnailVideoSrc)
+  const showVideo = hasVideo && isVideoActivated
+  const posterSrc = item.thumbnailPosterSrc ?? item.thumbnailSrc
+
+  const handleActivateVideo = () => {
+    if (!hasVideo || isVideoActivated) return
+    setIsVideoActivated(true)
+  }
 
   const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!shouldOpenPreview || !onPreviewOpen) return
@@ -318,16 +330,18 @@ function WorkRow({
       {rowShowMedia ? (
         <div
           className={`ed-work-media${
-            item.thumbnailSrc || item.thumbnailVideoSrc ? ' ed-work-media--thumb' : ''
-          }${item.thumbnailVideoSrc ? ' ed-work-media--video' : ''}`.trim()}
+            item.thumbnailSrc || item.thumbnailVideoSrc || item.thumbnailPosterSrc
+              ? ' ed-work-media--thumb'
+              : ''
+          }${showVideo ? ' ed-work-media--video' : ''}`.trim()}
           aria-hidden
           style={
-            item.thumbnailSrc && !item.thumbnailVideoSrc
-              ? { backgroundImage: `url(${item.thumbnailSrc})` }
+            posterSrc && !showVideo
+              ? { backgroundImage: `url(${posterSrc})` }
               : undefined
           }
         >
-          {item.thumbnailVideoSrc ? (
+          {item.thumbnailVideoSrc && showVideo ? (
             <video
               className="ed-work-media-video"
               src={item.thumbnailVideoSrc}
@@ -335,6 +349,8 @@ function WorkRow({
               loop
               muted
               playsInline
+              preload="metadata"
+              poster={posterSrc}
             />
           ) : null}
         </div>
@@ -358,6 +374,9 @@ function WorkRow({
       href={item.href}
       className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} home-project-link`.trim()}
       onClick={handleLinkClick}
+      onMouseEnter={handleActivateVideo}
+      onFocus={handleActivateVideo}
+      onTouchStart={handleActivateVideo}
       {...linkProps}
     >
       {inner}
