@@ -11,24 +11,6 @@ const HERO_ROTATOR_PAUSE_SEC = 3
 const HERO_TYPEWRITER_DELETE_STEP_SEC = 0.02
 const HERO_TYPEWRITER_TYPE_STEP_SEC = 0.03
 
-function appendTypeInOnly(
-  tl: gsap.core.Timeline,
-  el: HTMLElement,
-  fullText: string,
-  stepSec: number,
-): void {
-  for (let j = 1; j <= fullText.length; j++) {
-    const position = j === 1 ? undefined : `+=${stepSec}`
-    tl.call(
-      () => {
-        el.textContent = fullText.slice(0, j)
-      },
-      undefined,
-      position,
-    )
-  }
-}
-
 function appendTypewriterTimeline(
   tl: gsap.core.Timeline,
   el: HTMLElement,
@@ -146,8 +128,8 @@ export function useHomeGsap(rootRef: RefObject<HTMLElement | null>) {
       const heroHeading = root.querySelector<HTMLElement>('#hero-heading')
 
       if (headlineLine && headlineRotator) {
-        headlineLine.textContent = ''
-        headlineRotator.textContent = ''
+        headlineLine.textContent = HERO_HEADLINE_PREFIX
+        headlineRotator.textContent = HERO_HEADLINE_ROTATOR_WORDS[0]
         heroHeading?.setAttribute('aria-busy', 'true')
         heroHeading?.setAttribute(
           'aria-label',
@@ -182,21 +164,9 @@ export function useHomeGsap(rootRef: RefObject<HTMLElement | null>) {
           appendTypewriterTimeline(tl, headlineRotator, fromWord, toWord)
         }
 
-        const typeIntro = gsap.timeline({
-          onComplete: () => {
-            heroHeading?.removeAttribute('aria-busy')
-            setHeadingAriaLabel(HERO_HEADLINE_ROTATOR_WORDS[0])
-            rotateDelay = gsap.delayedCall(HERO_ROTATOR_PAUSE_SEC, rotate)
-          },
-        })
-        appendTypeInOnly(typeIntro, headlineLine, HERO_HEADLINE_PREFIX, HERO_TYPEWRITER_TYPE_STEP_SEC)
-        appendTypeInOnly(
-          typeIntro,
-          headlineRotator,
-          HERO_HEADLINE_ROTATOR_WORDS[0],
-          HERO_TYPEWRITER_TYPE_STEP_SEC,
-        )
-        heroTl.add(typeIntro, 0.06)
+        rotateDelay = gsap.delayedCall(HERO_ROTATOR_PAUSE_SEC, rotate)
+        heroHeading?.removeAttribute('aria-busy')
+        setHeadingAriaLabel(HERO_HEADLINE_ROTATOR_WORDS[0])
 
         cleanupFns.push(() => {
           rotateDelay?.kill()

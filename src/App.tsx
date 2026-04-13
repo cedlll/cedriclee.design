@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { gsap } from 'gsap'
 import './App.css'
+import { HERO_HEADLINE_PREFIX, HERO_HEADLINE_ROTATOR_WORDS } from './homeHeroHeadline'
 import { useHomeGsap } from './hooks/useHomeGsap'
 import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from './lib/legacyDisbursementsWritingSlug'
 const AboutPage = lazy(() =>
@@ -233,7 +234,13 @@ function WorkRow({
   item,
   showMedia = true,
   showTextNudge = false,
-}: Readonly<{ item: WorkItem; showMedia?: boolean; showTextNudge?: boolean }>) {
+  onPreviewOpen,
+}: Readonly<{
+  item: WorkItem
+  showMedia?: boolean
+  showTextNudge?: boolean
+  onPreviewOpen?: (item: WorkItem) => void
+}>) {
   const rowShowMedia = showMedia && item.showMedia !== false
   const textOnly = rowShowMedia === false
   const external = isExternalHref(item.href)
@@ -242,6 +249,23 @@ function WorkRow({
   const linkProps = external
     ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
     : {}
+  const shouldOpenPreview = external && Boolean(onPreviewOpen)
+
+  const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!shouldOpenPreview || !onPreviewOpen) return
+    if (
+      event.defaultPrevented ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey
+    ) {
+      return
+    }
+    event.preventDefault()
+    onPreviewOpen(item)
+  }
 
   useEffect(() => {
     if (!showTextNudge) return
@@ -288,7 +312,7 @@ function WorkRow({
         {item.tag === 'Case study' && item.label ? (
           <span className="ed-work-label">{item.label}</span>
         ) : null}
-        <h3 className="ed-work-title">{item.title}</h3>
+        <h2 className="ed-work-title">{item.title}</h2>
         <p className="ed-work-desc">{item.description}</p>
       </div>
       {rowShowMedia ? (
@@ -333,6 +357,7 @@ function WorkRow({
       ref={rowLinkRef}
       href={item.href}
       className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} home-project-link`.trim()}
+      onClick={handleLinkClick}
       {...linkProps}
     >
       {inner}
@@ -347,6 +372,7 @@ function WorkSection({
   showMedia = true,
   showTextNudge = false,
   showLabel = true,
+  onPreviewOpen,
 }: Readonly<{
   label: string
   items: readonly WorkItem[]
@@ -354,13 +380,20 @@ function WorkSection({
   showMedia?: boolean
   showTextNudge?: boolean
   showLabel?: boolean
+  onPreviewOpen?: (item: WorkItem) => void
 }>) {
   return (
     <section className={`ed-section ${className ?? ''}`.trim()} aria-label={label}>
       {showLabel ? <h2 className="ed-section-label">{label}</h2> : null}
       <div className="ed-work-list">
         {items.map((item) => (
-          <WorkRow key={item.id} item={item} showMedia={showMedia} showTextNudge={showTextNudge} />
+          <WorkRow
+            key={item.id}
+            item={item}
+            showMedia={showMedia}
+            showTextNudge={showTextNudge}
+            onPreviewOpen={onPreviewOpen}
+          />
         ))}
       </div>
     </section>
@@ -420,17 +453,23 @@ function HomeView({
   showScrollTop,
   handleScrollTop,
   pathname,
+  previewItem,
+  onOpenPreview,
+  onClosePreview,
 }: Readonly<{
   showScrollTop: boolean
   handleScrollTop: () => void
   pathname: string
+  previewItem: WorkItem | null
+  onOpenPreview: (item: WorkItem) => void
+  onClosePreview: () => void
 }>) {
   const homeRootRef = useRef<HTMLDivElement>(null)
   useHomeGsap(homeRootRef)
 
   return (
     <div className="page page--home">
-      {showScrollTop && (
+      {showScrollTop && !previewItem && (
         <button
           type="button"
           className="scroll-top-button"
@@ -450,11 +489,11 @@ function HomeView({
             <div className="home-hero-title-row">
               <h1 id="hero-heading" className="ed-hero-headline home-hero-headline">
                 <span className="ed-hero-headline-line">
-                  <span className="ed-hero-headline-name" />
+                  <span className="ed-hero-headline-name">{HERO_HEADLINE_PREFIX}</span>
                   <span className="ed-hero-headline-line-suffix" />
                 </span>
                 <span className="ed-hero-headline-rotator-wrap" aria-hidden="true">
-                  <span className="ed-hero-headline-serif ed-hero-headline-rotator" />
+                  <span className="ed-hero-headline-serif ed-hero-headline-rotator">{HERO_HEADLINE_ROTATOR_WORDS[0]}</span>
                   <span className="ed-hero-headline-cursor" />
                 </span>
               </h1>
@@ -489,6 +528,7 @@ function HomeView({
               items={sideProjects}
               className="ed-section--side-projects"
               showTextNudge
+              onPreviewOpen={onOpenPreview}
             />
             <WorkSection
               label="Writing"
@@ -505,6 +545,41 @@ function HomeView({
           </footer>
         </main>
       </div>
+      {previewItem ? (
+        <dialog className="link-preview-overlay" open aria-label="Link preview modal">
+          <div className="link-preview-modal">
+            <div className="link-preview-modal-header">
+              <p className="link-preview-modal-title">{previewItem.title}</p>
+              <div className="link-preview-modal-actions">
+                <a
+                  href={previewItem.href}
+                  className="link-preview-modal-text-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Visit site
+                </a>
+                <button
+                  type="button"
+                  className="link-preview-modal-button link-preview-modal-button--primary"
+                  onClick={onClosePreview}
+                  aria-label="Close preview"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+            <div className="link-preview-modal-body">
+              <iframe
+                className="link-preview-iframe"
+                src={previewItem.href}
+                title={`Preview of ${previewItem.title}`}
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </dialog>
+      ) : null}
     </div>
   )
 }
@@ -512,6 +587,7 @@ function HomeView({
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [previewItem, setPreviewItem] = useState<WorkItem | null>(null)
   const pathname = globalThis.window?.location.pathname ?? '/'
   const isWritingIndexPath = /^\/writing\/?$/.test(pathname)
   const isWritingArticlePath = /^\/writing\/[^/]+\/?$/.test(pathname) && !isWritingIndexPath
@@ -564,6 +640,14 @@ function App() {
   const handleScrollTop = () => {
     if (globalThis.window === undefined) return
     globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  const handlePreviewOpen = (item: WorkItem) => {
+    setPreviewItem(item)
+  }
+
+  const handlePreviewClose = () => {
+    setPreviewItem(null)
   }
 
   if (isInnerPage) {
@@ -625,6 +709,9 @@ function App() {
       showScrollTop={showScrollTop}
       handleScrollTop={handleScrollTop}
       pathname={pathname}
+      previewItem={previewItem}
+      onOpenPreview={handlePreviewOpen}
+      onClosePreview={handlePreviewClose}
     />
   )
 }

@@ -76,6 +76,154 @@
   outline-offset: 2px;
 }
 
+.link-preview-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  border: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(8px + env(safe-area-inset-top)) calc(8px + env(safe-area-inset-right))
+    calc(8px + env(safe-area-inset-bottom)) calc(8px + env(safe-area-inset-left));
+  background: color-mix(in srgb, var(--color-text-primary) 58%, transparent);
+}
+
+.link-preview-overlay::backdrop {
+  background: color-mix(in srgb, var(--color-text-primary) 58%, transparent);
+}
+
+.link-preview-modal {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid var(--home-separator-color);
+}
+
+.link-preview-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--home-separator-color);
+}
+
+.link-preview-modal-title {
+  margin: 0;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--home-fs-md);
+  line-height: var(--home-lh-heading);
+  color: var(--color-text-primary);
+}
+
+.link-preview-modal-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.link-preview-modal-button {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(14, 18, 26, 0.62);
+  color: #ffffff;
+  text-decoration: none;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--home-fs-sm);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 6px 28px rgba(8, 12, 20, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.link-preview-modal-button--primary {
+  background: rgba(14, 18, 26, 0.96);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.link-preview-modal-button:hover {
+  color: #eef0f3;
+  background: rgba(14, 18, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 24px rgba(8, 12, 20, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.link-preview-modal-button--primary:hover {
+  background: rgba(10, 14, 20, 1);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.link-preview-modal-button:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+.link-preview-modal-text-link {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--home-fs-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.link-preview-modal-text-link:hover {
+  color: var(--color-text-primary);
+}
+
+.link-preview-modal-text-link:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.link-preview-modal-body {
+  min-height: 0;
+  background: var(--color-surface-subtle);
+}
+
+.link-preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--color-bg);
+}
+
 /* ── Inner pages (case studies, writing) */
 .page.page--inner {
   /* Avoid scroll anchoring nudging the viewport when sticky nav / async content settles. */
