@@ -1,6 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import './App.css'
-import { HERO_HEADLINE_PREFIX, HERO_HEADLINE_ROTATOR_WORDS } from './homeHeroHeadline'
 import { useHomeGsap } from './hooks/useHomeGsap'
 import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from './lib/legacyDisbursementsWritingSlug'
 const AboutPage = lazy(() =>
@@ -87,6 +86,11 @@ type WorkItem = {
   placeholder?: boolean
   showMedia?: boolean
   twoUp?: boolean
+  actions?: readonly {
+    label: string
+    href: string
+    variant?: 'primary' | 'secondary'
+  }[]
 }
 
 const works: WorkItem[] = [
@@ -95,8 +99,11 @@ const works: WorkItem[] = [
     tag: 'Case study',
     label: 'Financial Management',
     title: 'Enterprise disbursements',
-    description: 'Redesigning enterprise money movement\u2014self-service schedules, batch flows, and legible async status inside banking APIs and risk policy.',
+    description: 'Case study with texture: strategic bets, failed explorations, and honest async status inside banking APIs and risk policy\u2014plus a live prototype.',
     href: '/writing/enterprise-disbursements-money-movement',
+    actions: [
+      { label: 'Read case study', href: '/writing/enterprise-disbursements-money-movement', variant: 'primary' },
+    ],
     thumbnailVideoSrc: '/showreel-web-gallery-remix.mp4',
     thumbnailPosterSrc: '/disbursement-case-before.svg',
   },
@@ -251,8 +258,10 @@ function WorkRow({
     ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
     : {}
   const shouldOpenPreview = external && Boolean(onPreviewOpen)
+  const hasActions = Boolean(item.actions?.length)
+  const isStaticRow = item.placeholder || item.href === '#' || hasActions
   const hasVideo = Boolean(item.thumbnailVideoSrc)
-  const showVideo = hasVideo && isVideoActivated
+  const showVideo = hasVideo && (isVideoActivated || isStaticRow)
   const posterSrc = item.thumbnailPosterSrc ?? item.thumbnailSrc
 
   const handleActivateVideo = () => {
@@ -284,6 +293,23 @@ function WorkRow({
         ) : null}
         <h2 className="ed-work-title">{item.title}</h2>
         <p className="ed-work-desc">{item.description}</p>
+        {item.actions?.length ? (
+          <div className="ed-work-actions" aria-label={`${item.title} actions`}>
+            {item.actions.map((action) => {
+              const actionIsExternal = isExternalHref(action.href)
+              return (
+                <a
+                  key={action.label}
+                  href={action.href}
+                  className={`ed-work-action ${action.variant === 'secondary' ? 'ed-work-action--secondary' : ''}`.trim()}
+                  {...(actionIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                >
+                  {action.label}
+                </a>
+              )
+            })}
+          </div>
+        ) : null}
       </div>
       {rowShowMedia ? (
         <div
@@ -316,10 +342,10 @@ function WorkRow({
     </>
   )
 
-  if (item.placeholder || item.href === '#') {
+  if (isStaticRow) {
     return (
       <article
-        className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ed-work-row--placeholder`.trim()}
+        className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${item.placeholder ? 'ed-work-row--placeholder' : ''}`.trim()}
       >
         {inner}
       </article>
@@ -465,11 +491,11 @@ function HomeView({
             <div className="home-hero-title-row">
               <h1 id="hero-heading" className="ed-hero-headline home-hero-headline">
                 <span className="ed-hero-headline-line">
-                  <span className="ed-hero-headline-name">{HERO_HEADLINE_PREFIX}</span>
+                  <span className="ed-hero-headline-name" />
                   <span className="ed-hero-headline-line-suffix" />
                 </span>
                 <span className="ed-hero-headline-rotator-wrap" aria-hidden="true">
-                  <span className="ed-hero-headline-serif ed-hero-headline-rotator">{HERO_HEADLINE_ROTATOR_WORDS[0]}</span>
+                  <span className="ed-hero-headline-serif ed-hero-headline-rotator" />
                   <span className="ed-hero-headline-cursor" />
                 </span>
               </h1>

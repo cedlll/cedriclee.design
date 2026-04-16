@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { gsap } from 'gsap'
 import './DisbursementsCaseStudy.css'
 import { DisbursementsPrototypeEmbed } from './DisbursementsPrototypeEmbed'
 
@@ -149,6 +150,53 @@ function PrototypeBuiltWith({ className }: { className?: string } = {}) {
    Main component
    ================================================================ */
 export function DisbursementsCaseStudy() {
+  useEffect(() => {
+    if (globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+
+    const actionLinks = globalThis.document.querySelectorAll<HTMLAnchorElement>('a.ew-hero-cta')
+    const cleanupFns: Array<() => void> = []
+
+    actionLinks.forEach((link) => {
+      const handleEnter = () => {
+        gsap.to(link, {
+          y: -2,
+          scale: 1.01,
+          duration: 0.22,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      }
+
+      const handleLeave = () => {
+        gsap.to(link, {
+          y: 0,
+          scale: 1,
+          duration: 0.2,
+          ease: 'power2.out',
+          overwrite: 'auto',
+        })
+      }
+
+      link.addEventListener('mouseenter', handleEnter)
+      link.addEventListener('mouseleave', handleLeave)
+      link.addEventListener('focus', handleEnter)
+      link.addEventListener('blur', handleLeave)
+
+      cleanupFns.push(() => {
+        gsap.killTweensOf(link)
+        link.removeEventListener('mouseenter', handleEnter)
+        link.removeEventListener('mouseleave', handleLeave)
+        link.removeEventListener('focus', handleEnter)
+        link.removeEventListener('blur', handleLeave)
+        gsap.set(link, { clearProps: 'transform' })
+      })
+    })
+
+    return () => {
+      cleanupFns.forEach((cleanup) => cleanup())
+    }
+  }, [])
+
   return (
     <article className="ew">
       <a href="/" className="ew-back">&larr; Back</a>
@@ -156,14 +204,13 @@ export function DisbursementsCaseStudy() {
       {/* ── Hero ── */}
       <header className="ew-hero">
         <div className="ew-hero-text">
-          <p className="ew-kicker">Financial Management</p>
-          <h1 className="ew-title">
-            Enterprise disbursements
-          </h1>
+          <p className="ew-kicker">Financial Management &mdash; Philippine payment gateway fintech</p>
+          <h1 className="ew-title">Enterprise disbursements</h1>
           <p className="ew-subtitle">
-            Redesigning enterprise money movement&mdash;from a thin, support-heavy wedge
-            to self-service schedules, batch flows, and legible async status inside real
-            banking APIs and risk policy.
+            <span className="ew-em-serif">Easy to ship, hard to trust:</span> 91% of onboarded merchants never
+            used the product. Async rails,
+            thin validation, and risk policy broke confidence &mdash; not bad UI. I led design so the
+            product told the truth about money it didn&apos;t fully control.
           </p>
           <div className="ew-hero-cta-row">
             <a className="ew-hero-cta" href={`#${DISBURSEMENTS_PROTOTYPE_SECTION_ID}`}>
@@ -176,11 +223,11 @@ export function DisbursementsCaseStudy() {
           <dl className="ew-meta-list">
             <div className="ew-meta-item">
               <dt>Role</dt>
-              <dd>Lead Designer</dd>
+              <dd>Lead Product Designer</dd>
             </div>
             <div className="ew-meta-item">
               <dt>Scope</dt>
-              <dd>End-to-end UX</dd>
+              <dd>Research, IA, UI, design system patterns</dd>
             </div>
             <div className="ew-meta-item">
               <dt>Platform</dt>
@@ -188,7 +235,7 @@ export function DisbursementsCaseStudy() {
             </div>
             <div className="ew-meta-item">
               <dt>Timeline</dt>
-              <dd>2023</dd>
+              <dd>2021&ndash;2023</dd>
             </div>
           </dl>
         </aside>
@@ -198,89 +245,84 @@ export function DisbursementsCaseStudy() {
       <Reveal className="ew-row">
         <div className="ew-col-narrow">
           <p className="ew-label">Impact</p>
-          <h2 className="ew-h2">Outcomes</h2>
+          <h2 className="ew-h2">What moved</h2>
         </div>
         <div className="ew-col-wide">
           <div className="ew-metrics">
             <div className="ew-metric">
               <span className="ew-metric-value">12 &rarr; 93</span>
-              <span className="ew-metric-label">Merchants with disbursement activity</span>
+              <span className="ew-metric-label">Active merchants (same pool)</span>
             </div>
             <div className="ew-metric">
               <span className="ew-metric-value">&#x20B1;163.9K</span>
-              <span className="ew-metric-label">Illustrative TPV in the same reporting window</span>
+              <span className="ew-metric-label">Baseline TPV window</span>
             </div>
             <div className="ew-metric">
               <span className="ew-metric-value">High &rarr; Lower</span>
-              <span className="ew-metric-label">Ops load &mdash; fewer manual touches after launch</span>
+              <span className="ew-metric-label">Ops touches on schedules &amp; vague failures</span>
             </div>
           </div>
           <p className="ew-body">
-            Merchant participation rose sharply; Finance and Risk Ops handled fewer manual
-            schedule and failure tickets. Status, validation, and error patterns reused across
-            later Treasury and payout work.
+            Fewer tickets, more self-serve. Status, validation, and error patterns later reused on Treasury
+            work.
           </p>
         </div>
       </Reveal>
 
-      {/* ── Overview ── */}
+      {/* ── Context + pain (merged) ── */}
       <Reveal className="ew-row ew-row--reverse">
         <div className="ew-col-narrow">
-          <p className="ew-label">Overview</p>
-          <h2 className="ew-h2">The challenge</h2>
+          <p className="ew-label">Context</p>
+          <h2 className="ew-h2">Problem &amp; signal</h2>
         </div>
         <div className="ew-col-wide">
-          <p className="ew-body ew-body--lead">
-            I was lead designer for disbursements at a Philippine payment gateway fintech: merchants
-            accepted payments and moved money in one stack. Outbound payouts lagged what competitors
-            offered and kept teams in spreadsheets and bank portals.
+          <p className="ew-body">
+            Outbound payouts lagged competitors; enterprises lived in spreadsheets and bank portals. About 9%
+            of onboarded merchants had transacted. We could not
+            promise instant rails, so we bet on visibility and honest sequencing (cadence, CSV, lifecycle
+            states) ahead of EMI-dependent features like external funding.
           </p>
           <p className="ew-body">
-            In mid&ndash;2022, only about <strong>9% of onboarded merchants</strong> had used the
-            product. Problems clustered in three areas: user trust and mental models,
-            missing enterprise capabilities and ops load, and hard technical and policy
-            limits we could make legible but not erase.
+            Early: support ticket tagging and ~93 merchant interviews with rough wireframes&mdash;wrong
+            timelines kept pointing to IA and vocabulary, not more surface area.
           </p>
-        </div>
-      </Reveal>
-
-      {/* ── User & business pain ── */}
-      <Reveal className="ew-row">
-        <div className="ew-col-narrow">
-          <p className="ew-label">Discovery</p>
-          <h2 className="ew-h2">User &amp; business pain</h2>
-          <p className="ew-aside-body">
-            Mental models, trust, and clarity when money is asynchronous&mdash;plus
-            adoption, competitiveness, and enterprise readiness.
-          </p>
-        </div>
-        <div className="ew-col-wide">
           <ol className="ew-numbered-list">
             <li>
               <strong>Payout vs. disbursement confusion</strong>
-              <p>Merchants conflated &ldquo;when the platform settles to me&rdquo; with &ldquo;when I can push funds out.&rdquo; I separated language, hierarchy, and empty states so each workflow had one mental model.</p>
+              <p>Split language and hierarchy so settlement and send-money are never one blur.</p>
             </li>
             <li>
-              <strong>No self-service payout cadence</strong>
-              <p>Every schedule change routed through Risk and Finance. We automated allowed moves and kept edge cases behind human review.</p>
+              <strong>No self-service cadence</strong>
+              <p>Schedule changes were ops-heavy; we automated allowed moves and gated the rest.</p>
             </li>
             <li>
-              <strong>Async processing felt &ldquo;broken&rdquo;</strong>
-              <p>Batch partners meant hours of ambiguity. Without designed states and ETAs, users assumed failure and opened tickets.</p>
-            </li>
-            <li>
-              <strong>No external funding capability</strong>
-              <p>Users could only disburse from funds already held on the platform. They couldn&rsquo;t top up from external bank accounts&mdash;a table-stakes feature competitors already shipped.</p>
-            </li>
-            <li>
-              <strong>Missing proof of deposit</strong>
-              <p>For compliance and accounting, users needed downloadable transaction receipts. Enterprise customers couldn&rsquo;t complete their audit trails.</p>
+              <strong>Async felt &ldquo;broken&rdquo;</strong>
+              <p>Batches without named states drove &ldquo;where is my money?&rdquo; tickets.</p>
             </li>
             <li>
               <strong>Late failures, weak recovery</strong>
-              <p>Limited name/account validation up front guaranteed downstream declines. I paired honest timelines with error taxonomies and CTAs so teams could self-serve remediation.</p>
+              <p>Weak pre-checks plus hours-later declines; errors needed plain language and a next step.</p>
             </li>
           </ol>
+        </div>
+      </Reveal>
+
+      {/* ── Texture: one tight block ── */}
+      <Reveal className="ew-row">
+        <div className="ew-col-narrow">
+          <p className="ew-label">Texture</p>
+          <h2 className="ew-h2">What did not ship</h2>
+        </div>
+        <div className="ew-col-wide">
+          <p className="ew-body">
+            A single &ldquo;Pending&rdquo; chip and vague competitor-style speed copy increased anxiety. We moved
+            to named states with ETA ranges and notifications. Rich inline bank checks were not API-realistic;
+            saved recipients plus CSV pre-validation shifted errors left instead.
+          </p>
+          <p className="ew-body">
+            <strong className="ew-hero-lede-strong">Hardest part:</strong> defending async truth to GTM
+            when everyone wanted &ldquo;instant.&rdquo; Ticket volume and merchant reads on prototypes won the argument.
+          </p>
         </div>
       </Reveal>
 
@@ -289,58 +331,29 @@ export function DisbursementsCaseStudy() {
         <div className="ew-col-narrow">
           <p className="ew-label">Constraints</p>
           <h2 className="ew-h2">Platform &amp; risk</h2>
-          <p className="ew-aside-body">
-            Each limit from partners or policy and how we addressed it in the product.
-          </p>
         </div>
         <div className="ew-col-wide">
           <div className="ew-constraint-list">
             <div className="ew-constraint">
-              <p className="ew-constraint-tag">Technical</p>
-              <h3 className="ew-constraint-title">Asynchronous processing</h3>
+              <p className="ew-constraint-tag">Partner rail</p>
+              <h3 className="ew-constraint-title">Async batches, caps, weak pre-checks</h3>
               <p className="ew-constraint-text">
-                Banking partner API couldn&rsquo;t provide real-time status. Disbursements were
-                &ldquo;queued&rdquo; and processed in batches every few hours.
+                No live status; queues and rate limits; account validation often surfaced hours later.
               </p>
               <p className="ew-constraint-response">
-                <strong>Response:</strong> Multi-step status model (Processing &rarr; In Transit &rarr; Completed)
-                with ETA messaging and email/SMS notifications at each state transition.
-              </p>
-            </div>
-            <div className="ew-constraint">
-              <p className="ew-constraint-tag">Technical</p>
-              <h3 className="ew-constraint-title">Batch size &amp; rate limits</h3>
-              <p className="ew-constraint-text">
-                The API could only process a certain number per batch. If a merchant sent 500
-                disbursements at once, the system would queue them, leading to unpredictable delays.
-              </p>
-              <p className="ew-constraint-response">
-                <strong>Response:</strong> Bulk CSV with pre-submit validation and clear queue semantics.
-                Errors flagged before submission, not after batch processing started.
-              </p>
-            </div>
-            <div className="ew-constraint">
-              <p className="ew-constraint-tag">Technical</p>
-              <h3 className="ew-constraint-title">Weak pre-submit validation</h3>
-              <p className="ew-constraint-text">
-                We couldn&rsquo;t validate recipient bank account details before submission.
-                Disbursements could fail hours after initiation.
-              </p>
-              <p className="ew-constraint-response">
-                <strong>Response:</strong> Saved recipients with verification at save-time, reused across runs.
-                Accounts checked once when saved, not when disbursed.
+                <strong>Response:</strong> Named states + ETAs + notifications; CSV validate-before-send;
+                saved recipients verified at save-time.
               </p>
             </div>
             <div className="ew-constraint">
               <p className="ew-constraint-tag">Risk &amp; policy</p>
-              <h3 className="ew-constraint-title">Risk segmentation</h3>
+              <h3 className="ew-constraint-title">Segmentation</h3>
               <p className="ew-constraint-text">
-                Not all merchants could use faster payout schedules. Risk Ops required merchants
-                to meet certain thresholds before enabling features.
+                Not every merchant qualifies for faster cadence; rules lived in Ops tooling.
               </p>
               <p className="ew-constraint-response">
-                <strong>Response:</strong> Retool-backed configuration; dashboard showed only eligible payout
-                options. Guardrails invisible to safe merchants while high-risk accounts stayed protected.
+                <strong>Response:</strong> Retool-backed eligibility; UI only showed allowed options so
+                guardrails stayed invisible when you were clear.
               </p>
             </div>
           </div>
@@ -350,70 +363,73 @@ export function DisbursementsCaseStudy() {
       {/* ── Quote ── */}
       <Reveal className="ew-quote-section" as="blockquote">
         <p className="ew-quote">
-          &ldquo;Transparency beats false promises. Shift errors left; make risk guardrails
-          invisible to eligible merchants.&rdquo;
+          Transparency beats false promises; shift errors left; keep risk quiet for everyone who does not
+          need to feel it.
         </p>
       </Reveal>
 
-      {/* ── Approach & decisions ── */}
+      {/* ── Approach + decision (merged flow) ── */}
       <Reveal className="ew-row">
         <div className="ew-col-narrow">
-          <p className="ew-label">Approach</p>
+          <p className="ew-label">Role</p>
           <h2 className="ew-h2">How I worked</h2>
         </div>
         <div className="ew-col-wide">
           <p className="ew-body">
-            Lead designer for Disbursements: research with 93 merchants, tight loops with Risk,
-            Engineering, Finance, and PMM; flows for schedules, bulk send, and recovery; specs
-            and handoff through launch. I biased toward honest timelines and batch reality
-            over overpromising&mdash;clearer trust, lighter support.
+            End-to-end: research and IA through specs, QA with Engineering, launch with PMM. I owned
+            vocabulary, status + notifications, CSV validation, saved recipients, and error-to-support
+            mapping. Risk/Retool, integrations, Finance, and GTM owned the rest; copy debates settled with
+            tickets, SLAs, and recordings&mdash;not opinions.
           </p>
+          <div className="ew-callout">
+            <p className="ew-callout-title">Decision: honest async states (not fake &ldquo;instant&rdquo;)</p>
+            <p className="ew-body">
+              Chose explicit batch-aware states with ETA ranges over vague &ldquo;processing&rdquo; or decorative
+              spinners. Prototypes + support histograms got PM/GTM aligned; &ldquo;where is my money?&rdquo; tickets
+              dropped as a class even when wall-clock time barely moved.
+            </p>
+          </div>
+        </div>
+      </Reveal>
+
+      <Reveal className="ew-case-photo-reveal" as="figure">
+        <div className="ew-case-photo-frame">
+          {/* Add: <img className="ew-case-photo-img" src="/your-photo.webp" alt="…" loading="lazy" decoding="async" /> */}
         </div>
       </Reveal>
 
       <Reveal className="ew-row ew-row--reverse">
         <div className="ew-col-narrow">
-          <p className="ew-label">Solutions</p>
-          <h2 className="ew-h2">Key decisions</h2>
+          <p className="ew-label">Ship</p>
+          <h2 className="ew-h2">What we shipped</h2>
         </div>
         <div className="ew-col-wide">
-          <ol className="ew-decisions">
+          <ul className="ew-bullets">
             <li>
-              <h3>Self-service payout schedule</h3>
-              <p>
-                Merchants changed cadence (monthly &rarr; bi-weekly &rarr; on-demand) without tickets.
-                Eligibility from history and KYC; the UI only showed options they qualified for.
-              </p>
+              <span className="ew-inline-strong">Self-service cadence</span> &mdash; eligible schedules only;
+              edge cases stay on humans.
             </li>
             <li>
-              <h3>Transparent status communication</h3>
-              <p>
-                Processing, in transit, completed, failed&mdash;with estimates and email/SMS.
-                Enough detail to trust async money movement without sounding like an API doc.
-              </p>
+              <span className="ew-inline-strong">Status + comms</span> &mdash; friendly names, estimates,
+              SMS/email on transitions.
             </li>
             <li>
-              <h3>Bulk upload with pre-validation</h3>
-              <p>
-                CSV checked before send (format, accounts, amounts). Row-level errors
-                (&ldquo;Row 12: invalid account&rdquo;) so fixes land before a batch fails.
-              </p>
+              <span className="ew-inline-strong">CSV in</span> &mdash; strict template, row errors before batch
+              work starts.
             </li>
             <li>
-              <h3>Saved recipients for recurring disbursements</h3>
-              <p>
-                Most volume was repeat payees. Saved recipients after verification cut re-entry
-                mistakes and sped up recurring runs.
-              </p>
+              <span className="ew-inline-strong">Saved recipients</span> &mdash; verify once, reuse on repeat
+              payees.
             </li>
             <li>
-              <h3>Error handling &amp; recovery paths</h3>
-              <p>
-                Errors mapped to plain language and a clear next step (e.g. invalid account &rarr;
-                edit and retry). CTAs matched what support would actually do.
-              </p>
+              <span className="ew-inline-strong">Recovery</span> &mdash; plain errors, CTAs that match what Ops
+              would do.
             </li>
-          </ol>
+          </ul>
+          <p className="ew-body">
+            Same patterns later carried into email, SMS, and Treasury surfaces&mdash;one money vocabulary,
+            state beats spinners, fix in place.
+          </p>
         </div>
       </Reveal>
 
@@ -422,8 +438,8 @@ export function DisbursementsCaseStudy() {
         <p className="ew-label">Prototype</p>
         <h2 className="ew-h2">Interactive walkthrough</h2>
         <p className="ew-body ew-body--narrow">
-          Explore an illustrative merchant dashboard: payout cadence, single and CSV
-          disbursements, batch timelines, notifications, and failed-state recovery.
+          Fictional merchant UI: cadence, single + CSV send, batch timeline, notifications, failure
+          recovery&mdash;click through the same story as above.
         </p>
         <PrototypeBuiltWith className="ew-prototype-built-with--in-walkthrough" />
         <div className="ew-prototype-embed">
@@ -438,44 +454,21 @@ export function DisbursementsCaseStudy() {
       <Reveal className="ew-row">
         <div className="ew-col-narrow">
           <p className="ew-label">Reflection</p>
-          <h2 className="ew-h2">Lessons learned</h2>
+          <h2 className="ew-h2">Lessons</h2>
         </div>
         <div className="ew-col-wide">
           <ol className="ew-lessons">
             <li>
-              <h3>Transparency beats false promises</h3>
-              <p>
-                Users would rather know the truth about processing times than be promised instant
-                results that don&rsquo;t materialize.
-              </p>
+              <h3>Tell the truth about time</h3>
+              <p>Named latency beats heroic adjectives; trust is the conversion lever in money.</p>
             </li>
             <li>
               <h3>Shift errors left</h3>
-              <p>
-                Pre-submission validation prevents catastrophic failures downstream. Better to add
-                friction upfront than deal with errors after hours of batch processing.
-              </p>
+              <p>CSV and saved-recipient checks cost less than midnight batch rescues.</p>
             </li>
             <li>
-              <h3>Self-service at scale requires guardrails</h3>
-              <p>
-                Risk requirements demanded merchant segmentation. The key was making guardrails
-                invisible to eligible users while protecting against fraud.
-              </p>
-            </li>
-            <li>
-              <h3>API limitations are design constraints, not excuses</h3>
-              <p>
-                Asynchronous processing, batch limits, and validation gaps required creative
-                design solutions. The best products work within reality, not against it.
-              </p>
-            </li>
-            <li>
-              <h3>Cross-functional collaboration is non-negotiable</h3>
-              <p>
-                Every design decision involved trade-offs between user needs, technical feasibility,
-                risk requirements, and business goals.
-              </p>
+              <h3>Guardrails off-stage</h3>
+              <p>Eligibility belongs in config and UI surfacing, not in support as default UX.</p>
             </li>
           </ol>
         </div>
@@ -486,10 +479,7 @@ export function DisbursementsCaseStudy() {
         <header className="ew-next-reads-intro">
           <p className="ew-kicker">Thanks for reading</p>
           <h2 className="ew-h2">More case studies</h2>
-          <p className="ew-aside-body ew-next-reads-lede">
-            A few other pieces from selected work. I will link each one when the write-up is
-            ready.
-          </p>
+          <p className="ew-body ew-next-reads-lede">More write-ups when they are ready.</p>
         </header>
         <ul className="ew-next-reads-grid">
           {OTHER_CASE_STUDIES.slice(0, 2).map((item) => (

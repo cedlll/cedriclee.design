@@ -12,8 +12,11 @@
   gap: 0;
   box-sizing: border-box;
   --ew-fs-sm: 14px;
+  --ew-fs-16: 16px;
   --ew-fs-md: 18px;
   --ew-fs-lg: 22px;
+  /* Primary reading size; hero kicker + section labels use 16px */
+  --ew-fs-read: var(--ew-fs-md);
   --ew-lh-body: 1.6;
   --ew-lh-heading: 1.3;
   --ew-ls: 0.02em;
@@ -53,7 +56,7 @@
 /* ── Back link ── */
 .ew-back {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   color: var(--color-text-muted);
   text-decoration: none;
   align-self: flex-start;
@@ -76,19 +79,19 @@
 /* ── Typography primitives ── */
 .ew-kicker {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   font-weight: 400;
   text-transform: none;
   letter-spacing: var(--ew-ls);
   color: var(--color-text-muted);
-  margin: 0 0 16px;
+  margin: 0 0 12px;
 }
 
+/* Narrow-column section stack: 16px label + 22px title (case study + editorial) */
 .ew-label {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   font-weight: 400;
-  text-transform: none;
   letter-spacing: var(--ew-ls);
   color: var(--color-text-muted);
   margin: 0 0 12px;
@@ -96,7 +99,7 @@
 }
 
 h2.ew-label {
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   line-height: inherit;
 }
 
@@ -107,11 +110,12 @@ h2.ew-label {
   color: var(--color-text-primary);
   margin: 0 0 16px;
   line-height: var(--ew-lh-heading);
+  letter-spacing: var(--ew-ls);
 }
 
 .ew-body {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-md);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0 0 16px;
@@ -122,12 +126,21 @@ h2.ew-label {
 }
 
 .ew-body--lead {
-  font-size: var(--ew-fs-md);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
 }
 
 .ew-body--narrow {
   max-width: 640px;
+}
+
+/* Inline emphasis: serif instead of bold (Problem & signal, etc.) */
+.ew-em-serif {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-text-primary);
 }
 
 /* ── Prototype tooling (Cursor + Claude Code) ── */
@@ -147,7 +160,7 @@ h2.ew-label {
 
 .ew-prototype-built-with__lead {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
 }
@@ -161,7 +174,7 @@ h2.ew-label {
 
 .ew-prototype-built-with__sep {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   color: var(--color-text-muted);
   opacity: 0.85;
 }
@@ -187,14 +200,14 @@ h2.ew-label {
 
 .ew-prototype-built-with__name {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   font-weight: var(--ew-fw-emphasis);
   letter-spacing: var(--ew-ls);
 }
 
 .ew-aside-body {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
@@ -202,7 +215,7 @@ h2.ew-label {
 
 .ew-caption {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   color: var(--color-text-muted);
   margin: 12px 0 0;
 }
@@ -227,7 +240,7 @@ h2.ew-label {
 .ew-title {
   font-family: 'Satoshi', system-ui, sans-serif;
   font-size: var(--ew-fs-lg);
-  font-weight: 400;
+  font-weight: var(--ew-fw-emphasis);
   line-height: var(--ew-lh-heading);
   color: var(--color-text-primary);
   margin: 0 0 20px;
@@ -236,11 +249,70 @@ h2.ew-label {
 
 .ew-subtitle {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-md);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
   max-width: 600px;
+}
+
+.ew-subtitle + .ew-subtitle {
+  margin-top: 14px;
+}
+
+.ew-hero-lede-strong {
+  font-weight: var(--ew-fw-emphasis);
+  color: var(--color-text-primary);
+}
+
+/* Case-study texture: bullets, decision callout (Actionable Portfolio-style sections) */
+.ew-bullets {
+  margin: 0 0 20px;
+  padding-left: 1.2em;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-read);
+  line-height: var(--ew-lh-body);
+  color: var(--color-text-muted);
+}
+
+.ew-bullets:last-child {
+  margin-bottom: 0;
+}
+
+.ew-bullets li {
+  margin-bottom: 10px;
+}
+
+.ew-bullets li:last-child {
+  margin-bottom: 0;
+}
+
+.ew-bullets .ew-inline-strong {
+  color: var(--color-text-primary);
+  font-weight: var(--ew-fw-emphasis);
+}
+
+.ew-callout {
+  border-left: 2px solid var(--color-text-muted);
+  padding: 4px 0 4px 20px;
+  margin: 0 0 20px;
+}
+
+.ew-callout:last-child {
+  margin-bottom: 0;
+}
+
+.ew-callout-title {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--ew-fs-read);
+  font-weight: var(--ew-fw-emphasis);
+  color: var(--color-text-primary);
+  margin: 0 0 8px;
+  letter-spacing: var(--ew-ls);
+}
+
+.ew-callout .ew-body {
+  margin-bottom: 0;
 }
 
 .ew-hero-cta-row {
@@ -270,9 +342,10 @@ a.ew-hero-cta {
   padding: 12px 22px;
   border-radius: 999px;
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  /* Match homepage `a.ed-work-action` (selected work CTAs) */
+  font-size: var(--home-fs-sm, 14px);
   font-weight: 500;
-  letter-spacing: var(--ew-ls);
+  letter-spacing: var(--home-ls, 0.02em);
   text-decoration: none;
   color: #ffffff;
   /* Steel glass: default uses former hover (stronger frost) */
@@ -325,7 +398,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-meta-item dt {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   font-weight: 400;
   text-transform: none;
   letter-spacing: var(--ew-ls);
@@ -334,7 +407,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-meta-item dd {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-16);
   color: var(--color-text-primary);
   margin: 0;
 }
@@ -366,6 +439,36 @@ a.ew-hero-cta:focus-visible {
   min-width: 0;
 }
 
+/* ── Full-width photo slot (below Role / How I worked) ── */
+.ew-case-photo-reveal {
+  margin: 0;
+  padding: 0 0 56px;
+  width: 100%;
+}
+
+.ew-case-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 200px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--color-surface-subtle);
+  border: 1px solid color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+}
+
+.ew-case-photo-frame:has(.ew-case-photo-img) {
+  border-color: color-mix(in srgb, var(--color-text-primary) 14%, transparent);
+}
+
+.ew-case-photo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
 /* ── Full-width sections ── */
 .ew-full {
   padding: 56px 0;
@@ -390,15 +493,15 @@ a.ew-hero-cta:focus-visible {
 
 .ew-metric-value {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-md);
-  font-weight: 400;
+  font-size: var(--ew-fs-read);
+  font-weight: var(--ew-fw-emphasis);
   color: var(--color-text-primary);
   letter-spacing: var(--ew-ls);
 }
 
 .ew-metric-label {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   color: var(--color-text-muted);
   line-height: var(--ew-lh-body);
 }
@@ -419,7 +522,7 @@ a.ew-hero-cta:focus-visible {
 .ew-numbered-list li strong {
   display: block;
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-md);
+  font-size: var(--ew-fs-read);
   font-weight: var(--ew-fw-emphasis);
   color: var(--color-text-primary);
   margin-bottom: 6px;
@@ -427,7 +530,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-numbered-list li p {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
@@ -448,7 +551,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-constraint-tag {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   font-weight: 400;
   text-transform: none;
   letter-spacing: var(--ew-ls);
@@ -460,7 +563,7 @@ a.ew-hero-cta:focus-visible {
 .ew-decisions li h3,
 .ew-lessons li h3 {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-md);
+  font-size: var(--ew-fs-read);
   font-weight: var(--ew-fw-emphasis);
   color: var(--color-text-primary);
   margin: 0 0 8px;
@@ -469,7 +572,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-constraint-text {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0 0 10px;
@@ -477,7 +580,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-constraint-response {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
@@ -507,7 +610,7 @@ a.ew-hero-cta:focus-visible {
 .ew-decisions li p,
 .ew-lessons li p {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
@@ -554,7 +657,7 @@ a.ew-hero-cta:focus-visible {
   text-align: center;
   color: var(--color-text-muted);
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   border-radius: 4px;
   background: var(--color-surface-subtle);
   line-height: var(--ew-lh-body);
@@ -653,7 +756,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-next-read-soon {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 10px 0 0;
@@ -663,7 +766,7 @@ a.ew-hero-cta:focus-visible {
   margin: 0;
   padding-top: 8px;
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
 }
 
@@ -694,7 +797,7 @@ a.ew-hero-cta:focus-visible {
 
 .ew-footer p {
   font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-sm);
+  font-size: var(--ew-fs-read);
   line-height: var(--ew-lh-body);
   color: var(--color-text-muted);
   margin: 0;
@@ -728,6 +831,10 @@ a.ew-hero-cta:focus-visible {
     padding: 40px 0;
   }
 
+  .ew-case-photo-reveal {
+    padding-bottom: 40px;
+  }
+
   .ew-hero {
     padding-bottom: 40px;
   }
@@ -746,14 +853,6 @@ a.ew-hero-cta:focus-visible {
     font-size: var(--ew-fs-lg);
   }
 
-  .ew-h2 {
-    font-size: var(--ew-fs-lg);
-  }
-
-  .ew-quote {
-    font-size: var(--ew-fs-md);
-  }
-
   .ew-next-reads {
     padding: 48px 0 40px;
     gap: 28px;
@@ -765,5 +864,9 @@ a.ew-hero-cta:focus-visible {
 
   .ew-full {
     padding: 32px 0;
+  }
+
+  .ew-case-photo-reveal {
+    padding-bottom: 32px;
   }
 }

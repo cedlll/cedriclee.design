@@ -255,13 +255,13 @@ const WRITINGS: Record<
     ],
   },
   [DISBURSEMENTS_CASE_STUDY_SLUG]: {
-    title: 'Enterprise disbursements \u2014 Redesigning enterprise money movement',
+    title: 'Enterprise disbursements \u2014 Judgment in async enterprise money',
     date: '2021\u20132023',
     blocks: [
       {
         type: 'point',
         label: 'TL;DR',
-        text: "As Senior Product Designer at a Philippine payment gateway fintech (2021\u20132023), I redesigned the enterprise disbursement feature to address critical user pain points while navigating technical constraints from banking APIs and compliance requirements. Adoption had stalled at 9% with only 12 of 133 onboarded merchants transacting. I led end-to-end design for self-service payout scheduling, simplified disbursement flows, transparent status communication, bulk CSV uploads with pre-submit validation, saved recipients, and recovery-oriented error handling\u2014trading \u201Cinstant\u201D promises for transparency. The work transformed disbursements from a manual, ops-heavy process to a scalable self-service product and positioned the company to compete with Xendit and Paynamics in the enterprise disbursement market.",
+        text: "Lead Product Designer for disbursements at a Philippine payment gateway (2021\u20132023). Adoption was stuck around 9% (12 of 133 merchants transacting) while competitors owned clearer payout stories. I influenced sequencing toward honest batch-aware status, self-service payout cadence where policy allowed, CSV pre-validation, saved recipients, and recovery UX\u2014and documented what failed along the way. Full case study and interactive prototype live at this URL in the custom layout (not these placeholder blocks).",
       },
       {
         type: 'point',
@@ -345,7 +345,7 @@ const WRITINGS: Record<
 }
 
 /** Display order on `/writing`. Every slug must exist on `WRITINGS`. */
-export const WRITING_INDEX_SLUGS: readonly (keyof typeof WRITINGS)[] = [
+const WRITING_INDEX_SLUGS: readonly (keyof typeof WRITINGS)[] = [
   DISBURSEMENTS_CASE_STUDY_SLUG,
   'tracing-the-roots-of-graffiti-in-the-philippines',
   'the-intertextuality-of-manila-slums-pieta',

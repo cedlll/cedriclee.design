@@ -116,12 +116,16 @@
   gap: 12px;
   padding: 14px 16px;
   border-bottom: 1px solid var(--home-separator-color);
+  background: color-mix(in srgb, var(--color-bg) 78%, transparent);
+  backdrop-filter: blur(14px) saturate(130%);
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
 }
 
 .link-preview-modal-title {
   margin: 0;
   font-family: 'Satoshi', system-ui, sans-serif;
   font-size: var(--home-fs-md);
+  font-weight: 700;
   line-height: var(--home-lh-heading);
   color: var(--color-text-primary);
 }
@@ -647,6 +651,73 @@ a.home-case-study-row:focus-visible {
   color: var(--color-text-muted);
 }
 
+.ed-work-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+a.ed-work-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 22px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: var(--home-fs-sm);
+  font-weight: 500;
+  letter-spacing: var(--home-ls);
+  color: #ffffff;
+  text-decoration: none;
+  background: rgba(14, 18, 26, 0.92);
+  box-shadow:
+    0 6px 28px rgba(8, 12, 20, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+a.ed-work-action:hover {
+  color: #eef0f3;
+  background: rgba(14, 18, 26, 0.82);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 24px rgba(8, 12, 20, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+a.ed-work-action:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 3px;
+}
+
+a.ed-work-action.ed-work-action--secondary {
+  flex-basis: 100%;
+  padding: 0;
+  min-height: auto;
+  color: var(--color-text-muted);
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font-weight: 400;
+}
+
+a.ed-work-action.ed-work-action--secondary:hover {
+  color: var(--color-text-primary);
+  background: transparent;
+  box-shadow: none;
+}
+
 .ed-work-media {
   width: 100%;
   aspect-ratio: 16 / 10;
@@ -883,6 +954,24 @@ a.home-case-study-row:focus-visible {
    Responsive
    ================================================================ */
 @media (max-width: 768px) {
+  #selected-work > .ed-section {
+    padding-top: 36px;
+  }
+
+  #selected-work > .ed-section:first-child {
+    padding-top: 24px;
+  }
+
+  #selected-work .ed-work-row {
+    /* Stacked text + media: extra breathing room above the thumbnail/video */
+    gap: 28px;
+    padding: 24px 0;
+  }
+
+  #selected-work .ed-work-actions {
+    margin-top: 10px;
+  }
+
   .ed-works {
     grid-template-columns: 1fr;
     column-gap: 0;
@@ -940,6 +1029,19 @@ a.home-case-study-row:focus-visible {
 }
 
 @media (max-width: 480px) {
+  #selected-work > .ed-section {
+    padding-top: 30px;
+  }
+
+  #selected-work > .ed-section:first-child {
+    padding-top: 20px;
+  }
+
+  #selected-work .ed-work-row {
+    gap: 32px;
+    padding: 20px 0;
+  }
+
   .page--home {
     padding: 0 16px 80px;
   }
@@ -973,7 +1075,9 @@ a.home-case-study-row:focus-visible {
   }
 
   .ed-hero-headline.home-hero-headline {
-    font-size: clamp(1.45rem, 6vw, 1.85rem);
+    /* Larger than the previous mobile clamp — that rule sat below the default min on typical phone widths */
+    font-size: clamp(2rem, 9vw + 0.35rem, 2.65rem);
+    line-height: 1.08;
   }
 
   .ed-section {
@@ -991,7 +1095,9 @@ a.home-case-study-row:focus-visible {
 }
 
 @media (max-width: 960px) {
-  .page {
+  /* Do not override `.page--home` — it intentionally uses no top offset; the generic
+     `.page` padding here was adding ~80px of empty space above the hero on mobile. */
+  .page:not(.page--home) {
     padding: 80px 24px 80px;
   }
 }
