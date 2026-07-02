@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -18,34 +18,35 @@
     --color-focus: #333333;
     --color-surface-subtle: #fafafa;
 
-    /* Product tokens (same as live prototype :root on Vercel) */
-    --bg:           #f9fafb;
-    --card:         #ffffff;
-    --border:       #e5e7eb;
-    --muted:        #f3f4f6;
-    --muted-fg:     #6b7280;
-    --fg:           #111827;
+    /* Product tokens (same as live prototype :root on Vercel — retheme, Q2 2026) */
+    --bg:           #f8f7f4;
+    --card:         #fefdfc;
+    --border:       #e2e1db;
+    --muted:        #f1f0ec;
+    --muted-fg:     #5b635c;
+    --fg:           #1c241f;
 
-    --primary:      #1c5c1c;
-    --primary-fg:   #ffffff;
-    --accent:       #10b981;
-    --destructive:  #dc2626;
+    --primary:      #20563a;
+    --primary-fg:   #fbfaf7;
+    --accent:       #86c9a5;
+    --destructive:  #a43c31;
 
-    --sidebar:              #0b241e;
-    --sidebar-fg:           #f3f4f6;
-    --sidebar-border:       #ffffff1a;
+    --sidebar:              #111c17;
+    --sidebar-fg:           #f8f7f4;
+    --sidebar-border:       #ffffff14;
     --sidebar-accent:       #ffffff0f;
-    --sidebar-active:       rgba(255,255,255,0.08);
-    --sidebar-nav-muted:    #94a3b8;
-    --sidebar-group-label:  #64748b;
+    --sidebar-active:       rgba(255,255,255,0.06);
+    --sidebar-nav-muted:    #9aa39c;
+    --sidebar-group-label:  #7c877f;
 
-    /* Status palette */
-    --status-info-bg:    #EAF1FF; --status-info-fg:    #1A52C4; --status-info-dot:    #3B7BF5;
-    --status-success-bg: #D6E8D6; --status-success-fg: #1C5C1C; --status-success-dot: #4E8F4E;
-    --status-warn-bg:    #FDF3CC; --status-warn-fg:    #8A6200; --status-warn-dot:    #D4A017;
-    --status-error-bg:   #FCEAEA; --status-error-fg:   #C94A4A; --status-error-dot:   #C94A4A;
+    /* Status palette — flat text + dot, no background fill */
+    --status-info:    #3b638f;
+    --status-success: #216744;
+    --status-warn:    #845e1a;
+    --status-error:   #a43c31;
 
     /* Radius */
+    --radius: 10px;
     --r-sm: 6px;
     --r-md: 10px;
     --r-lg: 14px;
@@ -53,10 +54,10 @@
     --r-pill: 9999px;
 
     /* Elevation */
-    --shadow-card: 0 1px 3px rgba(26,29,24,0.04), 0 4px 12px rgba(26,29,24,0.05);
+    --shadow-card: 0 1px 2px rgba(15,23,20,0.04);
 
     /* Type scale */
-    --t-display: 28px; --t-h1: 20px; --t-h2: 14px; --t-body: 14px; --t-small: 12px; --t-eyebrow: 11px;
+    --t-display: 26px; --t-h1: 20px; --t-h2: 14px; --t-body: 14px; --t-small: 12px; --t-eyebrow: 11px;
   }
 
   * { box-sizing: border-box; }
@@ -71,14 +72,15 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* In-product UI blocks (matches hosted dashboard: DM Sans + DM Mono) */
+  /* In-product UI blocks (matches hosted dashboard: single Hanken Grotesk face, tabular-nums for figures) */
   .ds-product {
-    font-family: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+    font-family: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
     font-size: 14px;
     line-height: 1.55;
     color: var(--fg);
   }
   .mono { font-family: "DM Mono", ui-monospace, monospace; }
+  .tnum { font-variant-numeric: tabular-nums lining-nums; }
 
   .ds-back {
     display: inline-block;
@@ -203,82 +205,75 @@
   .ruler .bar { background: var(--accent); border-radius: 4px; height: 10px; }
   .ruler .num { font-family: "DM Mono", monospace; font-size: 11px; color: var(--muted-fg); margin-top: 6px; }
 
-  /* Status pills — matches dashboard table chips */
+  /* Status pills — flat colored text + solid dot, no background fill (matches dashboard table, v2) */
   .pill {
     display: inline-flex; align-items: center; gap: 6px;
-    border-radius: 6px; padding: 2px 8px;
-    font-size: 11px; font-weight: 600;
+    font-size: 12px; font-weight: 500;
   }
   .pill .dot {
-    width: 3px; height: 3px; border-radius: 50%;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.8);
+    width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
   }
-  .pill.info    { background: var(--status-info-bg);    color: var(--status-info-fg); }
-  .pill.info    .dot { background: var(--status-info-dot); }
-  .pill.success { background: var(--status-success-bg); color: var(--status-success-fg); }
-  .pill.success .dot { background: var(--status-success-dot); }
-  .pill.warn    { background: var(--status-warn-bg);    color: var(--status-warn-fg); }
-  .pill.warn    .dot { background: var(--status-warn-dot); }
-  .pill.error   { background: var(--status-error-bg);   color: var(--status-error-fg); }
-  .pill.error   .dot { background: var(--status-error-dot); animation: pulse 1.6s ease-in-out infinite; }
+  .pill.info    { color: var(--status-info); }
+  .pill.info    .dot { background: var(--status-info); }
+  .pill.success { color: var(--status-success); }
+  .pill.success .dot { background: var(--status-success); }
+  .pill.warn    { color: var(--status-warn); }
+  .pill.warn    .dot { background: var(--status-warn); }
+  .pill.error   { color: var(--status-error); }
+  .pill.error   .dot { background: var(--status-error); animation: pulse 1.6s ease-in-out infinite; }
 
   @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50%      { opacity: 0.55; transform: scale(0.85); }
   }
 
-  /* Trend chip — primary/12 + ring (dashboard KPI) */
+  /* Trend / count readouts — flat text, no chip background (KPI footer, v2) */
   .trend {
     display: inline-flex; align-items: center; gap: 2px;
-    background: rgba(28,92,28,0.12); color: var(--primary);
-    border-radius: var(--r-pill); padding: 2px 8px;
-    font-size: 11px; font-weight: 600; line-height: 1.25;
-    box-shadow: inset 0 0 0 1px rgba(28,92,28,0.15);
+    color: var(--status-success);
+    font-size: 12px; font-weight: 500; line-height: 1.25;
   }
   .trend svg { flex-shrink: 0; }
 
   .kpi-muted-chip {
     display: inline-flex; align-items: center; gap: 2px;
-    background: var(--muted); color: var(--muted-fg);
-    border-radius: var(--r-pill); padding: 2px 8px;
-    font-size: 11px; font-weight: 600; line-height: 1.25;
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--border) 80%, transparent);
+    color: var(--muted-fg);
+    font-size: 12px; font-weight: 500; line-height: 1.25;
   }
 
   .kpi-fail-chip {
     display: inline-flex; align-items: center; gap: 2px;
-    background: rgba(220,38,38,0.10); color: var(--destructive);
-    border-radius: var(--r-pill); padding: 2px 8px;
-    font-size: 11px; font-weight: 600; line-height: 1.25;
-    box-shadow: inset 0 0 0 1px rgba(220,38,38,0.15);
+    color: var(--status-error);
+    font-size: 12px; font-weight: 500; line-height: 1.25;
   }
 
-  /* KPI mock — rounded-2xl + padding matches @container cards */
+  /* KPI mock — v2: one bordered "segmented card" with 1px hairline dividers between cells,
+     not four separate shadowed cards. Icon badges were dropped entirely. */
+  .kpi-group {
+    display: grid; grid-template-columns: repeat(4, minmax(0,1fr));
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card); overflow: hidden;
+  }
+  @media (max-width: 760px) {
+    .kpi-group { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
   .kpi {
-    background: var(--card); border: 1px solid var(--border); border-radius: 1rem;
-    box-shadow: var(--shadow-card); padding: 20px;
+    background: var(--card); padding: 20px;
     display: flex; flex-direction: column; gap: 8px; min-width: 0;
   }
-  .kpi .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
   .kpi .eyebrow {
-    flex: 1; min-width: 0;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-    line-height: 1.25; color: var(--muted-fg);
+    font-size: 13px; font-weight: 400;
+    line-height: 1.3; color: var(--muted-fg);
   }
-  .kpi .icon {
-    width: 36px; height: 36px; border-radius: 0.75rem;
-    flex-shrink: 0;
-    display: inline-flex; align-items: center; justify-content: center;
-  }
-  .kpi .icon--primary { background: rgba(28,92,28,0.10); color: var(--primary); }
-  .kpi .icon--muted { background: var(--muted); color: var(--muted-fg); }
-  .kpi .icon--destructive { background: rgba(220,38,38,0.10); color: var(--destructive); }
   .kpi .value {
-    font-family: "DM Mono", ui-monospace, monospace;
-    font-size: 1.125rem; font-weight: 700; letter-spacing: -0.02em;
-    line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+    font-size: 1.5rem; font-weight: 600; letter-spacing: normal;
+    line-height: 1; white-space: nowrap; font-variant-numeric: tabular-nums lining-nums;
   }
-  .kpi .footer { font-size: 12px; color: var(--muted-fg); line-height: 1.45; margin-top: 2px; }
+  .kpi .footer {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 6px;
+    font-size: 12px; color: var(--muted-fg); line-height: 1.4; margin-top: 3px;
+  }
 
   /* Sidebar — 260px rail, spacing from live /dashboard aside */
   .sidebar-mock {
@@ -315,7 +310,7 @@
   .sidebar-mock .nav-stack { display: flex; flex-direction: column; gap: 24px; flex: 1; min-height: 0; }
   .sidebar-mock .nav-group { display: flex; flex-direction: column; gap: 2px; }
   .sidebar-mock .group-label {
-    font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--sidebar-group-label); margin: 0 0 8px; padding: 0 12px;
   }
   .sidebar-mock .nav-item {
@@ -348,21 +343,69 @@
   .sidebar-mock .avatar {
     width: 40px; height: 40px; border-radius: 9999px; flex-shrink: 0;
     display: inline-flex; align-items: center; justify-content: center;
-    background: #10b981; color: #022c22; font-size: 14px; font-weight: 600;
+    background: var(--accent); color: #09140f; font-size: 14px; font-weight: 600;
   }
   .sidebar-mock .user-lines { min-width: 0; flex: 1; }
   .sidebar-mock .user-name { font-size: 14px; font-weight: 600; color: #fff; margin: 0; line-height: 1.2; }
   .sidebar-mock .user-email { font-size: 12px; color: var(--sidebar-group-label); margin: 0; line-height: 1.2; }
 
+  /* Topbar mock — new in v2, sits above the work area: avatar stack, invite, balance, notifications */
+  .topbar-mock {
+    display: flex; align-items: center; justify-content: flex-end; gap: 16px;
+    padding: 14px 20px; background: var(--card); border: 1px solid var(--border); border-radius: var(--r-lg);
+  }
+  .avatar-stack { display: flex; align-items: center; }
+  .avatar-stack .avatar-item {
+    position: relative; width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid var(--card); background: var(--muted);
+    margin-left: -10px; overflow: hidden;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--muted-fg);
+  }
+  .avatar-stack .avatar-item:first-child { margin-left: 0; }
+  .avatar-stack .avatar-item .presence-dot {
+    position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px;
+    border-radius: 50%; border: 2px solid var(--card);
+    background: color-mix(in srgb, var(--muted-fg) 55%, transparent);
+  }
+  .avatar-stack .avatar-item .presence-dot.online { background: var(--status-success); }
+  .topbar-add-btn {
+    width: 36px; height: 36px; border-radius: 50%; margin-left: -10px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--bg); border: 2px dashed var(--border); color: var(--muted-fg);
+  }
+  .balance-block { text-align: right; line-height: 1.3; }
+  .balance-block .label {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--muted-fg); margin: 0 0 2px;
+  }
+  .balance-block .value {
+    font-size: 13px; font-weight: 600; color: var(--fg); font-variant-numeric: tabular-nums lining-nums;
+  }
+  .bell-btn {
+    position: relative; width: 40px; height: 40px; border-radius: var(--r-md);
+    display: inline-flex; align-items: center; justify-content: center;
+    color: var(--muted-fg); background: transparent;
+  }
+  .bell-btn .bell-dot {
+    position: absolute; top: 8px; right: 9px; width: 7px; height: 7px;
+    border-radius: 50%; background: var(--status-error); border: 1.5px solid var(--card);
+  }
+
   /* Table mock — Recent activity table */
+  .table-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 1rem; box-shadow: var(--shadow-card); overflow: hidden;
+  }
+  .table-card table.demo { border: 0; border-radius: 0; box-shadow: none; }
   table.demo {
     width: 100%; border-collapse: collapse; background: var(--card);
     border: 1px solid var(--border); border-radius: 1rem; overflow: hidden;
   }
   table.demo th {
     text-align: left; padding: 14px 20px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--muted-fg); background: color-mix(in srgb, var(--muted) 30%, transparent);
+    font-size: 12px; font-weight: 500;
+    color: var(--muted-fg); background: transparent;
     border-bottom: 1px solid var(--border);
   }
   table.demo td {
@@ -371,8 +414,25 @@
   }
   table.demo tr:last-child td { border-bottom: 0; }
   table.demo td.amount {
-    font-family: "DM Mono", ui-monospace, monospace;
-    font-weight: 600; font-variant-numeric: tabular-nums;
+    font-weight: 500; font-variant-numeric: tabular-nums lining-nums;
+  }
+
+  /* Pagination footer — added under Recent activity / History tables */
+  .table-pagination {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 12px 20px; font-size: 12px; color: var(--muted-fg);
+    border-top: 1px solid var(--border);
+  }
+  .table-pagination .pager { display: flex; align-items: center; gap: 8px; }
+  .table-pagination button {
+    font: inherit; color: var(--muted-fg); background: var(--card);
+    border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 4px 10px; cursor: default;
+  }
+  .table-pagination button[disabled] { opacity: 0.5; }
+  .table-pagination .page-chip {
+    border: 1px solid var(--border); border-radius: var(--r-sm);
+    padding: 4px 10px; color: var(--fg); font-weight: 500;
   }
 
   /* Decisions */
@@ -562,7 +622,7 @@
     <div class="badge-row">
       <span class="badge">PH Fintech</span>
       <span class="badge">B2B SaaS</span>
-      <span class="badge">DM Sans &middot; product UI</span>
+      <span class="badge">Hanken Grotesk &middot; product UI</span>
       <span class="badge">Satoshi &middot; portfolio chrome</span>
     </div>
   </header>
@@ -643,7 +703,7 @@
       <div class="decision">
         <div class="tag">Status palette</div>
         <h3>Muted semantic colors over saturated traffic-light</h3>
-        <p>Status pills sit inside dense tables that operators stare at all day. Saturated red/yellow/green would hijack scanning and exhaust the eye. The chosen palette uses desaturated tints (#FCEAEA, not #FF0000) with high-contrast text, plus a redundant dot — accessible without being aggressive.</p>
+        <p>Status pills sit inside dense tables that operators stare at all day. Saturated red/yellow/green would hijack scanning and exhaust the eye. The chosen palette uses desaturated text colors (#A43C31, not #FF0000) plus a redundant dot — accessible without being aggressive. A later pass (documented below) dropped the tinted pill background entirely in favor of flat colored text, once the dot proved sufficient as the redundant channel.</p>
 
         <div class="decision-figure ds-product" aria-label="Comparison: saturated status chips versus muted semantic pills">
           <div class="decision-compare">
@@ -741,7 +801,7 @@
               </div>
             </div>
           </div>
-          <p class="decision-figure-caption">Same payouts. Bright fills compete with peso amounts; tint backgrounds keep money columns primary. Dots add a second channel besides hue.</p>
+          <p class="decision-figure-caption">Same payouts. Bright fills compete with peso amounts; flat colored text keeps the money column primary and the status column quiet. The dot is what survives grayscale — the text weight and dot presence still separate "needs attention" from "done."</p>
         </div>
 
         <p class="vs"><strong>Rejected:</strong> Material-style filled chips with bright fills. <strong>Why:</strong> meaning-by-color-only fails for color-blind users and grayscale exports.</p>
@@ -750,21 +810,21 @@
       <div class="decision">
         <div class="tag">Brand color</div>
         <h3>Deep forest green, not Filipino-fintech blue</h3>
-        <p>Most local fintech (GCash, Maya, UnionBank, BPI) defaults to blue. A deep forest green (#1C5C1C) signals money and stability without competing in the same visual space as the consumer wallets the merchants are paying out to. Emerald (#10B981) is reserved for affordances — focus rings, the brand mark — never for status.</p>
+        <p>Most local fintech (GCash, Maya, UnionBank, BPI) defaults to blue. A deep forest green (#20563A) signals money and stability without competing in the same visual space as the consumer wallets the merchants are paying out to. A soft mint (#86C9A5) is reserved for affordances on the dark sidebar — the brand mark and focus rings — never for status, which keeps its own separate palette.</p>
         <p class="vs"><strong>Rejected:</strong> A safer navy. <strong>Why:</strong> indistinguishable from competitors in side-by-side product screenshots.</p>
       </div>
 
       <div class="decision">
         <div class="tag">Sidebar contrast</div>
         <h3>Near-black sidebar against a near-white canvas</h3>
-        <p>The product is operational, not exploratory. A dark sidebar acts as a persistent visual anchor — operators always know where they are even when scrolling through a 50-row table. The 8% white active state is intentionally quiet because the page title already tells you the active route.</p>
+        <p>The product is operational, not exploratory. A dark sidebar acts as a persistent visual anchor — operators always know where they are even when scrolling through a 50-row table. The 6% white active state is intentionally quiet because the page title already tells you the active route.</p>
         <p class="vs"><strong>Rejected:</strong> Light sidebar with brand-colored active state. <strong>Why:</strong> active state competes with status pills inside the work area.</p>
       </div>
 
       <div class="decision">
         <div class="tag">Failed state</div>
         <h3>A pulsing dot, not a banner</h3>
-        <p>Failed payouts need attention without disrupting the rest of the work. The Failed pill's dot uses <code style="background:var(--muted);padding:1px 5px;border-radius:4px;font-size:12px;">animate-pulse</code> — a quiet motion cue visible in peripheral vision that doesn't add a dismissable banner. Failed counts also surface as a dedicated KPI card so the operator can triage from the top of the dashboard.</p>
+        <p>Failed payouts need attention without disrupting the rest of the work. The Failed row's dot uses <code style="background:var(--muted);padding:1px 5px;border-radius:4px;font-size:12px;">animate-pulse-dot</code> — a quiet motion cue visible in peripheral vision that doesn't add a dismissable banner. Failed counts also surface as a dedicated KPI cell so the operator can triage from the top of the dashboard.</p>
         <p class="vs"><strong>Rejected:</strong> A red toast or modal. <strong>Why:</strong> destination is the History view, not a one-time acknowledgment.</p>
       </div>
 
@@ -808,22 +868,23 @@
 
     <h3 style="font-size:13px; font-weight:600; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 12px;">Brand &amp; surface</h3>
     <div class="grid cols-4">
-      <div class="swatch"><div class="chip" style="background:#1c5c1c"></div><div class="meta"><div class="name">Primary</div><div class="hex mono">#1C5C1C</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#10b981"></div><div class="meta"><div class="name">Accent / Ring</div><div class="hex mono">#10B981</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#0b241e"></div><div class="meta"><div class="name">Sidebar</div><div class="hex mono">#0B241E</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#f9fafb; border-bottom: 1px solid var(--border);"></div><div class="meta"><div class="name">Background</div><div class="hex mono">#F9FAFB</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#ffffff; border-bottom: 1px solid var(--border);"></div><div class="meta"><div class="name">Card</div><div class="hex mono">#FFFFFF</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#111827"></div><div class="meta"><div class="name">Foreground</div><div class="hex mono">#111827</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#6b7280"></div><div class="meta"><div class="name">Muted FG</div><div class="hex mono">#6B7280</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#e5e7eb"></div><div class="meta"><div class="name">Border</div><div class="hex mono">#E5E7EB</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#20563a"></div><div class="meta"><div class="name">Primary</div><div class="hex mono">#20563A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#86c9a5"></div><div class="meta"><div class="name">Accent / Ring</div><div class="hex mono">#86C9A5</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#111c17"></div><div class="meta"><div class="name">Sidebar</div><div class="hex mono">#111C17</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#f8f7f4; border-bottom: 1px solid var(--border);"></div><div class="meta"><div class="name">Background</div><div class="hex mono">#F8F7F4</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#fefdfc; border-bottom: 1px solid var(--border);"></div><div class="meta"><div class="name">Card</div><div class="hex mono">#FEFDFC</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#1c241f"></div><div class="meta"><div class="name">Foreground</div><div class="hex mono">#1C241F</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#5b635c"></div><div class="meta"><div class="name">Muted FG</div><div class="hex mono">#5B635C</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#e2e1db"></div><div class="meta"><div class="name">Border</div><div class="hex mono">#E2E1DB</div></div></div>
     </div>
 
     <h3 style="font-size:13px; font-weight:600; color: var(--muted-fg); text-transform: uppercase; letter-spacing: 0.06em; margin: 28px 0 12px;">Status taxonomy</h3>
+    <p style="margin: -4px 0 16px; color: var(--color-text-muted); font-size: 16px; line-height: 1.5;">v2 dropped the tinted pill background — these are now text + dot colors only, no background swatch.</p>
     <div class="grid cols-4">
-      <div class="swatch"><div class="chip" style="background:#EAF1FF"></div><div class="meta"><div class="name">Info · Processing</div><div class="hex mono">bg #EAF1FF · fg #1A52C4</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#D6E8D6"></div><div class="meta"><div class="name">Success · Completed</div><div class="hex mono">bg #D6E8D6 · fg #1C5C1C</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#FDF3CC"></div><div class="meta"><div class="name">Warn · In Transit</div><div class="hex mono">bg #FDF3CC · fg #8A6200</div></div></div>
-      <div class="swatch"><div class="chip" style="background:#FCEAEA"></div><div class="meta"><div class="name">Error · Failed</div><div class="hex mono">bg #FCEAEA · fg #C94A4A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#3b638f"></div><div class="meta"><div class="name">Info · Processing</div><div class="hex mono">text/dot #3B638F</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#216744"></div><div class="meta"><div class="name">Success · Completed</div><div class="hex mono">text/dot #216744</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#845e1a"></div><div class="meta"><div class="name">Warn · In Transit</div><div class="hex mono">text/dot #845E1A</div></div></div>
+      <div class="swatch"><div class="chip" style="background:#a43c31"></div><div class="meta"><div class="name">Error · Failed</div><div class="hex mono">text/dot #A43C31</div></div></div>
     </div>
   </section>
 
@@ -832,12 +893,12 @@
     <div class="head">
       <div class="eyebrow">Foundations · 02</div>
       <h2>Typography</h2>
-      <p>One typeface — DM Sans — across the entire product. Hierarchy comes from weight and size, not family contrast. DM Mono is reserved for amounts in table columns to keep currency aligned.</p>
+      <p>One typeface — Hanken Grotesk — across the entire product, including figures. v1 shipped with a separate DM Mono face for amounts; v2 dropped it in favor of <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">font-variant-numeric: tabular-nums</code> on the same sans face, so labels and numbers never visually clash mid-row.</p>
     </div>
     <div class="card ds-product">
       <div class="type-row">
-        <div class="label">Display<span class="meta">28 / 600 / -0.02em</span></div>
-        <div class="t-display">₱1,245,678.50</div>
+        <div class="label">Display (KPI value)<span class="meta">18→26 / 600, scales with container width</span></div>
+        <div class="t-display tnum">₱1,245,678.50</div>
       </div>
       <div class="type-row">
         <div class="label">H1 — Page title<span class="meta">20 / 600 / -0.025em</span></div>
@@ -856,8 +917,12 @@
         <div class="t-small">Mar 1–28, 2026</div>
       </div>
       <div class="type-row">
-        <div class="label">Eyebrow / label<span class="meta">11 / 600 / 0.05em / uppercase</span></div>
-        <div class="t-eyebrow">Disbursed</div>
+        <div class="label">Muted label (KPI / table header)<span class="meta">12–13 / 400–500, sentence case</span></div>
+        <div style="font-size:13px; font-weight:400; color:var(--muted-fg);">Disbursed</div>
+      </div>
+      <div class="type-row">
+        <div class="label">Eyebrow / tag<span class="meta">10 / 500 / 0.04em / uppercase</span></div>
+        <div class="t-eyebrow" style="font-size:10px; letter-spacing:0.04em;">Available</div>
       </div>
     </div>
   </section>
@@ -867,7 +932,7 @@
     <div class="head">
       <div class="eyebrow">Foundations · 03</div>
       <h2>Spacing &amp; radius</h2>
-      <p>4px base, with a deliberate jump to 14px and 20px for surfaces. Generous corner radius (rounded-2xl on cards) softens dense data tables and signals "consumer-grade fintech," not "enterprise CRM."</p>
+      <p>4px base, with a deliberate jump to 14px and 20px for surfaces. Base radius token is 10px (rounded-lg); cards and tables render one step up at 14px (rounded-xl), which softens dense data tables and signals "consumer-grade fintech," not "enterprise CRM."</p>
     </div>
     <div class="grid cols-2">
       <div class="card">
@@ -896,7 +961,7 @@
           <div class="t-eyebrow" style="margin-bottom: 8px;">Elevation</div>
           <div style="display:flex; align-items:center; gap: 16px;">
             <div style="width: 96px; height: 56px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card);"></div>
-            <div class="t-small mono">0 1px 3px /04 + 0 4px 12px /05</div>
+            <div class="t-small mono">0 1px 2px rgba(15,23,20,.04)</div>
           </div>
         </div>
       </div>
@@ -923,21 +988,22 @@
           </tr>
         </thead>
         <tbody>
-          <tr><td class="var">color/primary</td><td class="var">--primary</td><td class="val">#1C5C1C</td></tr>
-          <tr><td class="var">color/accent</td><td class="var">--ring</td><td class="val">#10B981</td></tr>
-          <tr><td class="var">color/sidebar</td><td class="var">--sidebar</td><td class="val">#0B241E</td></tr>
-          <tr><td class="var">color/background</td><td class="var">--background</td><td class="val">#F9FAFB</td></tr>
-          <tr><td class="var">color/card</td><td class="var">--card</td><td class="val">#FFFFFF</td></tr>
-          <tr><td class="var">color/foreground</td><td class="var">--foreground</td><td class="val">#111827</td></tr>
-          <tr><td class="var">color/border</td><td class="var">--border</td><td class="val">#E5E7EB</td></tr>
-          <tr><td class="var">color/muted-foreground</td><td class="var">--muted-foreground</td><td class="val">#6B7280</td></tr>
-          <tr><td class="var">color/destructive</td><td class="var">--destructive</td><td class="val">#DC2626</td></tr>
-          <tr><td class="var">radius/default</td><td class="var">--radius</td><td class="val">.875rem (14px)</td></tr>
-          <tr><td class="var">color/status-info-bg</td><td class="var">bg-[#EAF1FF]</td><td class="val">#EAF1FF</td></tr>
-          <tr><td class="var">color/status-success-bg</td><td class="var">bg-[#D6E8D6]</td><td class="val">#D6E8D6</td></tr>
-          <tr><td class="var">color/status-warn-bg</td><td class="var">bg-[#FDF3CC]</td><td class="val">#FDF3CC</td></tr>
-          <tr><td class="var">color/status-error-bg</td><td class="var">bg-[#FCEAEA]</td><td class="val">#FCEAEA</td></tr>
-          <tr><td class="var">shadow/card</td><td class="var">shadow-card</td><td class="val">0 1px 3px /04, 0 4px 12px /05</td></tr>
+          <tr><td class="var">color/primary</td><td class="var">--primary</td><td class="val">#20563A</td></tr>
+          <tr><td class="var">color/accent</td><td class="var">--sidebar-ring</td><td class="val">#86C9A5</td></tr>
+          <tr><td class="var">color/sidebar</td><td class="var">--sidebar</td><td class="val">#111C17</td></tr>
+          <tr><td class="var">color/background</td><td class="var">--background</td><td class="val">#F8F7F4</td></tr>
+          <tr><td class="var">color/card</td><td class="var">--card</td><td class="val">#FEFDFC</td></tr>
+          <tr><td class="var">color/foreground</td><td class="var">--foreground</td><td class="val">#1C241F</td></tr>
+          <tr><td class="var">color/border</td><td class="var">--border</td><td class="val">#E2E1DB</td></tr>
+          <tr><td class="var">color/muted-foreground</td><td class="var">--muted-foreground</td><td class="val">#5B635C</td></tr>
+          <tr><td class="var">color/destructive</td><td class="var">--destructive</td><td class="val">#A43C31</td></tr>
+          <tr><td class="var">radius/default</td><td class="var">--radius</td><td class="val">.625rem (10px)</td></tr>
+          <tr><td class="var">color/status-info</td><td class="var">text-info</td><td class="val">#3B638F</td></tr>
+          <tr><td class="var">color/status-success</td><td class="var">text-success</td><td class="val">#216744</td></tr>
+          <tr><td class="var">color/status-warning</td><td class="var">text-warning</td><td class="val">#845E1A</td></tr>
+          <tr><td class="var">color/status-danger</td><td class="var">text-danger</td><td class="val">#A43C31</td></tr>
+          <tr><td class="var">shadow/card</td><td class="var">shadow-card</td><td class="val">0 1px 2px rgba(15,23,20,.04)</td></tr>
+          <tr><td class="var">font/sans</td><td class="var">font-sans</td><td class="val">Hanken Grotesk</td></tr>
         </tbody>
       </table>
     </div>
@@ -951,10 +1017,10 @@
     <div class="head">
       <div class="eyebrow">Components · 01</div>
       <h2>Status pill</h2>
-      <p>The most-loaded component in the product. Four states map to a fixed taxonomy. Each pill carries a 3px dot — a redundant cue that survives color-blindness and grayscale screenshots. The Failed dot pulses to draw attention without requiring a banner.</p>
+      <p>The most-loaded component in the product. Four states map to a fixed taxonomy. v1 shipped as a tinted background pill; v2 dropped the fill entirely — the label is now flat colored text, and a 6px solid dot is the sole redundant cue that survives color-blindness and grayscale screenshots. The Failed dot still pulses to draw attention without requiring a banner.</p>
     </div>
     <div class="card ds-product">
-      <div style="display:flex; gap: 16px; flex-wrap: wrap; align-items: center;">
+      <div style="display:flex; gap: 20px; flex-wrap: wrap; align-items: center;">
         <span class="pill info"><span class="dot"></span>Processing</span>
         <span class="pill success"><span class="dot"></span>Completed</span>
         <span class="pill warn"><span class="dot"></span>In Transit</span>
@@ -962,7 +1028,7 @@
       </div>
       <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--border);">
         <div class="t-eyebrow" style="margin-bottom: 10px;">Anatomy</div>
-        <div class="t-small">6px radius · 2px / 8px padding · 11px / 600 weight · 6px gap · 3px dot with 1px white ring · animate-pulse on Failed only</div>
+        <div class="t-small">No background or padding — just label + dot · 12px / 500 weight · 6px gap · 6px solid dot, no ring · animate-pulse-dot on Failed only</div>
       </div>
     </div>
   </section>
@@ -971,61 +1037,76 @@
     <div class="head">
       <div class="eyebrow">Components · 02</div>
       <h2>KPI metric card</h2>
-      <p>The dashboard's primary container. Eyebrow label, value, optional trend or count pill, and a context footer. The trend pill ties the KPI back to the brand color, so positive movement reads as "on-brand" without needing a separate chart.</p>
+      <p>The dashboard's primary container. v1 shipped as four separately shadowed cards, each with an icon badge. v2 merged them into one bordered "segmented card" — a 4-column grid with 1px hairline dividers between cells — and dropped the icon badges entirely: eyebrow label, value, and a flat trend/count readout in the footer are enough. The trend text ties back to the brand color, so positive movement reads as "on-brand" without needing a separate chart.</p>
     </div>
-    <div class="grid cols-4 ds-product" style="gap: 20px;">
+    <div class="kpi-group ds-product">
       <div class="kpi">
-        <div class="row">
-          <div class="eyebrow">Disbursed</div>
-          <div class="icon icon--primary" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>
-          </div>
+        <div class="eyebrow">Disbursed</div>
+        <div class="value tnum">₱831,229.71</div>
+        <div class="footer">
+          <span class="trend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>10.5%</span>
+          <span>&middot; Mar 1–28, 2026</span>
         </div>
-        <div class="value">₱831,229.71</div>
-        <span class="trend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>10.5%</span>
-        <div class="footer">Mar 1–28, 2026</div>
       </div>
       <div class="kpi">
-        <div class="row">
-          <div class="eyebrow">Available</div>
-          <div class="icon icon--primary" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
-          </div>
+        <div class="eyebrow">Available</div>
+        <div class="value tnum">₱1,245,678.50</div>
+        <div class="footer">
+          <span class="trend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>13.5%</span>
+          <span>&middot; Mar 28, 2026</span>
         </div>
-        <div class="value">₱1,245,678.50</div>
-        <span class="trend"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/></svg>13.5%</span>
-        <div class="footer">Mar 28, 2026</div>
       </div>
       <div class="kpi">
-        <div class="row">
-          <div class="eyebrow">In transit</div>
-          <div class="icon icon--muted" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </div>
+        <div class="eyebrow">In transit</div>
+        <div class="value tnum">₱886,643.20</div>
+        <div class="footer">
+          <span class="kpi-muted-chip">23 payouts</span>
+          <span>&middot; Mar 28, 2026</span>
         </div>
-        <div class="value">₱886,643.20</div>
-        <span class="kpi-muted-chip">23 payouts</span>
-        <div class="footer">Mar 28, 2026</div>
       </div>
       <div class="kpi">
-        <div class="row">
-          <div class="eyebrow">Failed</div>
-          <div class="icon icon--destructive" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
-          </div>
+        <div class="eyebrow">Failed</div>
+        <div class="value tnum">₱203,317.18</div>
+        <div class="footer">
+          <span class="kpi-fail-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>7 need action</span>
+          <span>&middot; Mar 28, 2026</span>
         </div>
-        <div class="value">₱203,317.18</div>
-        <span class="kpi-fail-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 17h6v-6"/><path d="m22 17-8.5-8.5-5 5L2 7"/></svg>7 need action</span>
-        <div class="footer">Mar 28, 2026</div>
       </div>
     </div>
   </section>
 
-  <section id="ds-sidebar">
+  <section>
     <div class="head">
       <div class="eyebrow">Components · 03</div>
+      <h2>Header / topbar</h2>
+      <p>New in v2 — not part of the original system. Sits above the work area on every screen: a stacked avatar group for team presence, a dashed "invite" affordance, the live available balance, and notifications. It answers "who else is looking at this" and "how much can I move right now" without leaving the page.</p>
+    </div>
+    <div class="topbar-mock ds-product">
+      <div class="avatar-stack" aria-label="Active teammates">
+        <span class="avatar-item">P<span class="presence-dot"></span></span>
+        <span class="avatar-item">M<span class="presence-dot online"></span></span>
+        <span class="avatar-item">J<span class="presence-dot"></span></span>
+      </div>
+      <button class="topbar-add-btn" type="button" aria-label="Invite teammate">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+      </button>
+      <div class="balance-block">
+        <p class="label">Available</p>
+        <p class="value">₱1,245,678.50</p>
+      </div>
+      <button class="bell-btn" type="button" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.268 21a2 2 0 0 0 3.464 0"/><path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"/></svg>
+        <span class="bell-dot" aria-hidden="true"></span>
+      </button>
+    </div>
+    <div style="margin-top: 16px;" class="t-small">36px avatars, −10px overlap, 2px card-colored border for the cutout · dashed circular add button, 2px border · balance is a 10px uppercase label over a 13px/600 tabular value · bell badge is a 7px dot, no count</div>
+  </section>
+
+  <section id="ds-sidebar">
+    <div class="head">
+      <div class="eyebrow">Components · 04</div>
       <h2>Sidebar navigation</h2>
-      <p>Dark surface (#0B241E) with white-on-translucent active states, 260px fixed width, and Lucide icons — matching the <a href="https://disbursements-rho.vercel.app/dashboard" target="_blank" rel="noopener">live dashboard</a> aside.</p>
+      <p>Dark surface (#111C17) with white-on-translucent active states, 260px fixed width, and Lucide icons — matching the <a href="https://disbursements-rho.vercel.app/dashboard" target="_blank" rel="noopener">live dashboard</a> aside.</p>
     </div>
     <div class="grid cols-2" style="align-items:start;">
       <div class="sidebar-mock ds-product" aria-label="Sidebar mock">
@@ -1065,7 +1146,7 @@
       <div class="card">
         <p class="ds-inline-label">Anatomy</p>
         <p style="margin: 0 0 12px; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;"><strong style="color: var(--color-text-primary);">Brand row</strong> &mdash; 36px mark, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">rounded-[10px]</code>, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">border-sidebar-border</code>, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">bg-sidebar-accent</code>, banknote icon in emerald.</p>
-        <p style="margin: 0 0 12px; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;"><strong style="color: var(--color-text-primary);">Group label</strong> &mdash; 10px semibold, uppercase, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">tracking-widest</code>, slate-500 on dark.</p>
+        <p style="margin: 0 0 12px; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;"><strong style="color: var(--color-text-primary);">Group label</strong> &mdash; 10px medium, uppercase, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">tracking-widest</code>, sidebar-foreground at 40% opacity.</p>
         <p style="margin: 0 0 12px; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;"><strong style="color: var(--color-text-primary);">Nav item</strong> &mdash; 13px medium, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">rounded-xl</code>, <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">py-2.5</code> <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">px-3</code>, 12px gap to 18px icon; active <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">bg-white/[0.08]</code>; hover <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">bg-white/[0.05]</code>.</p>
         <p style="margin: 0; color: var(--color-text-muted); font-size: 18px; line-height: 1.6;"><strong style="color: var(--color-text-primary);">User block</strong> &mdash; optional footer on the rail: avatar, name, email, border-top <code style="background:var(--color-surface-subtle);padding:2px 6px;border-radius:4px;font-size:15px;">border-white/10</code> (matches live).</p>
       </div>
@@ -1074,11 +1155,11 @@
 
   <section>
     <div class="head">
-      <div class="eyebrow">Components · 04</div>
+      <div class="eyebrow">Components · 05</div>
       <h2>Data table</h2>
-      <p>Tables are the operator's main workspace. Uppercase eyebrow headers, generous 14×20 cell padding, tabular numerals on amount columns, and right-aligned status pills create a consistent left-to-right read: <em>who → when → how much → what state</em>.</p>
+      <p>Tables are the operator's main workspace. Sentence-case headers (v1's uppercase/tracked headers were dropped for a quieter read), generous 14×20 cell padding, tabular numerals on amount columns, and right-aligned status pills create a consistent left-to-right read: <em>who → when → how much → what state</em>. v2 also added pagination — 50 rows load 10 at a time instead of one long scroll.</p>
     </div>
-    <div class="ds-product" style="overflow-x: auto;">
+    <div class="ds-product table-card" style="overflow-x: auto;">
     <table class="demo">
       <thead>
         <tr>
@@ -1096,6 +1177,14 @@
         <tr><td>Elena Gonzales</td><td>Mar 25, 3:41 PM</td><td>Mar 27, 3:41 PM</td><td class="amount" style="text-align:right">₱24,360.05</td><td style="text-align:right"><span class="pill error"><span class="dot"></span>Failed</span></td></tr>
       </tbody>
     </table>
+    <div class="table-pagination">
+      <span>Showing rows 1–10 of 50</span>
+      <div class="pager">
+        <button type="button" disabled>Prev</button>
+        <span class="page-chip">Page 1 of 5</span>
+        <button type="button">Next</button>
+      </div>
+    </div>
     </div>
   </section>
 
