@@ -1,4 +1,5 @@
 import { lazy, Suspense, useLayoutEffect } from 'react'
+import { LoadingFallback } from '../components/LoadingFallback'
 import { InnerPage } from '../components/InnerPage'
 import type { InnerPageBlock } from '../components/InnerPage'
 import { EditorialWritingLayout } from '../components/EditorialWritingLayout'
@@ -412,9 +413,10 @@ export function WritingPage() {
     return (
       <Suspense
         fallback={
-          <p className="inner-page-block" role="status">
-            Loading case study&hellip;
-          </p>
+          <LoadingFallback
+            label="Loading case study…"
+            className="loading-fallback--inner inner-page-block"
+          />
         }
       >
         <DisbursementsCaseStudy />

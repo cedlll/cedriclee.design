@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { LoadingFallback } from './components/LoadingFallback'
 import './App.css'
 import { useHomeGsap } from './hooks/useHomeGsap'
 import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from './lib/legacyDisbursementsWritingSlug'
@@ -93,6 +94,9 @@ type WorkItem = {
   }[]
 }
 
+/** Hosted interactive (same build as the disbursements case study prototype). */
+const DISBURSEMENTS_PROTOTYPE_URL = 'https://disbursements-rho.vercel.app/dashboard' as const
+
 const works: WorkItem[] = [
   {
     id: 'enterprise-disbursements',
@@ -103,6 +107,7 @@ const works: WorkItem[] = [
     href: '/writing/enterprise-disbursements-money-movement',
     actions: [
       { label: 'Read case study', href: '/writing/enterprise-disbursements-money-movement', variant: 'primary' },
+      { label: 'View prototype', href: DISBURSEMENTS_PROTOTYPE_URL, variant: 'secondary' },
     ],
     thumbnailVideoSrc: '/showreel-web-gallery-remix.mp4',
     thumbnailPosterSrc: '/disbursement-case-before.svg',
@@ -205,7 +210,7 @@ const testimonialItems: WorkItem[] = [
     tag: 'Testimonial',
     title: 'Head of Product, Fintech',
     description:
-      '"Cedric is one of the rare designers who can move from systems thinking to execution without losing speed or craft."',
+      'Cedric is one of the rare designers who can move from systems thinking to execution without losing speed or craft.',
     href: '#',
     placeholder: true,
     showMedia: false,
@@ -215,7 +220,7 @@ const testimonialItems: WorkItem[] = [
     tag: 'Testimonial',
     title: 'Startup Founder',
     description:
-      '"He helped us turn a complex workflow into something customers understood instantly, and adoption improved right away."',
+      'He helped us turn a complex workflow into something customers understood instantly, and adoption improved right away.',
     href: '#',
     placeholder: true,
     showMedia: false,
@@ -225,7 +230,7 @@ const testimonialItems: WorkItem[] = [
     tag: 'Testimonial',
     title: 'Design Manager',
     description:
-      '"Cedric leads with clarity, mentors generously, and consistently raises the quality bar for the whole team."',
+      'Cedric leads with clarity, mentors generously, and consistently raises the quality bar for the whole team.',
     href: '#',
     placeholder: true,
     showMedia: false,
@@ -402,6 +407,38 @@ function WorkSection({
   )
 }
 
+function TestimonialsCarousel({ items }: Readonly<{ items: readonly WorkItem[] }>) {
+  const count = items.length
+  const [index, setIndex] = useState(0)
+
+  useEffect(() => {
+    if (count <= 1) return
+    const mq = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)')
+    if (mq?.matches) return
+    const id = globalThis.window.setInterval(() => {
+      setIndex((i) => (i + 1) % count)
+    }, 9000)
+    return () => globalThis.window.clearInterval(id)
+  }, [count])
+
+  if (count === 0) return null
+
+  const active = items[index]
+
+  return (
+    <section
+      className="ed-section ed-section--testimonials"
+      aria-label={count > 1 ? 'Testimonials, quotes rotate automatically.' : 'Testimonials'}
+    >
+      <div className="ed-testimonials-carousel">
+        <div className="ed-testimonials-carousel-slide" aria-live="polite" aria-atomic="true">
+          <WorkRow key={active.id} item={active} showMedia={false} />
+        </div>
+      </div>
+    </section>
+  )
+}
+
 const NAV_SOCIAL = {
   linkedin: 'https://www.linkedin.com/in/cedmanila/',
   github: 'https://github.com/cedlll',
@@ -519,12 +556,7 @@ function HomeView({
                 className="ed-section--selected-work-tail"
               />
             ) : null}
-            <WorkSection
-              label="Testimonials"
-              items={testimonialItems}
-              className="ed-section--testimonials"
-              showMedia={false}
-            />
+            <TestimonialsCarousel items={testimonialItems} />
             <WorkSection
               label="Side projects"
               items={sideProjects}
@@ -538,13 +570,12 @@ function HomeView({
               className="ed-section--writing-speaking"
               showTextNudge
             />
+            <footer className="site-footer">
+              <p className="site-footer-copy">
+                Clarence Cedric Lee &copy; {new Date().getFullYear()}
+              </p>
+            </footer>
           </div>
-
-          <footer className="site-footer">
-            <p className="site-footer-copy">
-              Clarence Cedric Lee &copy; {new Date().getFullYear()}
-            </p>
-          </footer>
         </main>
       </div>
       {previewItem ? (
@@ -692,11 +723,7 @@ function App() {
           >
             {!isWritingLikePath(pathname) && <MainNavigation pathname={pathname} />}
             <Suspense
-              fallback={
-                <p className="route-loading-fallback" role="status">
-                  Loading&hellip;
-                </p>
-              }
+              fallback={<LoadingFallback label="Loading…" className="loading-fallback--route" />}
             >
               {innerPageBody}
             </Suspense>
