@@ -1,5 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LoadingFallback } from './components/LoadingFallback'
+import { BuiltWith } from './components/BuiltWith'
 import './App.css'
 import { useHomeGsap } from './hooks/useHomeGsap'
 import { LEGACY_DISBURSEMENTS_WRITING_SLUG } from './lib/legacyDisbursementsWritingSlug'
@@ -407,6 +408,7 @@ function WorkRow({
     <div className="ed-work-media-hero">
       {textBlock}
       {mediaBlock}
+      <BuiltWith className="ed-work-media-hero-built-with" />
     </div>
   ) : (
     <>
