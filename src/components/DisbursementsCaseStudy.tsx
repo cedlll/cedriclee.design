@@ -168,7 +168,7 @@ export function DisbursementsCaseStudy() {
 
   return (
     <article className="ew">
-      <a href="/" className="ew-back">&larr; Back</a>
+      <a href="/" className="ew-back">&larr; Back to home</a>
 
       {/* ── Hero ── */}
       <header className="ew-hero">

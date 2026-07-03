@@ -10,7 +10,7 @@ export function BuiltWith({ className }: BuiltWithProps = {}) {
   const rootClass = ['bw-built-with', className].filter(Boolean).join(' ')
 
   return (
-    <div className={rootClass} aria-label="How this was built">
+    <aside className={rootClass} aria-label="How this was built">
       <span className="bw-built-with__lead">Built with</span>
       <div className="bw-built-with__brands">
         <span className="bw-built-with__brand">
@@ -39,6 +39,6 @@ export function BuiltWith({ className }: BuiltWithProps = {}) {
           <span className="bw-built-with__name">Claude Code</span>
         </span>
       </div>
-    </div>
+    </aside>
   )
 }

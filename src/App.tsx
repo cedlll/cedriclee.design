@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { LoadingFallback } from './components/LoadingFallback'
 import './App.css'
 import { useHomeGsap } from './hooks/useHomeGsap'
@@ -50,10 +50,8 @@ function innerMainArticleLayout(pathname: string): 'inner-page' | 'editorial' {
 const WRITING_CASE_STUDY_SLUGS = new Set([
   'tracing-the-roots-of-graffiti-in-the-philippines',
   'the-intertextuality-of-manila-slums-pieta',
-  'the-intertextuality-of-manila-slums',
   'enterprise-disbursements-money-movement',
   LEGACY_DISBURSEMENTS_WRITING_SLUG,
-  'hello-world',
 ])
 
 function isWritingCaseStudyPath(pathname: string): boolean {
@@ -82,11 +80,15 @@ type WorkItem = {
   thumbnailSrc?: string
   /** Muted looping tile video (served from `public/`). Takes precedence over `thumbnailSrc` when both are set. */
   thumbnailVideoSrc?: string
+  /** Live page embedded (scaled down) inside the tile. Takes precedence over video/image thumbnails when set. */
+  thumbnailIframeSrc?: string
   /** Optional poster image shown before a video tile is activated. */
   thumbnailPosterSrc?: string
   placeholder?: boolean
   showMedia?: boolean
   twoUp?: boolean
+  /** Renders title/description/actions as a floating panel on top of a full-bleed, larger media tile. */
+  mediaOverlay?: boolean
   actions?: readonly {
     label: string
     href: string
@@ -96,6 +98,11 @@ type WorkItem = {
 
 /** Hosted interactive (same build as the disbursements case study prototype). */
 const DISBURSEMENTS_PROTOTYPE_URL = 'https://disbursements-rho.vercel.app/dashboard' as const
+
+/** Logical desktop width the embedded prototype renders at before being scaled to fit its tile.
+ *  The app isn't fluid, so we render it at a real desktop viewport and shrink-to-fit rather than
+ *  stretching a narrow layout across a wide box (which reads as "zoomed out"). */
+const PROTOTYPE_VIEWPORT_WIDTH = 1280
 
 const works: WorkItem[] = [
   {
@@ -107,10 +114,10 @@ const works: WorkItem[] = [
     href: '/writing/enterprise-disbursements-money-movement',
     actions: [
       { label: 'Read case study', href: '/writing/enterprise-disbursements-money-movement', variant: 'primary' },
-      { label: 'View prototype', href: DISBURSEMENTS_PROTOTYPE_URL, variant: 'secondary' },
     ],
-    thumbnailVideoSrc: '/showreel-web-gallery-remix.mp4',
+    thumbnailIframeSrc: DISBURSEMENTS_PROTOTYPE_URL,
     thumbnailPosterSrc: '/disbursement-case-before.svg',
+    mediaOverlay: true,
   },
   {
     id: 'shipmates',
@@ -249,13 +256,17 @@ function WorkRow({
   showMedia = true,
   showTextNudge = false,
   onPreviewOpen,
+  headingLevel = 2,
 }: Readonly<{
   item: WorkItem
   showMedia?: boolean
   showTextNudge?: boolean
   onPreviewOpen?: (item: WorkItem) => void
+  headingLevel?: 2 | 3
 }>) {
-  const [isVideoActivated, setIsVideoActivated] = useState(false)
+  const [isMediaActivated, setIsMediaActivated] = useState(false)
+  const mediaRef = useRef<HTMLDivElement>(null)
+  const [iframeScale, setIframeScale] = useState(1)
   const rowShowMedia = showMedia && item.showMedia !== false
   const textOnly = rowShowMedia === false
   const external = isExternalHref(item.href)
@@ -266,13 +277,30 @@ function WorkRow({
   const hasActions = Boolean(item.actions?.length)
   const isStaticRow = item.placeholder || item.href === '#' || hasActions
   const hasVideo = Boolean(item.thumbnailVideoSrc)
-  const showVideo = hasVideo && (isVideoActivated || isStaticRow)
+  const hasIframe = Boolean(item.thumbnailIframeSrc)
+  const showVideo = hasVideo && (isMediaActivated || isStaticRow)
+  const showIframe = hasIframe && (isMediaActivated || isStaticRow)
   const posterSrc = item.thumbnailPosterSrc ?? item.thumbnailSrc
 
   const handleActivateVideo = () => {
-    if (!hasVideo || isVideoActivated) return
-    setIsVideoActivated(true)
+    if ((!hasVideo && !hasIframe) || isMediaActivated) return
+    setIsMediaActivated(true)
   }
+
+  // Scale the fixed-width prototype viewport down to fill its (responsive) tile.
+  useEffect(() => {
+    if (!showIframe) return
+    const el = mediaRef.current
+    if (!el) return
+    const update = () => {
+      const width = el.clientWidth
+      if (width > 0) setIframeScale(width / PROTOTYPE_VIEWPORT_WIDTH)
+    }
+    update()
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [showIframe])
 
   const handleLinkClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (!shouldOpenPreview || !onPreviewOpen) return
@@ -290,67 +318,107 @@ function WorkRow({
     onPreviewOpen(item)
   }
 
-  const inner = (
+  const actionsBlock = item.actions?.length ? (
+    <div className="ed-work-actions" aria-label={`${item.title} actions`}>
+      {item.actions.map((action) => {
+        const actionIsExternal = isExternalHref(action.href)
+        return (
+          <a
+            key={action.label}
+            href={action.href}
+            className={`ed-work-action ${action.variant === 'secondary' ? 'ed-work-action--secondary' : ''}`.trim()}
+            {...(actionIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+          >
+            {action.label}
+          </a>
+        )
+      })}
+    </div>
+  ) : null
+
+  const HeadingTag = headingLevel === 3 ? 'h3' : 'h2'
+  const labelAndTitle = (
     <>
-      <div className="ed-work-text">
-        {item.tag === 'Case study' && item.label ? (
-          <span className="ed-work-label">{item.label}</span>
-        ) : null}
-        <h2 className="ed-work-title">{item.title}</h2>
-        <p className="ed-work-desc">{item.description}</p>
-        {item.actions?.length ? (
-          <div className="ed-work-actions" aria-label={`${item.title} actions`}>
-            {item.actions.map((action) => {
-              const actionIsExternal = isExternalHref(action.href)
-              return (
-                <a
-                  key={action.label}
-                  href={action.href}
-                  className={`ed-work-action ${action.variant === 'secondary' ? 'ed-work-action--secondary' : ''}`.trim()}
-                  {...(actionIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                >
-                  {action.label}
-                </a>
-              )
-            })}
-          </div>
-        ) : null}
-      </div>
-      {rowShowMedia ? (
-        <div
-          className={`ed-work-media${
-            item.thumbnailSrc || item.thumbnailVideoSrc || item.thumbnailPosterSrc
-              ? ' ed-work-media--thumb'
-              : ''
-          }${showVideo ? ' ed-work-media--video' : ''}`.trim()}
-          aria-hidden
-          style={
-            posterSrc && !showVideo
-              ? { backgroundImage: `url(${posterSrc})` }
-              : undefined
-          }
-        >
-          {item.thumbnailVideoSrc && showVideo ? (
-            <video
-              className="ed-work-media-video"
-              src={item.thumbnailVideoSrc}
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="metadata"
-              poster={posterSrc}
-            />
-          ) : null}
-        </div>
+      {item.tag === 'Case study' && item.label ? (
+        <span className="ed-work-label">{item.label}</span>
       ) : null}
+      <HeadingTag className="ed-work-title">{item.title}</HeadingTag>
+      <p className="ed-work-desc">{item.description}</p>
+    </>
+  )
+
+  const textBlock = item.mediaOverlay ? (
+    <div className="ed-work-text ed-work-text--hero">
+      <div className="ed-work-text-copy">{labelAndTitle}</div>
+      {actionsBlock}
+    </div>
+  ) : (
+    <div className="ed-work-text">
+      {labelAndTitle}
+      {actionsBlock}
+    </div>
+  )
+
+  const mediaBlock = rowShowMedia ? (
+    <div
+      ref={mediaRef}
+      className={`ed-work-media${
+        item.thumbnailSrc || item.thumbnailVideoSrc || item.thumbnailIframeSrc || item.thumbnailPosterSrc
+          ? ' ed-work-media--thumb'
+          : ''
+      }${showVideo ? ' ed-work-media--video' : ''}${showIframe ? ' ed-work-media--iframe' : ''}`.trim()}
+      aria-hidden
+      style={
+        posterSrc && !showVideo && !showIframe
+          ? { backgroundImage: `url(${posterSrc})` }
+          : undefined
+      }
+    >
+      {item.thumbnailVideoSrc && showVideo ? (
+        <video
+          className="ed-work-media-video"
+          src={item.thumbnailVideoSrc}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={posterSrc}
+        />
+      ) : null}
+      {item.thumbnailIframeSrc && showIframe ? (
+        <iframe
+          className="ed-work-media-iframe"
+          src={item.thumbnailIframeSrc}
+          title={`${item.title} live prototype preview`}
+          loading="lazy"
+          tabIndex={-1}
+          style={{
+            width: `${PROTOTYPE_VIEWPORT_WIDTH}px`,
+            height: `${Math.round((PROTOTYPE_VIEWPORT_WIDTH * 9) / 16)}px`,
+            transform: `scale(${iframeScale})`,
+          }}
+        />
+      ) : null}
+    </div>
+  ) : null
+
+  const inner = item.mediaOverlay ? (
+    <div className="ed-work-media-hero">
+      {textBlock}
+      {mediaBlock}
+    </div>
+  ) : (
+    <>
+      {textBlock}
+      {mediaBlock}
     </>
   )
 
   if (isStaticRow) {
     return (
       <article
-        className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${item.placeholder ? 'ed-work-row--placeholder' : ''}`.trim()}
+        className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${item.placeholder ? 'ed-work-row--placeholder' : ''} ${item.mediaOverlay ? 'ed-work-row--media-overlay' : ''}`.trim()}
       >
         {inner}
       </article>
@@ -360,7 +428,7 @@ function WorkRow({
   return (
     <a
       href={item.href}
-      className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${showTextNudge ? 'ed-work-row--text-nudge' : ''} home-project-link`.trim()}
+      className={`ed-work-row ${textOnly ? 'ed-work-row--text' : ''} ${item.twoUp ? 'ed-work-row--two-up' : ''} ${item.tag === 'Case study' ? 'home-case-study-row' : ''} ${showTextNudge ? 'ed-work-row--text-nudge' : ''} ${item.mediaOverlay ? 'ed-work-row--media-overlay' : ''} home-project-link`.trim()}
       onClick={handleLinkClick}
       onMouseEnter={handleActivateVideo}
       onFocus={handleActivateVideo}
@@ -400,6 +468,7 @@ function WorkSection({
             showMedia={showMedia}
             showTextNudge={showTextNudge}
             onPreviewOpen={onPreviewOpen}
+            headingLevel={showLabel ? 3 : 2}
           />
         ))}
       </div>
@@ -454,12 +523,12 @@ function MainNavigation({ pathname }: Readonly<{ pathname: string }>) {
     <nav className="ed-hero-links" aria-label="Navigation">
       <ul className="ed-links-list">
         <li className="ed-links-item">
-          <a href="/" className={linkClass(isHomeActive)}>
+          <a href="/" className={linkClass(isHomeActive)} {...(isHomeActive ? { 'aria-current': 'page' as const } : {})}>
             Home
           </a>
         </li>
         <li className="ed-links-item">
-          <a href="/about" className={linkClass(isAboutActive)}>
+          <a href="/about" className={linkClass(isAboutActive)} {...(isAboutActive ? { 'aria-current': 'page' as const } : {})}>
             About
           </a>
         </li>
@@ -488,6 +557,88 @@ function MainNavigation({ pathname }: Readonly<{ pathname: string }>) {
   )
 }
 
+function LinkPreviewDialog({
+  previewItem,
+  onClose,
+}: Readonly<{
+  previewItem: WorkItem | null
+  onClose: () => void
+}>) {
+  const dialogRef = useRef<HTMLDialogElement>(null)
+  const triggerRef = useRef<Element | null>(null)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (!dialog) return
+    if (previewItem) {
+      triggerRef.current = document.activeElement
+      dialog.showModal()
+    } else {
+      dialog.close()
+      if (triggerRef.current instanceof HTMLElement) {
+        triggerRef.current.focus()
+      }
+    }
+  }, [previewItem])
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault()
+        onClose()
+      }
+    },
+    [onClose],
+  )
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="link-preview-overlay"
+      aria-label="Link preview modal"
+      onKeyDown={handleKeyDown}
+      onCancel={(e) => {
+        e.preventDefault()
+        onClose()
+      }}
+    >
+      {previewItem ? (
+        <div className="link-preview-modal">
+          <div className="link-preview-modal-header">
+            <p className="link-preview-modal-title">{previewItem.title}</p>
+            <div className="link-preview-modal-actions">
+              <a
+                href={previewItem.href}
+                className="link-preview-modal-text-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit site
+              </a>
+              <button
+                type="button"
+                className="link-preview-modal-button link-preview-modal-button--primary"
+                onClick={onClose}
+                aria-label="Close preview"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+          <div className="link-preview-modal-body">
+            <iframe
+              className="link-preview-iframe"
+              src={previewItem.href}
+              title={`Preview of ${previewItem.title}`}
+              loading="lazy"
+            />
+          </div>
+        </div>
+      ) : null}
+    </dialog>
+  )
+}
+
 function HomeView({
   showScrollTop,
   handleScrollTop,
@@ -508,6 +659,7 @@ function HomeView({
 
   return (
     <div className="page page--home">
+      <a href="#main-content" className="skip-link">Skip to main content</a>
       {showScrollTop && !previewItem && (
         <button
           type="button"
@@ -520,13 +672,13 @@ function HomeView({
         </button>
       )}
       <div ref={homeRootRef} className="page-inner page-inner--home">
-        <main className="home-main">
+        <main id="main-content" className="home-main">
           <MainNavigation pathname={pathname} />
 
           {/* Hero headline + description */}
           <section id="about" className="home-intro-editorial" aria-labelledby="hero-heading">
             <div className="home-hero-title-row">
-              <h1 id="hero-heading" className="ed-hero-headline home-hero-headline">
+              <h1 id="hero-heading" className="ed-hero-headline home-hero-headline" aria-label="Cedric is a product designer building things worth having.">
                 <span className="ed-hero-headline-line">
                   <span className="ed-hero-headline-name" />
                   <span className="ed-hero-headline-line-suffix" />
@@ -570,49 +722,15 @@ function HomeView({
               className="ed-section--writing-speaking"
               showTextNudge
             />
-            <footer className="site-footer">
-              <p className="site-footer-copy">
-                Clarence Cedric Lee &copy; {new Date().getFullYear()}
-              </p>
-            </footer>
           </div>
         </main>
+        <footer className="site-footer" role="contentinfo">
+          <p className="site-footer-copy">
+            Clarence Cedric Lee &copy; {new Date().getFullYear()}
+          </p>
+        </footer>
       </div>
-      {previewItem ? (
-        <dialog className="link-preview-overlay" open aria-label="Link preview modal">
-          <div className="link-preview-modal">
-            <div className="link-preview-modal-header">
-              <p className="link-preview-modal-title">{previewItem.title}</p>
-              <div className="link-preview-modal-actions">
-                <a
-                  href={previewItem.href}
-                  className="link-preview-modal-text-link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Visit site
-                </a>
-                <button
-                  type="button"
-                  className="link-preview-modal-button link-preview-modal-button--primary"
-                  onClick={onClosePreview}
-                  aria-label="Close preview"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-            <div className="link-preview-modal-body">
-              <iframe
-                className="link-preview-iframe"
-                src={previewItem.href}
-                title={`Preview of ${previewItem.title}`}
-                loading="lazy"
-              />
-            </div>
-          </div>
-        </dialog>
-      ) : null}
+      <LinkPreviewDialog previewItem={previewItem} onClose={onClosePreview} />
     </div>
   )
 }
@@ -697,6 +815,7 @@ function App() {
 
     return (
       <div className="page page--inner">
+        <a href="#main-content" className="skip-link">Skip to main content</a>
         {!isAboutPage && (
           <div
             className="scroll-progress"
@@ -718,6 +837,7 @@ function App() {
         {/* Always `.page-inner` (1200px): toggling `.page-inner--home` (1120px) per route shifted the whole column. */}
         <div className="page-inner">
           <main
+            id="main-content"
             className="home-main"
             data-inner-main-layout={innerMainArticleLayout(pathname)}
           >

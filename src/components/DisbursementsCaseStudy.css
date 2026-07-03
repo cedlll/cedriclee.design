@@ -463,7 +463,7 @@ a.ew-hero-cta:focus-visible {
   font-family: 'Satoshi', system-ui, sans-serif;
   font-size: var(--ew-fs-sm);
   letter-spacing: var(--ew-ls);
-  color: color-mix(in srgb, var(--color-text-muted) 85%, transparent);
+  color: #888888;
   user-select: none;
 }
 
@@ -658,21 +658,6 @@ a.ew-hero-cta:focus-visible {
   margin-right: calc((100% - var(--ew-prototype-embed-w)) / 2);
 }
 
-.ew-proto-placeholder {
-  padding: 80px 24px;
-  text-align: center;
-  color: var(--color-text-muted);
-  font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: var(--ew-fs-read);
-  border-radius: 4px;
-  background: var(--color-surface-subtle);
-  line-height: var(--ew-lh-body);
-}
-
-.ew-proto-placeholder p {
-  margin: 0;
-}
-
 /* ── Next reads — intro band + two-column spread (catalog / editorial duo) ── */
 .ew-next-reads {
   display: flex;
@@ -753,11 +738,15 @@ a.ew-hero-cta:focus-visible {
 
 .ew-next-read-static {
   padding: 0;
-  opacity: 0.72;
+}
+
+.ew-next-read-static .ew-constraint-title {
+  color: #888888;
 }
 
 .ew-next-read-static .ew-constraint-text {
   margin-bottom: 0;
+  color: #999999;
 }
 
 .ew-next-read-soon {
@@ -862,6 +851,14 @@ a.ew-hero-cta:focus-visible {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ew-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

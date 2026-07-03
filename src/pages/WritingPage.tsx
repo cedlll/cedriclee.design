@@ -220,41 +220,6 @@ const WRITINGS: Record<
       },
     ],
   },
-  'the-intertextuality-of-manila-slums': {
-    title: 'The intertextuality of Manila slums',
-    date: 'February 2, 2025',
-    blocks: [
-      {
-        type: 'point',
-        label: 'Point',
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      },
-      {
-        type: 'image',
-        src: '/cedric-photo-400.png',
-        srcWebp: '/cedric-photo-400.webp',
-        alt: 'Writing image',
-        caption: '28 12 2025',
-        width: 400,
-        height: 400,
-      },
-      {
-        type: 'point',
-        label: 'Point',
-        text: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-      },
-      {
-        type: 'quote',
-        line1: "Insert a quote here that's memorable",
-        line2: 'And this is the second line.',
-      },
-      {
-        type: 'point',
-        label: 'Point',
-        text: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-      },
-    ],
-  },
   [DISBURSEMENTS_CASE_STUDY_SLUG]: {
     title: 'Enterprise disbursements \u2014 Judgment in async enterprise money',
     date: '2021\u20132023',
@@ -328,21 +293,6 @@ const WRITINGS: Record<
       },
     ],
   },
-  'hello-world': {
-    title: 'Hello world',
-    date: new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }),
-    blocks: [
-      {
-        type: 'point',
-        label: 'Point',
-        text: 'Hello world. This is a new writing entry using the InnerPage template.',
-      },
-    ],
-  },
 }
 
 /** Display order on `/writing`. Every slug must exist on `WRITINGS`. */
@@ -350,15 +300,13 @@ const WRITING_INDEX_SLUGS: readonly (keyof typeof WRITINGS)[] = [
   DISBURSEMENTS_CASE_STUDY_SLUG,
   'tracing-the-roots-of-graffiti-in-the-philippines',
   'the-intertextuality-of-manila-slums-pieta',
-  'the-intertextuality-of-manila-slums',
-  'hello-world',
 ]
 
 export function WritingIndexPage() {
   return (
     <article className="inner-page">
       <a href="/" className="inner-page-back">
-        &larr; Back
+        &larr; Back to home
       </a>
       <header className="inner-page-header">
         <h1 className="inner-page-title">Writing</h1>
