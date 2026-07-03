@@ -81,12 +81,40 @@
   }
 }
 
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  z-index: 200;
+  padding: 12px 20px;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-primary);
+  background: var(--color-bg);
+  border: 2px solid var(--color-focus);
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  width: auto;
+  height: auto;
+  overflow: visible;
+}
+
 .scroll-top-button {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  border: none;
-  background: transparent;
+  border: 1px solid var(--color-hover-bg);
+  background: var(--color-bg);
   color: var(--color-text-muted);
   font-size: 20px;
   font-weight: 500;
@@ -99,7 +127,9 @@
   min-width: 44px;
   min-height: 44px;
   padding: 4px;
-  transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: color 0.2s ease, transform 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
   opacity: 0.9;
 }
 
@@ -132,6 +162,10 @@
 .scroll-top-button:focus-visible {
   outline: 2px solid var(--color-focus);
   outline-offset: 2px;
+}
+
+.link-preview-overlay:not([open]) {
+  display: none;
 }
 
 .link-preview-overlay {
@@ -335,7 +369,10 @@
   z-index: 20;
   margin: 0 0 48px;
   padding: 16px 0;
-  background: var(--color-bg);
+  background: color-mix(in srgb, var(--color-bg) 85%, transparent);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-text-primary) 6%, transparent);
 }
 
 /* Inner routes: nav width from `data-inner-main-layout` (pathname), not `:has()` — lazy pages would flash misaligned. */
@@ -402,33 +439,6 @@
   .home-hero-about-col {
     max-width: none;
   }
-}
-
-/* Editorial deck — same text column as headline */
-.home-deck {
-  display: block;
-  width: 100%;
-  max-width: none;
-  margin: 10px 0 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-@media (min-width: 481px) {
-  .home-intro-editorial .home-deck {
-    margin-left: 0;
-    max-width: none;
-  }
-}
-
-.home-deck-text {
-  margin: 0;
-  font-family: 'Satoshi', system-ui, sans-serif;
-  font-size: 15px;
-  line-height: var(--home-lh-body);
-  letter-spacing: 0.01em;
-  color: var(--color-text-muted);
-  max-width: 56ch;
 }
 
 .ed-hero-headline {
@@ -539,6 +549,11 @@
 .ed-links-link:hover,
 .ed-links-link:focus-visible {
   color: var(--color-text-primary);
+}
+
+.ed-links-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 
 .ed-links-link.is-active {
@@ -701,10 +716,10 @@ a.home-case-study-row:focus-visible {
   font-weight: var(--home-fw-emphasis);
   color: var(--color-text-primary);
   line-height: var(--home-lh-heading);
-  display: block;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .ed-work-desc {
@@ -823,6 +838,86 @@ a.ed-work-action.ed-work-action--secondary:hover {
   object-position: center center;
   transform: scale(1.14);
   transform-origin: center center;
+}
+
+/* Iframe tile: embed the live prototype and zoom it out so the whole layout is visible.
+   Absolutely positioned so its 250%-scaled content can't inflate the tile's aspect-ratio box. */
+.ed-work-media.ed-work-media--iframe {
+  position: relative;
+}
+
+/* Width/height/transform are set inline from the measured tile size so the fixed-width
+   prototype viewport shrinks to fit responsively (see PROTOTYPE_VIEWPORT_WIDTH). */
+.ed-work-media-iframe {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 0;
+  margin: 0;
+  pointer-events: none;
+  transform-origin: top left;
+}
+
+/* ── Hero row: title/details/CTAs stacked above a large, full-width live embed ── */
+.ed-work-row--media-overlay {
+  display: block;
+  padding-bottom: 56px;
+}
+
+.ed-work-media-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.ed-work-text--hero {
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: none;
+}
+
+.ed-work-text-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  max-width: 900px;
+}
+
+.ed-work-text--hero .ed-work-title {
+  white-space: normal;
+}
+
+.ed-work-text--hero .ed-work-actions {
+  flex-shrink: 0;
+  margin-top: 0;
+}
+
+@media (max-width: 720px) {
+  .ed-work-text--hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.ed-work-media-hero .ed-work-media {
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  background-color: var(--color-surface-subtle);
+}
+
+.home-case-study-row.ed-work-row--media-overlay:hover .ed-work-media,
+.home-case-study-row.ed-work-row--media-overlay:focus-visible .ed-work-media {
+  transform: none;
+}
+
+/* The embed is a genuine live prototype here, so allow interaction (unlike small thumbnail tiles). */
+.ed-work-media-hero .ed-work-media-iframe {
+  pointer-events: auto;
 }
 
 .ed-reveal {
@@ -1029,16 +1124,11 @@ a.ed-work-action.ed-work-action--secondary:hover {
   aspect-ratio: 4 / 3;
 }
 
-/* ── Footer (home: inside #selected-work so it aligns with the works column) ── */
-#selected-work > .site-footer {
-  grid-column: 1 / -1;
-  width: 100%;
-  margin-top: 0;
-}
-
+/* ── Footer ── */
 .page--home .site-footer {
   border-top: 1px solid var(--home-separator-color);
   padding-top: 32px;
+  margin-top: 0;
 }
 
 .page--home .site-footer-copy {
@@ -1165,16 +1255,6 @@ a.ed-work-action.ed-work-action--secondary:hover {
   .home-intro-editorial {
     padding-top: 40px;
     padding-bottom: 40px;
-  }
-
-  .home-intro-editorial .home-deck {
-    margin-left: 0;
-    max-width: none;
-    margin-top: 16px;
-  }
-
-  .home-deck-text {
-    font-size: var(--home-fs-sm);
   }
 
   .ed-hero-headline.home-hero-headline {

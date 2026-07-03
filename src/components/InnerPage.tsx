@@ -64,7 +64,7 @@ function machineReadableDateTime(display: string): string | undefined {
 }
 
 const DEFAULT_BACK_HREF = '/'
-const DEFAULT_BACK_LABEL = 'Back'
+const DEFAULT_BACK_LABEL = 'Back to home'
 
 export function InnerPage({
   title,

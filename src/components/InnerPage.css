@@ -484,6 +484,17 @@ p.inner-page-date {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .inner-page-carousel-slide {
+    animation: none;
+  }
+}
+
+.inner-page-carousel-progress-segment:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
 /* ================================================================
    Responsive
    ================================================================ */

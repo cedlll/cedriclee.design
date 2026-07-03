@@ -348,7 +348,7 @@ export function EditorialWritingLayout({
   title,
   date,
   backHref = '/',
-  backLabel = 'Back',
+  backLabel = 'Back to home',
   blocks,
   kicker,
   showBack = true,
