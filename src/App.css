@@ -862,6 +862,7 @@ a.ed-work-action.ed-work-action--secondary:hover {
 /* ── Hero row: title/details/CTAs stacked above a large, full-width live embed ── */
 .ed-work-row--media-overlay {
   display: block;
+  padding-bottom: 56px;
 }
 
 .ed-work-media-hero {
@@ -884,7 +885,7 @@ a.ed-work-action.ed-work-action--secondary:hover {
   flex-direction: column;
   gap: 6px;
   min-width: 0;
-  max-width: 620px;
+  max-width: 900px;
 }
 
 .ed-work-text--hero .ed-work-title {
