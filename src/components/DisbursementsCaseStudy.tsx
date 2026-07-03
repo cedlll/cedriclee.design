@@ -1,10 +1,15 @@
 import { useState, useRef, useEffect } from 'react'
 import { gsap } from 'gsap'
 import './DisbursementsCaseStudy.css'
+import { BuiltWith } from './BuiltWith'
 import { DisbursementsPrototypeEmbed } from './DisbursementsPrototypeEmbed'
 
 /** In-page anchor for the interactive prototype block (hero CTA). */
 const DISBURSEMENTS_PROTOTYPE_SECTION_ID = 'disbursements-prototype-walkthrough' as const
+
+/** Static HTML case study — hosted on Vercel preview. */
+const DISBURSEPH_DESIGN_SYSTEM_URL =
+  'https://cedriclee-design.vercel.app/disburseph-design-system.html' as const
 
 /* ── Reveal on scroll ── */
 function useReveal(threshold = 0.12) {
@@ -110,42 +115,6 @@ function NextReadThumbnail({ src, alt }: { src: string; alt: string }) {
   )
 }
 
-function PrototypeBuiltWith({ className }: { className?: string } = {}) {
-  const rootClass = ['ew-prototype-built-with', className].filter(Boolean).join(' ')
-  return (
-    <div className={rootClass} aria-label="How this prototype was built">
-      <span className="ew-prototype-built-with__lead">Built with</span>
-      <div className="ew-prototype-built-with__brands">
-        <span className="ew-prototype-built-with__brand">
-          <img
-            className="ew-prototype-built-with__logo ew-prototype-built-with__logo--cursor"
-            src="/logos/cursor.svg"
-            alt=""
-            width={22}
-            height={22}
-            decoding="async"
-          />
-          <span className="ew-prototype-built-with__name">Cursor</span>
-        </span>
-        <span className="ew-prototype-built-with__sep" aria-hidden="true">
-          and
-        </span>
-        <span className="ew-prototype-built-with__brand">
-          <img
-            className="ew-prototype-built-with__logo ew-prototype-built-with__logo--claude"
-            src="/logos/claude.svg"
-            alt=""
-            width={22}
-            height={22}
-            decoding="async"
-          />
-          <span className="ew-prototype-built-with__name">Claude Code</span>
-        </span>
-      </div>
-    </div>
-  )
-}
-
 /* ================================================================
    Main component
    ================================================================ */
@@ -214,9 +183,9 @@ export function DisbursementsCaseStudy() {
           </p>
           <div className="ew-hero-cta-row">
             <a className="ew-hero-cta" href={`#${DISBURSEMENTS_PROTOTYPE_SECTION_ID}`}>
-              View live prototype
+              View prototype
             </a>
-            <PrototypeBuiltWith />
+            <BuiltWith className="ew-hero-built-with" />
           </div>
         </div>
         <aside className="ew-meta">
@@ -276,6 +245,12 @@ export function DisbursementsCaseStudy() {
           <h2 className="ew-h2">Problem &amp; signal</h2>
         </div>
         <div className="ew-col-wide">
+          <figure className="ew-context-photo">
+            <div className="ew-case-photo-frame">
+              <span className="ew-case-photo-placeholder-label">Photo placeholder</span>
+              {/* Replace with: <img className="ew-case-photo-img" src="…" alt="…" loading="lazy" decoding="async" /> */}
+            </div>
+          </figure>
           <p className="ew-body">
             Outbound payouts lagged competitors; enterprises lived in spreadsheets and bank portals. About 9%
             of onboarded merchants had transacted. We could not
@@ -434,20 +409,31 @@ export function DisbursementsCaseStudy() {
       </Reveal>
 
       {/* ── Interactive prototype ── */}
-      <Reveal id={DISBURSEMENTS_PROTOTYPE_SECTION_ID} className="ew-full ew-prototype-anchor">
-        <p className="ew-label">Prototype</p>
-        <h2 className="ew-h2">Interactive walkthrough</h2>
-        <p className="ew-body ew-body--narrow">
+      <Reveal
+        id={DISBURSEMENTS_PROTOTYPE_SECTION_ID}
+        className="ew-full ew-prototype-anchor ew-prototype-walkthrough"
+      >
+        <div className="ew-prototype-walkthrough-titles">
+          <p className="ew-label">Prototype</p>
+          <h2 className="ew-h2">Interactive app</h2>
+        </div>
+        <p className="ew-body ew-body--narrow ew-prototype-walkthrough-lede">
           Fictional merchant UI: cadence, single + CSV send, batch timeline, notifications, failure
           recovery&mdash;click through the same story as above.
         </p>
-        <PrototypeBuiltWith className="ew-prototype-built-with--in-walkthrough" />
+        <div className="ew-prototype-walkthrough-cta">
+          <a
+            className="ew-hero-cta"
+            href={DISBURSEPH_DESIGN_SYSTEM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View design system
+          </a>
+        </div>
         <div className="ew-prototype-embed">
           <DisbursementsPrototypeEmbed />
         </div>
-        <p className="ew-caption">
-          Fictional UI and data for portfolio context only; not production software from the employer.
-        </p>
       </Reveal>
 
       {/* ── Lessons ── */}

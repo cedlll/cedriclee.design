@@ -1,0 +1,57 @@
+/* ── "Built with Cursor and Claude Code" credit ──
+   Uses literal sizing (not page-scoped tokens) so it renders identically
+   wherever it's dropped in — homepage card or case study hero/section. */
+
+.bw-built-with {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  min-width: 0;
+}
+
+.bw-built-with__lead {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--color-text-muted);
+}
+
+.bw-built-with__brands {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.bw-built-with__sep {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  opacity: 0.85;
+}
+
+.bw-built-with__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-primary);
+}
+
+.bw-built-with__logo {
+  display: block;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.bw-built-with__logo--cursor {
+  width: 20px;
+  height: 20px;
+}
+
+.bw-built-with__name {
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
