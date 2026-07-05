@@ -512,6 +512,80 @@
   color: #1a1a1a;
 }
 
+/* ── Illustrated name wordmark (hero bottom) ── */
+.home-hero-wordmark {
+  position: relative;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.home-hero-wordmark-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.home-hero-wordmark-text {
+  font-family: 'Caveat', 'Segoe Script', 'Comic Sans MS', cursive;
+  font-size: 190px;
+  font-weight: 700;
+  fill: #b7cd4b;
+  stroke: #e9f95b;
+  stroke-width: 46px;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  paint-order: stroke fill;
+}
+
+.home-hero-wordmark-tag {
+  position: absolute;
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: #e9e9e6;
+  color: #3a3a3a;
+  font-family: 'Satoshi', system-ui, sans-serif;
+  font-size: clamp(0.68rem, 1.5vw, 0.95rem);
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  animation: home-hero-tag-float 5s ease-in-out infinite;
+}
+
+.home-hero-wordmark-tag--1 {
+  left: 0;
+  top: 36%;
+}
+
+.home-hero-wordmark-tag--2 {
+  right: 1%;
+  top: 10%;
+  animation-delay: -1.7s;
+}
+
+.home-hero-wordmark-tag--3 {
+  left: 60%;
+  bottom: 4%;
+  animation-delay: -3.4s;
+}
+
+@keyframes home-hero-tag-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-wordmark-tag {
+    animation: none;
+  }
+}
+
 .ed-links-list {
   display: flex;
   flex-wrap: nowrap;

@@ -700,6 +700,29 @@ function HomeView({
                 logistics, policy) feel understandable without dumbing them down.
               </p>
             </div>
+
+            <div className="home-hero-wordmark" role="img" aria-label="Cedric Lee — payments, systems, craft">
+              <svg
+                className="home-hero-wordmark-svg"
+                viewBox="0 0 1000 300"
+                aria-hidden="true"
+                focusable="false"
+              >
+                <text
+                  x="500"
+                  y="208"
+                  textAnchor="middle"
+                  textLength="880"
+                  lengthAdjust="spacingAndGlyphs"
+                  className="home-hero-wordmark-text"
+                >
+                  Cedric Lee
+                </text>
+              </svg>
+              <span className="home-hero-wordmark-tag home-hero-wordmark-tag--1">Payments</span>
+              <span className="home-hero-wordmark-tag home-hero-wordmark-tag--2">Systems</span>
+              <span className="home-hero-wordmark-tag home-hero-wordmark-tag--3">Craft</span>
+            </div>
           </section>
 
           {/* ── Selected works ── */}
