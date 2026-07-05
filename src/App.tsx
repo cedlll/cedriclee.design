@@ -351,7 +351,6 @@ function WorkRow({
   const textBlock = item.mediaOverlay ? (
     <div className="ed-work-text ed-work-text--hero">
       <div className="ed-work-text-copy">{labelAndTitle}</div>
-      {actionsBlock}
     </div>
   ) : (
     <div className="ed-work-text">
@@ -408,7 +407,10 @@ function WorkRow({
     <div className="ed-work-media-hero">
       {textBlock}
       {mediaBlock}
-      <BuiltWith className="ed-work-media-hero-built-with" />
+      <div className="ed-work-media-hero-footer">
+        {actionsBlock}
+        <BuiltWith className="ed-work-media-hero-built-with" />
+      </div>
     </div>
   ) : (
     <>

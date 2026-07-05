@@ -920,6 +920,18 @@ a.ed-work-action.ed-work-action--secondary:hover {
   pointer-events: auto;
 }
 
+.ed-work-media-hero-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+}
+
+.ed-work-media-hero-footer .ed-work-actions {
+  margin-top: 0;
+}
+
 .ed-reveal {
   opacity: 0;
   transform: translateY(20px);
